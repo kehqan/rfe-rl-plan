@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>90-Day AI Plan — Creative AI Specialist · RFE/RL Prague</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1916;
+  --ink-2: #4a4945;
+  --ink-3: #8a8880;
+  --paper: #f7f5f0;
+  --paper-2: #edeae3;
+  --paper-3: #e2dfd6;
+  --rule: rgba(26,25,22,0.12);
+  --blue: #1a4f8a;
+  --blue-light: #e8f0f9;
+  --teal: #0f6e56;
+  --teal-light: #e1f5ee;
+  --amber: #854f0b;
+  --amber-light: #faeeda;
+  --purple: #3c3489;
+  --purple-light: #eeedfe;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Instrument Sans', system-ui, sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── LAYOUT ───────────────────────────────────── */
+
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: 56px 1fr;
+  min-height: 100vh;
+}
+
+/* ── TOP BAR ──────────────────────────────────── */
+
+.topbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.topbar-logo {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.topbar-sep { width: 1px; height: 16px; background: var(--rule); }
+
+.topbar-title {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.slide-counter {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ── SIDEBAR ──────────────────────────────────── */
+
+.sidebar {
+  border-right: 1px solid var(--rule);
+  padding: 2rem 0;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  background: var(--paper);
+}
+
+.sidebar-section {
+  margin-bottom: 2rem;
+}
+
+.sidebar-label {
+  padding: 0 1.25rem;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 1.25rem;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.nav-item:hover { background: var(--paper-2); color: var(--ink); }
+
+.nav-item.active {
+  border-left-color: var(--ink);
+  background: var(--paper-2);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.nav-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1.5px solid currentColor;
+}
+
+.nav-item.active .nav-dot { background: currentColor; }
+
+.phase-nav { margin-top: 0.25rem; }
+
+.phase-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 1.25rem 6px 2.25rem;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--ink-3);
+  transition: all 0.15s;
+}
+
+.phase-item:hover { color: var(--ink-2); }
+.phase-item.active { color: var(--ink); font-weight: 500; }
+
+.phase-pip {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── MAIN CONTENT ─────────────────────────────── */
+
+.main {
+  padding: 3rem 3.5rem 4rem;
+  max-width: 860px;
+}
+
+/* ── SLIDE ────────────────────────────────────── */
+
+.slide { display: none; animation: fadeSlide 0.3s ease; }
+.slide.active { display: block; }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SLIDE COMPONENTS ─────────────────────────── */
+
+.slide-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.75rem;
+}
+
+.slide-title {
+  font-family: var(--serif);
+  font-size: 38px;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  max-width: 640px;
+}
+
+.slide-subtitle {
+  font-size: 15px;
+  color: var(--ink-2);
+  line-height: 1.7;
+  max-width: 580px;
+  margin-bottom: 2rem;
+}
+
+.divider {
+  width: 40px;
+  height: 1px;
+  background: var(--ink);
+  margin: 1.5rem 0;
+}
+
+/* ── PROBLEM CARDS ────────────────────────────── */
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-top: 2rem;
+}
+
+.problem-card {
+  background: var(--paper);
+  padding: 1.25rem 1.5rem;
+}
+
+.problem-card-n {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 32px;
+  color: var(--paper-3);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.problem-card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.problem-card-body {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+/* ── PRINCIPLE CALLOUT ────────────────────────── */
+
+.principle-box {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ink);
+  padding: 1.25rem 1.5rem;
+  margin-top: 2rem;
+  background: var(--paper-2);
+}
+
+.principle-box p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.principle-box small {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ── LAYER SYSTEM ─────────────────────────────── */
+
+.layer-stack { display: flex; flex-direction: column; gap: 1px; margin-top: 2rem; }
+
+.layer-card {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  border: 1px solid var(--rule);
+  min-height: 100px;
+  overflow: hidden;
+}
+
+.layer-left {
+  padding: 1.25rem 1.5rem;
+  border-right: 1px solid var(--rule);
+}
+
+.layer-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-bottom: 0.75rem;
+}
+
+.tag-blue { background: var(--blue-light); color: var(--blue); }
+.tag-teal { background: var(--teal-light); color: var(--teal); }
+.tag-amber { background: var(--amber-light); color: var(--amber); }
+.tag-purple { background: var(--purple-light); color: var(--purple); }
+
+.layer-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.layer-who {
+  font-size: 11px;
+  color: var(--ink-3);
+  font-family: var(--mono);
+}
+
+.layer-right {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.layer-use-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.use-icon {
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.use-icon svg { width: 10px; height: 10px; }
+
+/* ── PHASE ROADMAP ────────────────────────────── */
+
+.phase-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-top: 2rem;
+}
+
+.phase-col { background: var(--paper); padding: 1.5rem; }
+.phase-col:nth-child(2) { background: var(--paper-2); }
+
+.phase-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-bottom: 0.25rem;
+}
+
+.phase-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.phase-days {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  margin-bottom: 1rem;
+}
+
+.phase-tasks { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+
+.phase-tasks li {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  padding-left: 14px;
+  position: relative;
+}
+
+.phase-tasks li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-3);
+}
+
+.phase-focus {
+  margin-top: 1rem;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ── WORKFLOW CARDS ───────────────────────────── */
+
+.workflow-tabs {
+  display: flex;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.wf-tab {
+  padding: 0.6rem 1.2rem;
+  font-size: 12px;
+  cursor: pointer;
+  background: var(--paper);
+  color: var(--ink-2);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.wf-tab:hover { background: var(--paper-2); }
+.wf-tab.active { background: var(--ink); color: var(--paper); font-weight: 500; }
+
+.workflow-body { margin-top: 1px; border: 1px solid var(--rule); display: none; }
+.workflow-body.active { display: block; }
+
+.wf-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: start;
+}
+
+.wf-title { font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 0.35rem; }
+.wf-desc { font-size: 13px; color: var(--ink-2); line-height: 1.6; max-width: 480px; }
+.wf-badge { font-family: var(--mono); font-size: 10px; padding: 4px 10px; border-radius: 3px; white-space: nowrap; }
+
+.wf-steps { padding: 1.5rem; }
+
+.wf-steps-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 1rem;
+}
+
+.step-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.step-row {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 1rem;
+  align-items: stretch;
+  position: relative;
+}
+
+.step-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-2);
+  background: var(--paper);
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.step-line {
+  width: 1px;
+  flex: 1;
+  background: var(--rule);
+  margin: 4px 0;
+  min-height: 16px;
+}
+
+.step-right { padding: 0 0 1.5rem; }
+
+.step-actor {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+
+.step-content {
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.step-detail {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+.step-ai-note {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: var(--paper-2);
+  border-left: 2px solid var(--ink-3);
+  font-size: 11px;
+  color: var(--ink-2);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.step-row:last-child .step-line { display: none; }
+.step-row:last-child .step-right { padding-bottom: 0; }
+
+/* ── COLLAB SECTION ───────────────────────────── */
+
+.collab-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-top: 2rem;
+}
+
+.collab-card {
+  background: var(--paper);
+  padding: 1.25rem 1.5rem;
+}
+
+.collab-card-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.5rem;
+}
+
+.collab-card-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.collab-items { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
+.collab-items li {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  padding-left: 14px;
+  position: relative;
+}
+
+.collab-items li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--ink-3);
+  font-size: 10px;
+}
+
+/* ── IMPACT TABLE ─────────────────────────────── */
+
+.impact-section { margin-top: 2rem; }
+
+.impact-block { margin-bottom: 2rem; }
+
+.impact-block-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.metric-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 120px;
+  gap: 1rem;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: start;
+}
+
+.metric-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.metric-how {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.metric-when {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  text-align: right;
+}
+
+/* ── CLOSING ──────────────────────────────────── */
+
+.closing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-top: 2rem;
+}
+
+.closing-item {
+  padding: 1.5rem;
+  background: var(--paper);
+}
+
+.closing-n {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--paper-3);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.closing-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.closing-body {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.final-statement {
+  margin-top: 2.5rem;
+  padding: 2rem;
+  border: 1px solid var(--rule);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.final-statement p {
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.5;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.final-statement small {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(247,245,240,0.5);
+}
+
+/* ── BOTTOM NAV ───────────────────────────────── */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 2rem;
+  right: 3.5rem;
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+}
+
+.btn-nav {
+  padding: 8px 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink-2);
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+
+.btn-nav:hover { background: var(--paper-2); color: var(--ink); }
+.btn-nav.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn-nav.primary:hover { background: var(--ink-2); }
+.btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ── PROGRESS ─────────────────────────────────── */
+
+.progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--paper-3);
+  z-index: 200;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--ink);
+  transition: width 0.3s ease;
+}
+
+/* ── MISC ─────────────────────────────────────── */
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
+
+.tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 9px;
+  border: 1px solid var(--rule);
+  color: var(--ink-3);
+  border-radius: 3px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.info-block { }
+
+.info-block h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.info-block p {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.notice {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.notice strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 2rem 1.5rem 5rem; }
+  .bottom-nav { right: 1.5rem; }
+  .two-col, .collab-grid, .phase-strip, .closing-grid { grid-template-columns: 1fr; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .layer-card { grid-template-columns: 1fr; }
+  .layer-left { border-right: none; border-bottom: 1px solid var(--rule); }
+  .metric-row { grid-template-columns: 1fr; }
+  .metric-when { text-align: left; }
+  .wf-header { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">RFE/RL · Prague</span>
+      <div class="topbar-sep"></div>
+      <span class="topbar-title">Creative AI Specialist · Digital Transformation — 90-Day Action Plan</span>
+    </div>
+    <div class="topbar-right">
+      <span class="slide-counter" id="slide-counter">1</span>
+      <span>/ 8</span>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <p class="sidebar-label">Overview</p>
+      <div class="nav-item active" data-slide="0" onclick="goTo(0)">
+        <div class="nav-dot"></div>
+        Problem framing
+      </div>
+      <div class="nav-item" data-slide="1" onclick="goTo(1)">
+        <div class="nav-dot"></div>
+        Core principles
+      </div>
+      <div class="nav-item" data-slide="2" onclick="goTo(2)">
+        <div class="nav-dot"></div>
+        Three-layer system
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <p class="sidebar-label">Roadmap</p>
+      <div class="nav-item" data-slide="3" onclick="goTo(3)">
+        <div class="nav-dot"></div>
+        90-day phases
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <p class="sidebar-label">Execution</p>
+      <div class="nav-item" data-slide="4" onclick="goTo(4)">
+        <div class="nav-dot"></div>
+        Example workflows
+      </div>
+      <div class="nav-item" data-slide="5" onclick="goTo(5)">
+        <div class="nav-dot"></div>
+        Collaboration model
+      </div>
+      <div class="nav-item" data-slide="6" onclick="goTo(6)">
+        <div class="nav-dot"></div>
+        Impact measurement
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <p class="sidebar-label">Close</p>
+      <div class="nav-item" data-slide="7" onclick="goTo(7)">
+        <div class="nav-dot"></div>
+        Value proposition
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- SLIDE 0: Problem Framing -->
+    <section class="slide active" id="slide-0">
+      <p class="slide-eyebrow">01 — Problem framing</p>
+      <h1 class="slide-title">What a newsroom actually needs from AI</h1>
+      <p class="slide-subtitle">RFE/RL operates across dozens of services, languages, and editorial cultures. AI doesn't solve all of that — but it can reduce friction in the right places.</p>
+
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-card-n">01</div>
+          <div class="problem-card-title">Research takes too long</div>
+          <div class="problem-card-body">Journalists spend hours scanning sources, catching up on background context, or verifying what's already been covered. Time that could go to reporting.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-n">02</div>
+          <div class="problem-card-title">Editorial bandwidth is limited</div>
+          <div class="problem-card-body">Editors are stretched. Structural checks, consistency reviews, and format guidance often fall through the gaps — not from negligence, but from volume.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-n">03</div>
+          <div class="problem-card-title">Multilingual complexity adds friction</div>
+          <div class="problem-card-body">Adapting content across language services is time-consuming. Drafting, translating, and localizing for each audience multiplies effort.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-n">04</div>
+          <div class="problem-card-title">New tools create resistance</div>
+          <div class="problem-card-body">Journalists have seen "solutions" come and go. Adoption fails when tools add steps instead of removing them. Trust is earned, not assumed.</div>
+        </div>
+      </div>
+
+      <div class="principle-box">
+        <p>"Transformation that earns adoption moves faster than transformation that demands it — especially in a newsroom."</p>
+        <small>Core premise — this plan</small>
+      </div>
+    </section>
+
+    <!-- SLIDE 1: Core Principles -->
+    <section class="slide" id="slide-1">
+      <p class="slide-eyebrow">02 — Core principles</p>
+      <h1 class="slide-title">How transformation actually works here</h1>
+      <p class="slide-subtitle">Sustainable digital transformation in a newsroom isn't a single initiative — it's a series of small, validated improvements. These principles shape every decision in this plan.</p>
+
+      <div class="two-col" style="margin-top:2rem">
+        <div class="info-block">
+          <h4>Human-in-the-loop, always</h4>
+          <p>Every AI output is a draft, a suggestion, or a starting point. Journalists and editors make the final call — always. AI doesn't publish, decide, or verify.</p>
+        </div>
+        <div class="info-block">
+          <h4>Start small, prove value</h4>
+          <p>No organization-wide rollouts in 90 days. We begin with 2–3 willing journalists, iterate on what works, and scale only what earns its place.</p>
+        </div>
+        <div class="info-block">
+          <h4>Editorial standards are not negotiable</h4>
+          <p>AI assists with structure, summarization, and drafting — not with fact-checking or truth verification. Editorial judgment stays with the team.</p>
+        </div>
+        <div class="info-block">
+          <h4>Simple systems over clever ones</h4>
+          <p>If a workflow can't be explained in a sentence, it won't be used. We favor tools that integrate quietly into existing habits over those that demand new ones.</p>
+        </div>
+        <div class="info-block">
+          <h4>No hype, no promises</h4>
+          <p>We measure what we can actually measure. Adoption rates, time saved, and journalist satisfaction — not "transformation" or "efficiency gains."</p>
+        </div>
+        <div class="info-block">
+          <h4>Incremental trust-building</h4>
+          <p>Resistance to new tools is rational. We earn adoption by making early experiences low-stakes, reversible, and genuinely useful.</p>
+        </div>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">AI = assistant layer</span>
+        <span class="tag">Not autonomous agents</span>
+        <span class="tag">Not replacing journalists</span>
+        <span class="tag">Current tools only</span>
+        <span class="tag">Reversible experiments</span>
+        <span class="tag">Credibility over impressiveness</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: Three-Layer System -->
+    <section class="slide" id="slide-2">
+      <p class="slide-eyebrow">03 — Three-layer system</p>
+      <h1 class="slide-title">Different stakeholders, different needs</h1>
+      <p class="slide-subtitle">AI assistance looks different at each level of the organization. A single tool for everyone fails everyone.</p>
+
+      <div class="layer-stack">
+        <div class="layer-card">
+          <div class="layer-left">
+            <span class="layer-tag tag-blue">Layer 1</span>
+            <div class="layer-name">Production</div>
+            <div class="layer-who">Journalists · Designers</div>
+          </div>
+          <div class="layer-right">
+            <div class="layer-use-item">
+              <div class="use-icon" style="background:var(--blue-light)">
+                <svg viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#185FA5" stroke-width="1"/><line x1="5" y1="2" x2="5" y2="5" stroke="#185FA5" stroke-width="1"/></svg>
+              </div>
+              <span><strong style="font-weight:500">Research summarization</strong> — background context, archive search, source overview; journalist verifies and uses selectively</span>
+            </div>
+            <div class="layer-use-item">
+              <div class="use-icon" style="background:var(--blue-light)">
+                <svg viewBox="0 0 10 10" fill="none"><rect x="1" y="2" width="8" height="6" rx="1" stroke="#185FA5" stroke-width="1"/><line x1="3" y1="4.5" x2="7" y2="4.5" stroke="#185FA5" stroke-width="1"/><line x1="3" y1="6" x2="6" y2="6" stroke="#185FA5" stroke-width="1"/></svg>
+              </div>
+              <span><strong style="font-weight:500">Story structuring assistance</strong> — prompt-based outlines, angle suggestions; journalist owns the editorial direction</span>
+            </div>
+            <div class="layer-use-item">
+              <div class="use-icon" style="background:var(--blue-light)">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 5h6M7 3l2 2-2 2" stroke="#185FA5" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span><strong style="font-weight:500">Translation drafting support</strong> — AI-assisted first draft for multilingual adaptation; human editor refines and localizes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer-card">
+          <div class="layer-left">
+            <span class="layer-tag tag-teal">Layer 2</span>
+            <div class="layer-name">Editorial management</div>
+            <div class="layer-who">Editors · Team leads</div>
+          </div>
+          <div class="layer-right">
+            <div class="layer-use-item">
+              <div class="use-icon" style="background:var(--teal-light)">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 3l3 3 3-3" stroke="#0F6E56" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span><strong style="font-weight:500">Structure and consistency checks</strong> — flag missing elements (lede, attribution, context) in a story draft; not fact-checking</span>
+            </div>
+            <div class="layer-use-item">
+              <div class="use-icon" style="background:var(--teal-light)">
+                <svg viewBox="0 0 10 10" fill="none"><rect x="1.5" y="1.5" width="7" height="7" rx="1" stroke="#0F6E56" stroke-width="1"/><line x1="3" y1="5" x2="7" y2="5" stroke="#0F6E56" stroke-width="1"/></svg>
+              </div>
+              <span><strong style="font-weight:500">Workflow visibility</strong> — simple dashboard showing content in progress, format distribution, and output by service</span>
+            </div>
+            <div class="layer-use-item">
+              <div class="use-icon" style="background:var(--teal-light)">
+                <svg viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#0F6E56" stroke-width="1"/><path d="M5 3v2l1.5 1.5" stroke="#0F6E56" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span><strong style="font-weight:500">Content tagging assistant</strong> — semi-automated topic and format classification; editor reviews before publishing</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer-card">
+          <div class="layer-left">
+            <span class="layer-tag tag-amber">Layer 3</span>
+            <div class="layer-name">Strategic / board</div>
+            <div class="layer-who">Editorial leadership</div>
+          </div>
+          <div class="layer-right">
+            <div class="layer-use-item">
+              <div class="use-icon" style="background:var(--amber-light)">
+                <svg viewBox="0 0 10 10" fill="none"><rect x="1" y="6" width="2" height="3" fill="#854F0B" rx="0.5"/><rect x="4" y="4" width="2" height="5" fill="#854F0B" rx="0.5"/><rect x="7" y="2" width="2" height="7" fill="#854F0B" rx="0.5"/></svg>
+              </div>
+              <span><strong style="font-weight:500">Output overview</strong> — rolling summary of content volume, format mix, and multilingual reach across services; no operational detail</span>
+            </div>
+            <div class="layer-use-item">
+              <div class="use-icon" style="background:var(--amber-light)">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M1 8l3-3 2 2 3-4" stroke="#854F0B" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span><strong style="font-weight:500">Efficiency signals</strong> — high-level indicators of where AI-assisted workflows are having an effect; not micromanagement data</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice">
+        <strong>What's not here:</strong> Fully autonomous content pipelines, AI publishing decisions, complex multi-agent systems, or anything that removes a human from the loop. These layers are additive — they sit alongside existing workflows, not replacing them.
+      </div>
+    </section>
+
+    <!-- SLIDE 3: 90-Day Phases -->
+    <section class="slide" id="slide-3">
+      <p class="slide-eyebrow">04 — 90-day phases</p>
+      <h1 class="slide-title">A realistic timeline</h1>
+      <p class="slide-subtitle">Three distinct phases with clear outputs. Each one builds on the last. Nothing moves to production before it's been tested with real users.</p>
+
+      <div class="phase-strip">
+        <div class="phase-col">
+          <div class="phase-num">Phase one</div>
+          <div class="phase-name">Discovery & mapping</div>
+          <div class="phase-days" style="color:var(--blue)">Days 1–30</div>
+          <ul class="phase-tasks">
+            <li>Interview journalists across 3–4 services</li>
+            <li>Shadow editorial workflow sessions</li>
+            <li>Audit tools already in use</li>
+            <li>Identify top 2–3 high-impact bottlenecks</li>
+            <li>Meet cross-team partners (R&D, Academy, Product)</li>
+            <li>Align with editorial leadership on scope</li>
+            <li>Produce: Discovery report + 90-day sprint plan</li>
+          </ul>
+          <div class="phase-focus" style="background:var(--blue-light);color:var(--blue)">Output: understanding, not tools</div>
+        </div>
+
+        <div class="phase-col">
+          <div class="phase-num">Phase two</div>
+          <div class="phase-name">Prototyping & testing</div>
+          <div class="phase-days" style="color:var(--teal)">Days 30–60</div>
+          <ul class="phase-tasks">
+            <li>Build 2–3 lightweight AI-assisted workflows</li>
+            <li>Run with 3–5 willing journalists (opt-in only)</li>
+            <li>Weekly feedback sessions, iterate quickly</li>
+            <li>Test research summarization assistant</li>
+            <li>Test story structure prompt templates</li>
+            <li>Test translation drafting support</li>
+            <li>Produce: Feedback report + refined prototypes</li>
+          </ul>
+          <div class="phase-focus" style="background:var(--teal-light);color:var(--teal)">Output: tested prototypes</div>
+        </div>
+
+        <div class="phase-col">
+          <div class="phase-num">Phase three</div>
+          <div class="phase-name">Integration (beta)</div>
+          <div class="phase-days" style="color:var(--amber)">Days 60–90</div>
+          <ul class="phase-tasks">
+            <li>Turn 2 prototypes into repeatable workflows</li>
+            <li>Write internal playbooks (non-technical)</li>
+            <li>Run onboarding sessions with Academy</li>
+            <li>Deploy simple editorial dashboard</li>
+            <li>Measure early impact (self-reported + observed)</li>
+            <li>30-day summary report to leadership</li>
+            <li>Produce: Beta workflows + phase 2 proposal</li>
+          </ul>
+          <div class="phase-focus" style="background:var(--amber-light);color:var(--amber)">Output: repeatable beta workflows</div>
+        </div>
+      </div>
+
+      <div class="notice" style="margin-top:1.5rem">
+        <strong>What "beta" means here:</strong> A workflow used voluntarily by a small group, with clear documentation, human oversight at every step, and a feedback channel. Not a full rollout. The 90-day goal is to arrive at 2–3 things that demonstrably work — then scale carefully from there.
+      </div>
+    </section>
+
+    <!-- SLIDE 4: Example Workflows -->
+    <section class="slide" id="slide-4">
+      <p class="slide-eyebrow">05 — Example workflows</p>
+      <h1 class="slide-title">What this looks like in practice</h1>
+      <p class="slide-subtitle">Three concrete use cases with step-by-step flows. Each keeps the journalist in control at every stage.</p>
+
+      <div class="workflow-tabs">
+        <div class="wf-tab active" onclick="switchWF(this, 'wf-a')">Research summarization</div>
+        <div class="wf-tab" onclick="switchWF(this, 'wf-b')">Story structure assistant</div>
+        <div class="wf-tab" onclick="switchWF(this, 'wf-c')">Translation drafting</div>
+      </div>
+
+      <!-- Workflow A -->
+      <div class="workflow-body active" id="wf-a">
+        <div class="wf-header">
+          <div>
+            <div class="wf-title">Research summarization assistant</div>
+            <div class="wf-desc">Journalist is covering a fast-moving story. Needs quick background on key actors, previous coverage, and context — without spending 2 hours in archives.</div>
+          </div>
+          <span class="wf-badge tag-blue">Layer 1 · Phase 2</span>
+        </div>
+        <div class="wf-steps">
+          <div class="wf-steps-title">Step-by-step flow</div>
+          <div class="step-flow">
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Journalist</div>
+                <div class="step-content">Defines the scope of the query</div>
+                <div class="step-detail">Pastes 3–5 source documents (wire copy, prior RFE/RL pieces, official statements) into the tool, or provides a topic description and time range.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">AI assistant</div>
+                <div class="step-content">Generates a structured background brief</div>
+                <div class="step-detail">Returns: key actors and their roles, timeline of events, what's already been covered, and 3–4 open questions for further reporting.</div>
+                <div class="step-ai-note">AI note: outputs are labeled "draft summary — verify before use." No sources are fabricated; AI works only from provided documents.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Journalist</div>
+                <div class="step-content">Reviews and selects what to use</div>
+                <div class="step-detail">Journalist reads the brief, cross-checks any claims they're unsure of, discards what's wrong or irrelevant, and uses the rest as a starting point for reporting.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Journalist</div>
+                <div class="step-content">Reports and writes normally</div>
+                <div class="step-detail">The AI-generated brief is a reference document, not copy. All published content is the journalist's own work. The tool saved research time — nothing more.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow B -->
+      <div class="workflow-body" id="wf-b">
+        <div class="wf-header">
+          <div>
+            <div class="wf-title">Story structure assistant</div>
+            <div class="wf-desc">Journalist has reported a story but is stuck on structure. The angle is clear, but the piece needs a better lede, flow, or format decision.</div>
+          </div>
+          <span class="wf-badge tag-teal">Layer 1 · Phase 2</span>
+        </div>
+        <div class="wf-steps">
+          <div class="wf-steps-title">Step-by-step flow</div>
+          <div class="step-flow">
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Journalist</div>
+                <div class="step-content">Shares the raw material</div>
+                <div class="step-detail">Pastes their notes, a rough draft, or a set of key facts into the tool. Adds a one-line prompt: "Help me think through structure for a 600-word explainer on X."</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">AI assistant</div>
+                <div class="step-content">Proposes 2–3 structural options</div>
+                <div class="step-detail">Returns: option A (inverted pyramid for breaking news), option B (narrative lede + context block for feature angle), option C (Q&A format if this is an explainer). Each includes a suggested lede sentence.</div>
+                <div class="step-ai-note">AI note: these are structural suggestions, not editorial decisions. The journalist decides angle, framing, and what the story is actually about.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Journalist</div>
+                <div class="step-content">Selects, adapts, or ignores</div>
+                <div class="step-detail">Picks the structure that fits, rewrites the lede in their own voice, and builds the piece. The AI output is a thinking prompt — not a template to fill in.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Editor</div>
+                <div class="step-content">Reviews and edits as normal</div>
+                <div class="step-detail">Editor sees the finished piece — not the AI suggestions. Editorial review is unchanged. The tool is invisible to the final product.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow C -->
+      <div class="workflow-body" id="wf-c">
+        <div class="wf-header">
+          <div>
+            <div class="wf-title">Translation drafting support</div>
+            <div class="wf-desc">A story published in English needs to be adapted for a regional language service. The service editor needs a starting draft to work from, not a finished piece.</div>
+          </div>
+          <span class="wf-badge tag-amber">Layer 1–2 · Phase 2–3</span>
+        </div>
+        <div class="wf-steps">
+          <div class="wf-steps-title">Step-by-step flow</div>
+          <div class="step-flow">
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Source desk</div>
+                <div class="step-content">Flags story for multilingual adaptation</div>
+                <div class="step-detail">Editor on the English desk marks the story as "adaptation-ready" and notes which regional services should receive it.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">AI assistant</div>
+                <div class="step-content">Generates a working translation draft</div>
+                <div class="step-detail">Tool produces a literal draft translation, flagging idioms, cultural references, or phrases that may not translate directly. Notes are inline, not hidden.</div>
+                <div class="step-ai-note">AI note: translation is a first draft only. Regional editors are required to review, adapt tone, and ensure cultural accuracy before publication.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Regional editor</div>
+                <div class="step-content">Reviews, localizes, and rewrites where needed</div>
+                <div class="step-detail">Regional editor treats the AI draft as a rough starting point. They rewrite sentences that feel unnatural, adjust for local context, and verify any names or references specific to the region.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-actor">Regional editor</div>
+                <div class="step-content">Publishes under their editorial sign-off</div>
+                <div class="step-detail">The published piece carries the regional team's editorial responsibility. Time saved: the draft removes the blank-page problem, not the editorial judgment.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: Collaboration Model -->
+    <section class="slide" id="slide-5">
+      <p class="slide-eyebrow">06 — Collaboration model</p>
+      <h1 class="slide-title">Who this role works with, and how</h1>
+      <p class="slide-subtitle">The Creative AI Specialist sits at the intersection of editorial, product, and training. The role only works if it has active relationships across all four areas.</p>
+
+      <div class="collab-grid">
+        <div class="collab-card">
+          <div class="collab-card-tag" style="color:var(--blue)">Innovation / R&D</div>
+          <div class="collab-card-name">Experimentation partner</div>
+          <ul class="collab-items">
+            <li>Co-develop and test new AI tool prototypes</li>
+            <li>Share discovery findings to inform R&D priorities</li>
+            <li>Evaluate new model capabilities before newsroom rollout</li>
+            <li>Bi-weekly sync during phases 2 and 3</li>
+          </ul>
+        </div>
+
+        <div class="collab-card">
+          <div class="collab-card-tag" style="color:var(--teal)">Internal Academy</div>
+          <div class="collab-card-name">Journalist onboarding</div>
+          <ul class="collab-items">
+            <li>Co-design onboarding sessions for new AI workflows</li>
+            <li>Translate playbooks into training-ready formats</li>
+            <li>Identify journalists ready to be early adopters</li>
+            <li>Support ongoing learning as tools evolve</li>
+          </ul>
+        </div>
+
+        <div class="collab-card">
+          <div class="collab-card-tag" style="color:var(--amber)">Product / Digital teams</div>
+          <div class="collab-card-name">Tool integration</div>
+          <ul class="collab-items">
+            <li>Ensure AI tools integrate with existing CMS and workflows</li>
+            <li>Advise on API connections and data flow requirements</li>
+            <li>Co-build the editorial workflow dashboard</li>
+            <li>Monthly alignment on roadmap and technical constraints</li>
+          </ul>
+        </div>
+
+        <div class="collab-card">
+          <div class="collab-card-tag" style="color:var(--purple)">Editorial leadership</div>
+          <div class="collab-card-name">Trust and alignment</div>
+          <ul class="collab-items">
+            <li>Monthly check-in on editorial priorities and concerns</li>
+            <li>Share discovery and prototype outcomes at each phase</li>
+            <li>Surface resistance early — don't wait for it to escalate</li>
+            <li>30-day summary report at end of phase 3</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="notice" style="margin-top:1.5rem">
+        <strong>A note on pace:</strong> These relationships don't all need to be at full intensity from day one. Phase 1 is primarily listening. Deep collaboration with Product and Academy begins in phases 2 and 3 — once there's something concrete to build around.
+      </div>
+    </section>
+
+    <!-- SLIDE 6: Impact Measurement -->
+    <section class="slide" id="slide-6">
+      <p class="slide-eyebrow">07 — Impact measurement</p>
+      <h1 class="slide-title">What we measure, and how</h1>
+      <p class="slide-subtitle">We measure what we can actually observe. No inflated metrics. No claims that can't be substantiated.</p>
+
+      <div class="impact-section">
+        <div class="impact-block">
+          <div class="impact-block-title">Layer 1 — Production metrics</div>
+          <div class="metric-row">
+            <div class="metric-name">Tool adoption rate</div>
+            <div class="metric-how">Number of journalists using AI-assisted workflows at least once per week (self-reported log)</div>
+            <div class="metric-when">Monthly · Phase 3</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-name">Research time saved</div>
+            <div class="metric-how">Self-reported before/after estimates from pilot journalists — "how long did this take before vs now?" Qualitative, not precise</div>
+            <div class="metric-when">End of Phase 2</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-name">Draft usability score</div>
+            <div class="metric-how">After each AI-assisted draft, journalist rates: "Was this useful?" (1–5 scale) + optional comment. Tracked weekly</div>
+            <div class="metric-when">Ongoing · Phase 2–3</div>
+          </div>
+        </div>
+
+        <div class="impact-block">
+          <div class="impact-block-title">Layer 2 — Editorial metrics</div>
+          <div class="metric-row">
+            <div class="metric-name">Editorial check completion rate</div>
+            <div class="metric-how">Percentage of stories that go through AI-assisted structure check before publication (for participating desks)</div>
+            <div class="metric-when">Phase 3</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-name">Tagging consistency</div>
+            <div class="metric-how">Compare manual vs AI-assisted tags across a sample of 50 stories — percentage agreement reviewed by editor</div>
+            <div class="metric-when">Phase 3</div>
+          </div>
+        </div>
+
+        <div class="impact-block">
+          <div class="impact-block-title">Qualitative signals (equally important)</div>
+          <div class="metric-row">
+            <div class="metric-name">Journalist sentiment</div>
+            <div class="metric-how">Monthly 5-question survey: Did the tool save time? Did it interfere with your work? Would you use it again?</div>
+            <div class="metric-when">Monthly</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-name">Resistance signals</div>
+            <div class="metric-how">Track reported complaints, tool abandonment, and friction points. Negative signals are treated as product feedback, not failure</div>
+            <div class="metric-when">Ongoing</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice">
+        <strong>What we don't measure:</strong> "AI-generated content percentage" (not meaningful), "efficiency gains" without a baseline (not credible), or anything that pressures journalists to use tools they don't find useful. The goal is adoption that earns itself.
+      </div>
+    </section>
+
+    <!-- SLIDE 7: Value Proposition -->
+    <section class="slide" id="slide-7">
+      <p class="slide-eyebrow">08 — Value proposition</p>
+      <h1 class="slide-title">A practical path into transformation</h1>
+      <p class="slide-subtitle">Digital transformation in a newsroom doesn't happen in a single rollout. In 90 days, this plan validates the approach, builds trust with teams, and creates the conditions for sustainable change.</p>
+
+      <div class="closing-grid">
+        <div class="closing-item">
+          <div class="closing-n">01</div>
+          <div class="closing-title">A validated starting point</div>
+          <div class="closing-body">A documented map of where AI can genuinely help, backed by interviews with actual journalists — the evidence base for every decision that follows.</div>
+        </div>
+        <div class="closing-item">
+          <div class="closing-n">02</div>
+          <div class="closing-title">2–3 proven AI workflows</div>
+          <div class="closing-body">Tested with real users, refined through feedback, documented for non-technical staff. Small in scope — but ready to scale because they've earned it.</div>
+        </div>
+        <div class="closing-item">
+          <div class="closing-n">03</div>
+          <div class="closing-title">Journalist buy-in, started</div>
+          <div class="closing-body">Early adopters who've had a genuinely positive experience. A small group that can advocate for transformation from inside the newsroom — the most credible voice.</div>
+        </div>
+        <div class="closing-item">
+          <div class="closing-n">04</div>
+          <div class="closing-title">Cross-team alignment built</div>
+          <div class="closing-body">Active working relationships with R&D, Academy, Product, and Editorial leadership — the organizational infrastructure that makes transformation stick.</div>
+        </div>
+        <div class="closing-item">
+          <div class="closing-n">05</div>
+          <div class="closing-title">A credible phase 2 roadmap</div>
+          <div class="closing-body">Based on real evidence: what worked, what didn't, and what the next 90 days should look like. Transformation that's earned, not assumed.</div>
+        </div>
+        <div class="closing-item">
+          <div class="closing-n">06</div>
+          <div class="closing-title">Editorial standards intact</div>
+          <div class="closing-body">No shortcuts on verification, no autonomous publishing, no promises broken. Sustainable transformation only works if the newsroom's credibility is never at risk.</div>
+        </div>
+      </div>
+
+      <div class="final-statement">
+        <p>"Transformation that lasts is built in small steps — validated with the people it's meant to serve, scaled only after it's proven its value, and always aligned with how the newsroom actually works."</p>
+        <small>Creative AI Specialist · Digital Transformation · Radio Free Europe / Radio Liberty · Prague</small>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="btn-nav" id="btn-prev" onclick="prevSlide()">← Prev</button>
+  <button class="btn-nav primary" id="btn-next" onclick="nextSlide()">Next →</button>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar">
+  <div class="progress-fill" id="progress-fill"></div>
+</div>
+
+<script>
+const TOTAL = 8;
+let current = 0;
+
+function goTo(n) {
+  document.getElementById('slide-' + current).classList.remove('active');
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  current = n;
+  document.getElementById('slide-' + current).classList.add('active');
+  const items = document.querySelectorAll('.nav-item');
+  items.forEach(el => {
+    if (parseInt(el.dataset.slide) === current) el.classList.add('active');
+  });
+  document.getElementById('slide-counter').textContent = current + 1;
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').textContent = current === TOTAL - 1 ? 'Done' : 'Next →';
+  document.getElementById('progress-fill').style.width = ((current + 1) / TOTAL * 100) + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextSlide() { if (current < TOTAL - 1) goTo(current + 1); }
+function prevSlide() { if (current > 0) goTo(current - 1); }
+
+function switchWF(tab, id) {
+  document.querySelectorAll('.wf-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.workflow-body').forEach(b => b.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+goTo(0);
+</script>
+
+</body>
+</html>
