@@ -842,6 +842,81 @@ body {
   .metric-when { text-align: left; }
   .wf-header { grid-template-columns: 1fr; }
 }
+
+/* ── COMMENT MODE ──────────────────────────────── */
+.comment-mode-active .main { cursor: crosshair; }
+.comment-bar { position:fixed;top:56px;right:0;width:48px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0;background:var(--paper);border-left:1px solid var(--rule);z-index:200;height:calc(100vh - 56px); }
+.cb-btn { width:34px;height:34px;border-radius:7px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;position:relative;flex-shrink:0; }
+.cb-btn:hover { background:var(--paper-2); }
+.cb-btn.active { background:var(--ink);border-color:var(--ink); }
+.cb-btn.active svg { stroke:var(--paper) !important; }
+.cb-btn svg { width:15px;height:15px;stroke:var(--ink-2);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round; }
+.cb-count { position:absolute;top:-4px;right:-4px;background:#e24b4a;color:#fff;font-family:var(--mono);font-size:9px;font-weight:500;min-width:14px;height:14px;border-radius:7px;display:none;align-items:center;justify-content:center;padding:0 3px; }
+.cb-divider { width:22px;height:1px;background:var(--rule); }
+.cb-label { font-family:var(--mono);font-size:9px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-3);writing-mode:vertical-rl;transform:rotate(180deg);margin-top:auto;margin-bottom:1rem; }
+.comment-pin { position:absolute;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:150;transition:transform 0.15s;box-shadow:0 2px 8px rgba(0,0,0,0.18); }
+.comment-pin:hover { transform:rotate(-45deg) scale(1.18); }
+.comment-pin.resolved { opacity:0.3; }
+.pin-n { transform:rotate(45deg);font-family:var(--mono);font-size:9px;font-weight:500;line-height:1; }
+.comment-bubble { position:absolute;width:296px;background:var(--paper);border:1px solid var(--rule);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.13);z-index:300;display:none;flex-direction:column;overflow:hidden; }
+.comment-bubble.visible { display:flex; }
+.bubble-header { display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--rule);background:var(--paper-2); }
+.bubble-author { font-size:12px;font-weight:500;color:var(--ink); }
+.bubble-meta { font-family:var(--mono);font-size:10px;color:var(--ink-3); }
+.bubble-close { width:20px;height:20px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:4px;color:var(--ink-3);font-size:16px;padding:0;line-height:1; }
+.bubble-close:hover { background:var(--paper-3);color:var(--ink); }
+.bubble-thread { max-height:200px;overflow-y:auto; }
+.bubble-comment { padding:10px 12px;border-bottom:1px solid var(--rule); }
+.bc-top { display:flex;align-items:center;gap:8px;margin-bottom:5px; }
+.bc-avatar { width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0; }
+.bc-name { font-size:12px;font-weight:500;color:var(--ink); }
+.bc-time { font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-left:auto; }
+.bc-text { font-size:12px;color:var(--ink-2);line-height:1.55;word-break:break-word; }
+.bc-text a { color:var(--blue);text-decoration:underline; }
+.bc-hl { display:inline-block;margin-top:4px;padding:2px 7px;background:#fef3cd;border:1px solid #f0c040;border-radius:3px;font-size:10px;color:#7a5c00;font-family:var(--mono); }
+.bc-resolve { margin-top:5px;font-size:10px;color:var(--ink-3);cursor:pointer;font-family:var(--mono);background:none;border:none;padding:0;text-decoration:underline;letter-spacing:0.04em; }
+.bc-resolve:hover { color:var(--teal); }
+.bubble-input-area { padding:9px 12px;border-top:1px solid var(--rule); }
+.bubble-name-input { width:100%;font-family:var(--sans);font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:5px;background:var(--paper);color:var(--ink);outline:none;margin-bottom:5px; }
+.bubble-name-input:focus { border-color:var(--ink-3); }
+.bubble-textarea { width:100%;font-family:var(--sans);font-size:12px;padding:7px 9px;border:1px solid var(--rule);border-radius:5px;background:var(--paper);color:var(--ink);resize:none;outline:none;line-height:1.5;min-height:60px; }
+.bubble-textarea:focus { border-color:var(--ink-3); }
+.bubble-textarea::placeholder { color:var(--ink-3); }
+.bubble-toolbar { display:flex;align-items:center;gap:4px;margin-top:6px; }
+.bt-btn { width:26px;height:26px;border:1px solid var(--rule);border-radius:5px;background:var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-2);transition:all 0.12s;font-family:var(--mono); }
+.bt-btn:hover { background:var(--paper-2); }
+.bt-btn.active-tool { background:#fef3cd;border-color:#f0c040;color:#7a5c00; }
+.bt-submit { margin-left:auto;padding:5px 12px;background:var(--ink);color:var(--paper);border:none;border-radius:5px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer; }
+.bt-submit:hover { background:var(--ink-2); }
+.new-comment-form { position:fixed;width:276px;background:var(--paper);border:1px solid var(--rule);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.16);z-index:400;display:none;flex-direction:column;overflow:hidden; }
+.new-comment-form.visible { display:flex; }
+.ncf-header { padding:9px 12px;background:var(--paper-2);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between; }
+.ncf-title { font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3); }
+.ncf-body { padding:10px 12px;display:flex;flex-direction:column;gap:6px; }
+.comment-panel-wrap { position:fixed;top:56px;right:48px;width:296px;height:calc(100vh - 56px);background:var(--paper);border-left:1px solid var(--rule);z-index:190;display:none;flex-direction:column;transition:transform 0.25s ease; }
+.comment-panel-wrap.open { display:flex; }
+.cp-header { padding:13px 16px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between; }
+.cp-title { font-size:13px;font-weight:500;color:var(--ink); }
+.cp-count { font-family:var(--mono);font-size:11px;color:var(--ink-3); }
+.cp-filters { display:flex;gap:1px;background:var(--rule);border-bottom:1px solid var(--rule); }
+.cp-filter { flex:1;padding:7px 4px;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-3);cursor:pointer;background:var(--paper);border:none; }
+.cp-filter:hover { background:var(--paper-2); }
+.cp-filter.active { background:var(--paper-2);color:var(--ink);font-weight:500; }
+.cp-list { flex:1;overflow-y:auto; }
+.cp-item { padding:11px 16px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background 0.12s; }
+.cp-item:hover { background:var(--paper-2); }
+.cp-item.resolved { opacity:0.4; }
+.cp-item-top { display:flex;align-items:center;gap:8px;margin-bottom:5px; }
+.cp-pin-badge { width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.cp-pin-n { transform:rotate(45deg);font-family:var(--mono);font-size:8px;font-weight:500; }
+.cp-item-author { font-size:12px;font-weight:500;color:var(--ink); }
+.cp-item-slide { font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-left:auto; }
+.cp-item-text { font-size:12px;color:var(--ink-2);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical; }
+.cp-empty { padding:3rem 1rem;text-align:center;font-size:13px;color:var(--ink-3); }
+.mode-toast { position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:0.06em;padding:8px 16px;border-radius:20px;opacity:0;transition:all 0.2s;pointer-events:none;white-space:nowrap;z-index:500; }
+.mode-toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+.cm-highlight { background:rgba(250,198,50,0.35);border-bottom:2px solid #f0c040; }
+
 </style>
 </head>
 <body>
@@ -1514,6 +1589,401 @@ document.addEventListener('keydown', e => {
 });
 
 goTo(0);
+</script>
+
+
+<!-- COMMENT BAR -->
+<div class="comment-bar" id="comment-bar">
+  <button class="cb-btn" id="btn-comment-mode" title="Add comment" onclick="toggleCommentMode()">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="cb-count" id="total-count">0</span>
+  </button>
+  <button class="cb-btn" id="btn-panel" title="View all comments" onclick="togglePanel()">
+    <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+  </button>
+  <div class="cb-divider"></div>
+  <button class="cb-btn" title="Previous slide" onclick="prevSlide()">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="cb-btn" title="Next slide" onclick="nextSlide()">
+    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <span class="cb-label">RFE/RL Review</span>
+</div>
+
+<!-- COMMENT PANEL -->
+<div class="comment-panel-wrap" id="comment-panel">
+  <div class="cp-header">
+    <span class="cp-title">Comments</span>
+    <span class="cp-count" id="cp-count">0 total</span>
+  </div>
+  <div class="cp-filters">
+    <button class="cp-filter active" onclick="filterComments('all', this)">All</button>
+    <button class="cp-filter" onclick="filterComments('open', this)">Open</button>
+    <button class="cp-filter" onclick="filterComments('resolved', this)">Resolved</button>
+    <button class="cp-filter" onclick="filterComments('slide', this)">This slide</button>
+  </div>
+  <div class="cp-list" id="cp-list"></div>
+</div>
+
+<!-- NEW COMMENT FORM -->
+<div class="new-comment-form" id="new-comment-form">
+  <div class="ncf-header">
+    <span class="ncf-title">New comment</span>
+    <button class="bubble-close" onclick="cancelNewComment()">×</button>
+  </div>
+  <div class="ncf-body">
+    <input class="bubble-name-input" id="ncf-name" placeholder="Your name" maxlength="40"/>
+    <textarea class="bubble-textarea" id="ncf-text" placeholder="Add a comment… paste a link, describe what you're pointing at" rows="3"></textarea>
+    <div class="bubble-toolbar">
+      <button class="bt-btn" id="btn-highlight-tool" title="Highlight mode — select text then click here" onclick="toggleHighlightTool()" style="font-size:12px">H</button>
+      <button class="bt-btn" title="Attach link" onclick="attachLink()" style="font-size:11px">🔗</button>
+      <button class="bt-submit" onclick="submitComment()">Post</button>
+    </div>
+    <div id="highlight-hint" style="font-size:10px;color:#8a8880;font-family:var(--mono);display:none;">Select text on the slide, then click H to attach it</div>
+    <div id="link-input-row" style="display:none;margin-top:4px;">
+      <input class="bubble-name-input" id="ncf-link" placeholder="https://…" style="width:100%"/>
+    </div>
+  </div>
+</div>
+
+<!-- MODE TOAST -->
+<div class="mode-toast" id="mode-toast">Click anywhere on the slide to place a comment</div>
+
+
+<script>
+// ── COMMENT SYSTEM ─────────────────────────────
+const PIN_COLORS = ['#1a4f8a','#0f6e56','#854f0b','#3c3489','#8a3030','#2d6b8a'];
+let commentMode = false;
+let pendingPin = null;
+let highlightTool = false;
+let capturedHighlight = '';
+let currentFilter = 'all';
+let allComments = [];
+let openBubbleId = null;
+
+const STORAGE_KEY = 'rferl_comments_v2';
+
+function loadComments() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    allComments = raw ? JSON.parse(raw) : [];
+  } catch(e) { allComments = []; }
+}
+
+function saveComments() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(allComments)); } catch(e){}
+}
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function timeAgo(ts) {
+  const d = Date.now() - ts;
+  if (d < 60000) return 'just now';
+  if (d < 3600000) return Math.floor(d/60000) + 'm ago';
+  if (d < 86400000) return Math.floor(d/3600000) + 'h ago';
+  return Math.floor(d/86400000) + 'd ago';
+}
+
+function avatarColor(name) {
+  let h = 0;
+  for (let i=0;i<name.length;i++) h = name.charCodeAt(i) + ((h<<5)-h);
+  return PIN_COLORS[Math.abs(h) % PIN_COLORS.length];
+}
+
+function initials(name) {
+  return name.trim().split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2) || '?';
+}
+
+// ── COMMENT MODE ───────────────────────────────
+function toggleCommentMode() {
+  commentMode = !commentMode;
+  document.getElementById('btn-comment-mode').classList.toggle('active', commentMode);
+  document.body.classList.toggle('comment-mode-active', commentMode);
+  showToast(commentMode ? 'Click anywhere on the slide to place a comment' : 'Comment mode off');
+  if (!commentMode) cancelNewComment();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('mode-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── CLICK TO PLACE ─────────────────────────────
+document.addEventListener('click', function(e) {
+  if (!commentMode) return;
+  if (e.target.closest('.new-comment-form') || e.target.closest('.comment-pin') || e.target.closest('.comment-bubble')) return;
+
+  const main = document.querySelector('.main');
+  const rect = main.getBoundingClientRect();
+  const slide = document.querySelector('.slide.active');
+  if (!slide) return;
+  const slideRect = slide.getBoundingClientRect();
+
+  const x = ((e.clientX - slideRect.left) / slideRect.width * 100).toFixed(2);
+  const y = ((e.clientY - slideRect.top + slide.scrollTop) / slideRect.offsetHeight * 100).toFixed(2);
+
+  pendingPin = { x: parseFloat(x), y: parseFloat(y), slideIndex: current };
+
+  const form = document.getElementById('new-comment-form');
+  form.style.left = Math.min(e.clientX - rect.left, rect.width - 290) + 'px';
+  form.style.top = Math.min(e.clientY - rect.top + 8, window.innerHeight - 280) + 'px';
+  form.classList.add('visible');
+  setTimeout(() => document.getElementById('ncf-name').focus(), 50);
+  e.stopPropagation();
+}, true);
+
+function cancelNewComment() {
+  pendingPin = null;
+  capturedHighlight = '';
+  const form = document.getElementById('new-comment-form');
+  form.classList.remove('visible');
+  document.getElementById('ncf-name').value = '';
+  document.getElementById('ncf-text').value = '';
+  document.getElementById('ncf-link').value = '';
+  document.getElementById('link-input-row').style.display = 'none';
+  document.getElementById('highlight-hint').style.display = 'none';
+  highlightTool = false;
+  document.getElementById('btn-highlight-tool').classList.remove('active-tool');
+}
+
+function submitComment() {
+  const name = document.getElementById('ncf-name').value.trim() || 'Anonymous';
+  const text = document.getElementById('ncf-text').value.trim();
+  const link = document.getElementById('ncf-link').value.trim();
+  if (!text && !capturedHighlight) { showToast('Please write a comment first'); return; }
+  if (!pendingPin) return;
+
+  const comment = {
+    id: genId(),
+    name,
+    text,
+    link,
+    highlight: capturedHighlight,
+    x: pendingPin.x,
+    y: pendingPin.y,
+    slideIndex: pendingPin.slideIndex,
+    ts: Date.now(),
+    resolved: false,
+    replies: []
+  };
+
+  allComments.push(comment);
+  saveComments();
+  cancelNewComment();
+  commentMode = false;
+  document.getElementById('btn-comment-mode').classList.remove('active');
+  document.body.classList.remove('comment-mode-active');
+  renderAllPins();
+  renderPanel();
+  updateBadge();
+  showToast('Comment posted');
+}
+
+// ── HIGHLIGHT TOOL ─────────────────────────────
+function toggleHighlightTool() {
+  highlightTool = !highlightTool;
+  document.getElementById('btn-highlight-tool').classList.toggle('active-tool', highlightTool);
+  document.getElementById('highlight-hint').style.display = highlightTool ? 'block' : 'none';
+  if (highlightTool) showToast('Select text on the slide to highlight it');
+}
+
+document.addEventListener('mouseup', function() {
+  if (!highlightTool) return;
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim()) {
+    capturedHighlight = sel.toString().trim().slice(0, 120);
+    document.getElementById('highlight-hint').textContent = '✓ Highlighted: "' + capturedHighlight.slice(0,50) + (capturedHighlight.length > 50 ? '…' : '') + '"';
+    highlightTool = false;
+    document.getElementById('btn-highlight-tool').classList.remove('active-tool');
+  }
+});
+
+function attachLink() {
+  const row = document.getElementById('link-input-row');
+  row.style.display = row.style.display === 'none' ? 'block' : 'none';
+  if (row.style.display === 'block') document.getElementById('ncf-link').focus();
+}
+
+// ── RENDER PINS ────────────────────────────────
+function renderAllPins() {
+  document.querySelectorAll('.comment-pin, .comment-bubble').forEach(el => el.remove());
+
+  const slideComments = allComments.filter(c => c.slideIndex === current);
+  const slide = document.querySelector('.slide.active');
+  if (!slide) return;
+
+  slide.style.position = 'relative';
+
+  slideComments.forEach((c, i) => {
+    const pinNum = allComments.indexOf(c) + 1;
+    const color = avatarColor(c.name);
+
+    // Pin
+    const pin = document.createElement('div');
+    pin.className = 'comment-pin' + (c.resolved ? ' resolved' : '');
+    pin.dataset.id = c.id;
+    pin.style.left = 'calc(' + c.x + '% - 13px)';
+    pin.style.top = 'calc(' + c.y + '% - 13px)';
+    pin.style.background = color;
+    pin.innerHTML = '<span class="pin-n" style="color:#fff">' + pinNum + '</span>';
+    pin.onclick = (e) => { e.stopPropagation(); toggleBubble(c.id, pin, color, pinNum); };
+    slide.appendChild(pin);
+
+    // Bubble
+    const bubble = document.createElement('div');
+    bubble.className = 'comment-bubble';
+    bubble.dataset.bubbleId = c.id;
+    bubble.style.left = 'calc(' + c.x + '% + 18px)';
+    bubble.style.top = 'calc(' + c.y + '% - 10px)';
+
+    const allReplies = [c, ...(c.replies||[])];
+    let threadHTML = allReplies.map(r => {
+      const av = avatarColor(r.name || c.name);
+      const nm = r.name || c.name;
+      const rText = (r.text||'').replace(/https?:\/\/[^\s]+/g, url => '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>');
+      const hlBadge = r.highlight ? '<div class="bc-hl">📌 "' + r.highlight + '"</div>' : '';
+      const lnk = r.link ? '<div style="margin-top:4px"><a href="' + r.link + '" target="_blank" rel="noopener" style="font-size:11px;color:var(--blue);font-family:var(--mono)">🔗 ' + r.link.slice(0,40) + '…</a></div>' : '';
+      return '<div class="bubble-comment"><div class="bc-top"><div class="bc-avatar" style="background:' + av + '20;color:' + av + '">' + initials(nm) + '</div><span class="bc-name">' + nm + '</span><span class="bc-time">' + timeAgo(r.ts || c.ts) + '</span></div><div class="bc-text">' + rText + hlBadge + lnk + '</div></div>';
+    }).join('');
+
+    bubble.innerHTML = '<div class="bubble-header"><div><span class="bubble-author" style="color:' + color + '">Pin ' + pinNum + '</span></div><button class="bubble-close" onclick="closeBubble('' + c.id + '')">×</button></div><div class="bubble-thread">' + threadHTML + '</div><div class="bubble-input-area"><input class="bubble-name-input" placeholder="Reply as…" id="reply-name-' + c.id + '" value="' + (document.getElementById('ncf-name') ? (document.getElementById('ncf-name').value||'') : '') + '"/><textarea class="bubble-textarea" placeholder="Add a reply…" id="reply-text-' + c.id + '" rows="2"></textarea><div class="bubble-toolbar"><button class="bt-btn" onclick="resolveComment('' + c.id + '')" title="Resolve" style="font-size:10px;letter-spacing:0.04em;width:auto;padding:0 8px">' + (c.resolved ? 'Reopen' : 'Resolve') + '</button><button class="bt-submit" onclick="postReply('' + c.id + '')">Reply</button></div></div>';
+
+    slide.appendChild(bubble);
+  });
+}
+
+function toggleBubble(id, pinEl, color, num) {
+  const bubble = document.querySelector('.comment-bubble[data-bubble-id="' + id + '"]');
+  if (!bubble) return;
+  if (openBubbleId && openBubbleId !== id) {
+    document.querySelectorAll('.comment-bubble').forEach(b => b.classList.remove('visible'));
+  }
+  const isOpen = bubble.classList.contains('visible');
+  bubble.classList.toggle('visible', !isOpen);
+  openBubbleId = isOpen ? null : id;
+}
+
+function closeBubble(id) {
+  const b = document.querySelector('.comment-bubble[data-bubble-id="' + id + '"]');
+  if (b) b.classList.remove('visible');
+  openBubbleId = null;
+}
+
+function resolveComment(id) {
+  const c = allComments.find(c => c.id === id);
+  if (!c) return;
+  c.resolved = !c.resolved;
+  saveComments();
+  renderAllPins();
+  renderPanel();
+  showToast(c.resolved ? 'Comment resolved' : 'Comment reopened');
+}
+
+function postReply(id) {
+  const c = allComments.find(c => c.id === id);
+  if (!c) return;
+  const name = (document.getElementById('reply-name-' + id)||{}).value || 'Anonymous';
+  const text = (document.getElementById('reply-text-' + id)||{}).value.trim();
+  if (!text) return;
+  if (!c.replies) c.replies = [];
+  c.replies.push({ name, text, ts: Date.now() });
+  saveComments();
+  renderAllPins();
+  renderPanel();
+  showToast('Reply posted');
+}
+
+// ── PANEL ──────────────────────────────────────
+function togglePanel() {
+  const panel = document.getElementById('comment-panel');
+  panel.classList.toggle('open');
+  renderPanel();
+}
+
+function filterComments(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.cp-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPanel();
+}
+
+function renderPanel() {
+  const list = document.getElementById('cp-list');
+  document.getElementById('cp-count').textContent = allComments.length + ' total';
+
+  let filtered = allComments;
+  if (currentFilter === 'open') filtered = allComments.filter(c => !c.resolved);
+  if (currentFilter === 'resolved') filtered = allComments.filter(c => c.resolved);
+  if (currentFilter === 'slide') filtered = allComments.filter(c => c.slideIndex === current);
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="cp-empty">No comments yet.<br>Click the comment icon<br>to add the first one.</div>';
+    return;
+  }
+
+  const slideNames = ['Problem framing','Core principles','Three-layer system','90-day phases','Example workflows','Collaboration model','Impact measurement','Value proposition'];
+
+  list.innerHTML = filtered.map((c, i) => {
+    const pinNum = allComments.indexOf(c) + 1;
+    const color = avatarColor(c.name);
+    const preview = c.text ? c.text.slice(0,80) + (c.text.length > 80 ? '…' : '') : (c.highlight ? '📌 ' + c.highlight.slice(0,60) : '(no text)');
+    const replies = c.replies && c.replies.length ? '<span style="font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-top:4px;display:block">↩ ' + c.replies.length + ' repl' + (c.replies.length===1?'y':'ies') + '</span>' : '';
+    return '<div class="cp-item' + (c.resolved ? ' resolved' : '') + '" onclick="jumpToComment('' + c.id + '')">' +
+      '<div class="cp-item-top"><div class="cp-pin-badge" style="background:' + color + '"><span class="cp-pin-n" style="color:#fff">' + pinNum + '</span></div>' +
+      '<span class="cp-item-author">' + c.name + '</span>' +
+      '<span class="cp-item-slide">Slide ' + (c.slideIndex + 1) + '</span></div>' +
+      '<div class="cp-item-text">' + preview + replies + '</div></div>';
+  }).join('');
+}
+
+function jumpToComment(id) {
+  const c = allComments.find(c => c.id === id);
+  if (!c) return;
+  if (c.slideIndex !== current) goTo(c.slideIndex);
+  setTimeout(() => {
+    renderAllPins();
+    const pin = document.querySelector('.comment-pin[data-id="' + id + '"]');
+    if (pin) {
+      pin.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const color = avatarColor(c.name);
+      const num = allComments.indexOf(c) + 1;
+      toggleBubble(id, pin, color, num);
+    }
+  }, 200);
+}
+
+function updateBadge() {
+  const count = document.getElementById('total-count');
+  const open = allComments.filter(c => !c.resolved).length;
+  if (open > 0) {
+    count.style.display = 'flex';
+    count.textContent = open;
+  } else {
+    count.style.display = 'none';
+  }
+}
+
+// ── HOOK INTO SLIDE NAVIGATION ──────────────────
+const _origGoTo = goTo;
+window.goTo = function(n) {
+  _origGoTo(n);
+  setTimeout(() => { renderAllPins(); renderPanel(); }, 50);
+};
+
+// ── KEYBOARD SHORTCUT ──────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'c' && !e.target.matches('input,textarea')) toggleCommentMode();
+  if (e.key === 'Escape') { cancelNewComment(); commentMode = false; document.body.classList.remove('comment-mode-active'); document.getElementById('btn-comment-mode').classList.remove('active'); }
+});
+
+// ── INIT ───────────────────────────────────────
+loadComments();
+updateBadge();
+setTimeout(() => { renderAllPins(); renderPanel(); }, 100);
 </script>
 
 </body>
