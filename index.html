@@ -1,605 +1,1314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Coverage Gap Scanner</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI in Newsrooms — Global Analysis 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --cream: #ede8db;
+    --rust: #c0392b;
+    --amber: #d4892a;
+    --slate: #3a3a4a;
+    --muted: #7a7570;
+    --rule: #c8c0b0;
+    --accent-light: #fdf8f0;
+    --col-gap: clamp(1.5rem, 3vw, 3rem);
+  }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #ffffff;
-    --bg-secondary: #f5f5f4;
-    --bg-tertiary: #efefed;
-    --text: #1a1a1a;
-    --text-secondary: #555550;
-    --text-tertiary: #888880;
-    --border: rgba(0,0,0,0.12);
-    --border-md: rgba(0,0,0,0.22);
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1c1c1a;
-      --bg-secondary: #262624;
-      --bg-tertiary: #2e2e2c;
-      --text: #f0efeb;
-      --text-secondary: #aaa9a3;
-      --text-tertiary: #666660;
-      --border: rgba(255,255,255,0.1);
-      --border-md: rgba(255,255,255,0.2);
-    }
-  }
+  html { scroll-behavior: smooth; }
 
   body {
-    font-family: var(--font);
-    background: var(--bg-tertiary);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 2rem 1rem;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .masthead::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 39px,
+        rgba(255,255,255,.04) 39px,
+        rgba(255,255,255,.04) 40px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 39px,
+        rgba(255,255,255,.04) 39px,
+        rgba(255,255,255,.04) 40px
+      );
+    pointer-events: none;
+  }
+
+  .masthead-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .masthead-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: .7rem;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+  .masthead-kicker::before {
+    content: '';
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    background: var(--amber);
+  }
+
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.6rem, 6vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    max-width: 820px;
+  }
+
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .masthead-meta {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,.15);
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,.55);
+  }
+
+  .meta-item strong {
+    display: block;
+    color: var(--paper);
+    font-size: .85rem;
+    margin-top: .2rem;
+  }
+
+  /* ── SUMMARY STRIP ── */
+  .summary-strip {
+    background: var(--rust);
+    color: #fff;
+    padding: 1.5rem 2rem;
+  }
+
+  .summary-strip-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .summary-label {
+    font-family: 'DM Mono', monospace;
+    font-size: .68rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: .8;
+  }
+
+  .summary-text {
+    font-size: .95rem;
+    line-height: 1.55;
+    opacity: .92;
+  }
+
+  /* ── NAV ── */
+  .toc-nav {
+    background: var(--cream);
+    border-bottom: 2px solid var(--ink);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .toc-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc-nav-inner::-webkit-scrollbar { display: none; }
+
+  .toc-link {
+    font-family: 'DM Mono', monospace;
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: .9rem 1rem;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color .2s, border-color .2s;
+  }
+
+  .toc-link:hover {
+    color: var(--ink);
+    border-color: var(--rust);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .page-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* ── SECTIONS ── */
+  .report-section {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .report-section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+    margin-bottom: 2.5rem;
+  }
+
+  .section-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--rule);
+    line-height: 1;
+    letter-spacing: -.04em;
+  }
+
+  .section-title-group {}
+
+  .section-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: .4rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  /* ── EDITORIAL COLUMNS ── */
+  .col-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--col-gap);
+  }
+
+  .col-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--col-gap);
+  }
+
+  @media (max-width: 780px) {
+    .col-2, .col-3 { grid-template-columns: 1fr; }
+    .section-header { grid-template-columns: 2.5rem 1fr; }
+    .summary-strip-inner { grid-template-columns: 1fr; }
+  }
+
+  /* ── USE CASE CARDS ── */
+  .use-case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .use-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--ink);
+    padding: 1.5rem;
+    position: relative;
+    transition: transform .2s, box-shadow .2s;
+  }
+
+  .use-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  }
+
+  .use-card-icon {
+    font-size: 1.6rem;
+    margin-bottom: .75rem;
+  }
+
+  .use-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    color: var(--ink);
+  }
+
+  .use-card-text {
+    font-size: .88rem;
+    color: var(--slate);
     line-height: 1.6;
   }
 
-  .page {
-    max-width: 760px;
-    margin: 0 auto;
-  }
-
-  .page-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 2rem;
-  }
-
-  .page-header h1 {
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .page-header .pill {
-    font-size: 12px;
-    background: #EEEDFE;
-    color: #3C3489;
-    padding: 3px 10px;
-    border-radius: var(--radius-md);
-    font-weight: 500;
-  }
-
-  .card {
-    background: var(--bg);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-tertiary);
+  .use-card-tag {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: .6rem;
+    letter-spacing: .12em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 8px;
-    display: block;
+    background: var(--cream);
+    padding: .2rem .5rem;
+    color: var(--muted);
   }
 
-  .api-notice {
-    background: #FAEEDA;
-    border: 0.5px solid #EF9F27;
-    border-radius: var(--radius-md);
-    padding: 10px 14px;
-    font-size: 13px;
-    color: #633806;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .api-notice i { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-
-  input[type="text"], input[type="password"] {
-    width: 100%;
-    padding: 8px 12px;
-    border-radius: var(--radius-md);
-    border: 0.5px solid var(--border-md);
-    background: var(--bg);
-    color: var(--text);
-    font-size: 13px;
-    font-family: var(--font);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  input[type="text"]:focus, input[type="password"]:focus {
-    border-color: #534AB7;
-  }
-
-  .outlets-grid {
+  /* ── STAT CALLOUTS ── */
+  .stat-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
   }
 
-  .outlet-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .stat-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.75rem 1.5rem;
+    position: relative;
+    overflow: hidden;
   }
 
-  .dot {
-    width: 10px;
-    height: 10px;
+  .stat-box::before {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    right: -1rem;
+    width: 5rem;
+    height: 5rem;
     border-radius: 50%;
-    flex-shrink: 0;
+    background: rgba(255,255,255,.04);
   }
 
-  .topics-grid {
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--amber);
+    line-height: 1;
+    letter-spacing: -.03em;
+  }
+
+  .stat-label {
+    font-size: .82rem;
+    color: rgba(245,240,232,.7);
+    margin-top: .5rem;
+    line-height: 1.4;
+  }
+
+  /* ── CASE STUDY CARDS ── */
+  .case-studies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .case-card {
+    border: 1px solid var(--rule);
+    background: #fff;
+    padding: 0;
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+
+  .case-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.09); }
+
+  .case-card-header {
+    background: var(--cream);
+    padding: 1.25rem 1.5rem;
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 10px;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    border-bottom: 1px solid var(--rule);
   }
 
-  .topic-chip {
-    font-size: 12px;
-    padding: 5px 12px;
-    border-radius: var(--radius-md);
-    border: 0.5px solid var(--border-md);
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.1s, color 0.1s;
+  .case-org {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
   }
 
-  .topic-chip.active {
-    background: #EEEDFE;
-    border-color: #AFA9EC;
-    color: #3C3489;
-  }
-
-  .topic-add {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn {
-    padding: 8px 16px;
-    border-radius: var(--radius-md);
-    border: 0.5px solid var(--border-md);
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
-    font-size: 13px;
-    font-family: var(--font);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.1s;
+  .case-type {
+    font-family: 'DM Mono', monospace;
+    font-size: .62rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    padding: .25rem .6rem;
     white-space: nowrap;
   }
 
-  .btn:hover { background: var(--bg-secondary); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .btn-primary {
-    background: var(--text);
-    color: var(--bg);
-    border-color: transparent;
-    font-size: 14px;
-    padding: 10px 22px;
+  .case-body {
+    padding: 1.25rem 1.5rem;
   }
 
-  .btn-primary:hover { opacity: 0.85; background: var(--text); }
+  .case-body p {
+    font-size: .88rem;
+    color: var(--slate);
+    line-height: 1.65;
+  }
 
-  .run-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+  .case-outcome {
     margin-top: 1rem;
-  }
-
-  .status {
-    font-size: 13px;
-    color: var(--text-secondary);
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
     display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 22px;
+    gap: .5rem;
+    align-items: flex-start;
   }
 
-  .spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--border);
-    border-top-color: var(--text-secondary);
+  .case-outcome-icon {
+    font-size: .9rem;
+    flex-shrink: 0;
+    margin-top: .1rem;
+  }
+
+  .case-outcome-text {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── RISK TABLE ── */
+  .risk-list {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+  }
+
+  .risk-item {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr auto;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.25rem 1.5rem;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--rule);
+    transition: border-color .2s;
+  }
+
+  .risk-item.high { border-left-color: var(--rust); }
+  .risk-item.med  { border-left-color: var(--amber); }
+  .risk-item.low  { border-left-color: #6aaa64; }
+
+  .risk-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    animation: spin 0.7s linear infinite;
+    margin-top: .55rem;
     flex-shrink: 0;
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .high .risk-dot { background: var(--rust); }
+  .med  .risk-dot { background: var(--amber); }
+  .low  .risk-dot { background: #6aaa64; }
+
+  .risk-content {}
+
+  .risk-title {
+    font-weight: 500;
+    font-size: .95rem;
+    margin-bottom: .3rem;
+    color: var(--ink);
+  }
+
+  .risk-desc {
+    font-size: .84rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .risk-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: .6rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: .25rem .65rem;
+    white-space: nowrap;
+    align-self: start;
+  }
+
+  .high .risk-badge { background: #fde8e6; color: var(--rust); }
+  .med  .risk-badge { background: #fdf3e3; color: var(--amber); }
+  .low  .risk-badge { background: #e8f5e9; color: #388e3c; }
+
+  /* ── ACTORS TABLE ── */
+  .actors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .actor-card {
+    padding: 1.25rem;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-top: 2px solid var(--amber);
+  }
+
+  .actor-type {
+    font-family: 'DM Mono', monospace;
+    font-size: .62rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: .5rem;
+  }
+
+  .actor-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    color: var(--ink);
+  }
+
+  .actor-detail {
+    font-size: .82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── TENSIONS TABLE ── */
+  .tension-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tension-row:last-child { border-bottom: none; }
+
+  .tension-side {
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border: 1px solid var(--rule);
+    font-size: .88rem;
+    color: var(--slate);
+  }
+
+  .tension-vs {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--muted);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* ── IMPLICATIONS ── */
+  .impl-list {
+    counter-reset: impl;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+  }
+
+  .impl-item {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border: 1px solid var(--rule);
+    counter-increment: impl;
+  }
+
+  .impl-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--rule);
+    line-height: 1.2;
+  }
+
+  .impl-item::before {
+    display: none;
+  }
+
+  .impl-text {
+    font-size: .9rem;
+    color: var(--slate);
+    line-height: 1.65;
+    padding-top: .15rem;
+  }
+
+  /* ── PULL QUOTE ── */
+  .pull-quote {
+    border-left: 4px solid var(--ink);
+    margin: 2rem 0;
+    padding: 1.25rem 1.75rem;
+    background: var(--cream);
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  /* ── PROSE ── */
+  .prose p {
+    font-size: .95rem;
+    color: var(--slate);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+
+  .subsection {
+    margin-top: 2.5rem;
+  }
+
+  .subsection-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+
+  .subsection-title::before {
+    content: '';
+    display: inline-block;
+    width: .25rem;
+    height: 1.1em;
+    background: var(--rust);
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  .report-footer {
+    background: var(--ink);
+    color: rgba(245,240,232,.5);
+    padding: 3rem 2rem;
+    margin-top: 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: .7rem;
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .report-section {
+    animation: fadeUp .5s ease both;
+  }
+
+  .report-section:nth-child(1) { animation-delay: .05s; }
+  .report-section:nth-child(2) { animation-delay: .1s; }
+  .report-section:nth-child(3) { animation-delay: .15s; }
+  .report-section:nth-child(4) { animation-delay: .2s; }
+  .report-section:nth-child(5) { animation-delay: .25s; }
+  .report-section:nth-child(6) { animation-delay: .3s; }
 
   .divider {
     border: none;
-    border-top: 0.5px solid var(--border);
-    margin: 1.5rem 0;
+    border-top: 1px solid var(--rule);
+    margin: 2rem 0;
   }
 
-  .metrics-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 10px;
-    margin-bottom: 1.25rem;
-  }
-
-  .metric {
-    background: var(--bg-secondary);
-    border-radius: var(--radius-md);
-    padding: 12px 14px;
-  }
-
-  .metric-label { font-size: 12px; color: var(--text-tertiary); margin-bottom: 4px; }
-  .metric-val { font-size: 22px; font-weight: 500; color: var(--text); }
-  .metric-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
-
-  .result-summary {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    padding: 12px 14px;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-md);
-    margin-bottom: 1.25rem;
-  }
-
-  .gap-section-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
-    margin: 0 0 10px;
-    display: flex;
+  .gap-marker {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-  }
-
-  .scoop-item {
-    border-left: 3px solid #1D9E75;
-    padding: 10px 12px;
-    background: #E1F5EE;
-    margin-bottom: 8px;
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  }
-
-  .scoop-topic { font-size: 13px; font-weight: 500; color: #085041; margin: 0 0 3px; }
-  .scoop-desc { font-size: 12px; color: #0F6E56; line-height: 1.6; margin: 0; }
-
-  .missed-item {
-    border-left: 3px solid #E24B4A;
-    padding: 10px 12px;
-    background: #FCEBEB;
-    margin-bottom: 8px;
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  }
-
-  .missed-topic { font-size: 13px; font-weight: 500; color: #791F1F; margin: 0 0 3px; }
-  .missed-desc { font-size: 12px; color: #A32D2D; line-height: 1.6; margin: 0 0 8px; }
-  .missed-links { display: flex; flex-wrap: wrap; gap: 8px; }
-  .missed-link { font-size: 11px; color: #185FA5; text-decoration: none; }
-  .missed-link:hover { text-decoration: underline; }
-
-  .gap-item {
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    background: var(--bg);
-  }
-
-  .gap-topic { font-size: 13px; font-weight: 500; color: var(--text); margin: 0 0 6px; }
-  .gap-outlets { display: flex; flex-wrap: wrap; gap: 5px; }
-
-  .outlet-tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: var(--radius-md);
-    font-weight: 500;
-  }
-
-  .tag-strong { background: #EAF3DE; color: #27500A; }
-  .tag-partial { background: #FAEEDA; color: #633806; }
-  .tag-missing { background: #FCEBEB; color: #791F1F; }
-
-  .error-box {
-    background: #FCEBEB;
-    border-radius: var(--radius-md);
-    padding: 12px 14px;
-    font-size: 13px;
-    color: #791F1F;
-    line-height: 1.6;
-    margin-top: 1rem;
-  }
-
-  .gap-section { margin-bottom: 1.5rem; }
-
-  footer {
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-tertiary);
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 0.5px solid var(--border);
-  }
-
-  @media (max-width: 520px) {
-    .outlets-grid { grid-template-columns: 1fr; }
-    .metrics-row { grid-template-columns: 1fr 1fr; }
+    gap: .4rem;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    padding: .3rem .75rem;
+    font-family: 'DM Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .5rem;
   }
 </style>
 </head>
 <body>
-<div class="page">
 
-  <div class="page-header">
-    <i class="ti ti-radar" style="font-size:22px;color:#534AB7;" aria-hidden="true"></i>
-    <h1>Coverage gap scanner</h1>
-    <span class="pill">Claude + Web Search</span>
-  </div>
-
-  <!-- API KEY CARD -->
-  <div class="card">
-    <span class="section-label">Anthropic API key</span>
-    <div class="api-notice">
-      <i class="ti ti-info-circle" aria-hidden="true"></i>
-      <span>Your key is used directly from the browser and never stored or sent anywhere except Anthropic's API. For production use, proxy calls through your own backend.</span>
-    </div>
-    <input type="password" id="api-key" placeholder="sk-ant-api03-..." autocomplete="off" />
-  </div>
-
-  <!-- OUTLETS CARD -->
-  <div class="card">
-    <span class="section-label">Your newsroom</span>
-    <div class="outlet-row" style="margin-bottom:1rem;">
-      <div class="dot" style="background:#534AB7;"></div>
-      <input type="text" id="own-outlet" placeholder="e.g. radiofarda.com" value="radiofarda.com" />
-    </div>
-
-    <span class="section-label">Competitors (up to 4)</span>
-    <div class="outlets-grid">
-      <div class="outlet-row"><div class="dot" style="background:#D85A30;"></div><input type="text" class="comp-input" placeholder="Competitor 1 domain" value="bbc.co.uk/persian" /></div>
-      <div class="outlet-row"><div class="dot" style="background:#1D9E75;"></div><input type="text" class="comp-input" placeholder="Competitor 2 domain" value="voanews.com/persian" /></div>
-      <div class="outlet-row"><div class="dot" style="background:#BA7517;"></div><input type="text" class="comp-input" placeholder="Competitor 3 domain" value="" /></div>
-      <div class="outlet-row"><div class="dot" style="background:#D4537E;"></div><input type="text" class="comp-input" placeholder="Competitor 4 domain" value="" /></div>
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-kicker">Comprehensive Research Report · 2025</div>
+    <h1>How News Organisations<br>Worldwide Are Using <em>AI</em></h1>
+    <div class="masthead-meta">
+      <div class="meta-item">Coverage<strong>Global</strong></div>
+      <div class="meta-item">Functions<strong>Editorial &amp; Business</strong></div>
+      <div class="meta-item">Evidence Base<strong>Primary &amp; Secondary Sources</strong></div>
+      <div class="meta-item">Status<strong>Verified Analysis</strong></div>
     </div>
   </div>
+</header>
 
-  <!-- TOPICS CARD -->
-  <div class="card">
-    <span class="section-label">Topics to scan — click to toggle</span>
-    <div class="topics-grid" id="topics-grid"></div>
-    <div class="topic-add">
-      <input type="text" id="topic-input" placeholder="Add a topic and press Enter…" />
-      <button class="btn" onclick="addTopic()"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>
-    </div>
+<!-- SUMMARY STRIP -->
+<div class="summary-strip">
+  <div class="summary-strip-inner">
+    <div class="summary-label">Executive Summary</div>
+    <div class="summary-text">Generative and non-generative AI are now embedded across editorial and business functions in many newsrooms worldwide. While widespread uptake is observed for transcription, translation, summarisation and automated drafting, public acceptance remains guarded — and higher where humans stay involved in the process.</div>
   </div>
-
-  <!-- RUN -->
-  <div class="run-row">
-    <button class="btn btn-primary" id="run-btn" onclick="runScan()">
-      <i class="ti ti-chart-bar" aria-hidden="true"></i> Run coverage scan
-    </button>
-    <div class="status" id="status"></div>
-  </div>
-
-  <!-- RESULTS -->
-  <div id="results"></div>
-
-  <footer>Coverage Gap Scanner &mdash; powered by Anthropic Claude &amp; Web Search</footer>
 </div>
 
-<script>
-const DEFAULT_TOPICS = [
-  'Iran nuclear talks', 'Sanctions economy', 'Protests and civil unrest',
-  'IRGC activity', 'Diaspora stories', 'Regional geopolitics', 'Media freedom'
-];
-const topics = new Set(DEFAULT_TOPICS);
-let activeTopics = new Set(DEFAULT_TOPICS);
+<!-- NAVIGATION -->
+<nav class="toc-nav">
+  <div class="toc-nav-inner">
+    <a class="toc-link" href="#uses">Uses</a>
+    <a class="toc-link" href="#actors">Actors</a>
+    <a class="toc-link" href="#market">Market</a>
+    <a class="toc-link" href="#differentiators">Differentiators</a>
+    <a class="toc-link" href="#impacts">Impacts</a>
+    <a class="toc-link" href="#risks">Risks</a>
+    <a class="toc-link" href="#cases">Case Studies</a>
+    <a class="toc-link" href="#tensions">Tensions</a>
+    <a class="toc-link" href="#implications">Implications</a>
+  </div>
+</nav>
 
-function renderTopics() {
-  const grid = document.getElementById('topics-grid');
-  grid.innerHTML = '';
-  topics.forEach(t => {
-    const chip = document.createElement('span');
-    chip.className = 'topic-chip' + (activeTopics.has(t) ? ' active' : '');
-    chip.textContent = t;
-    chip.onclick = () => {
-      if (activeTopics.has(t)) activeTopics.delete(t);
-      else activeTopics.add(t);
-      renderTopics();
-    };
-    grid.appendChild(chip);
-  });
-}
+<div class="page-wrapper">
 
-function addTopic() {
-  const inp = document.getElementById('topic-input');
-  const val = inp.value.trim();
-  if (!val) return;
-  topics.add(val);
-  activeTopics.add(val);
-  inp.value = '';
-  renderTopics();
-}
+  <!-- SECTION 1: USES -->
+  <section class="report-section" id="uses">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Editorial &amp; Business Functions</div>
+        <h2 class="section-title">Uses of AI Across the Newsroom</h2>
+      </div>
+    </div>
 
-document.getElementById('topic-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addTopic();
-});
+    <div class="use-case-grid">
+      <div class="use-card">
+        <div class="use-card-icon">🔍</div>
+        <div class="use-card-tag">Newsgathering</div>
+        <div class="use-card-title">Research &amp; Source Discovery</div>
+        <div class="use-card-text">AI accelerates newsgathering through OCR, speech-to-text, and automated scraping. Internal RAG tools query in-house archives to surface leads and briefing material for reporters.</div>
+      </div>
 
-renderTopics();
+      <div class="use-card">
+        <div class="use-card-icon">✍️</div>
+        <div class="use-card-tag">Writing</div>
+        <div class="use-card-title">Automated Writing &amp; Summarisation</div>
+        <div class="use-card-text">Automated generation of earnings reports, sports recaps and incident summaries is long established. Generative tools now draft first versions and bullet summaries, with human editors as final gatekeepers.</div>
+      </div>
 
-function setStatus(msg, spin) {
-  document.getElementById('status').innerHTML = spin
-    ? `<div class="spinner"></div><span>${msg}</span>`
-    : `<span>${msg}</span>`;
-}
-function clearStatus() { document.getElementById('status').innerHTML = ''; }
-function domainLabel(d) { return d.replace(/^https?:\/\//, '').replace(/\/$/, ''); }
+      <div class="use-card">
+        <div class="use-card-icon">🌍</div>
+        <div class="use-card-tag">Language</div>
+        <div class="use-card-title">Transcription, Translation &amp; Multilingual</div>
+        <div class="use-card-text">Speech-to-text for transcription and captions is among the most common AI uses. Broadcasters now trial real-time translation for live newscasts and multiplatform content delivery.</div>
+      </div>
 
-async function runScan() {
-  const apiKey = document.getElementById('api-key').value.trim();
-  if (!apiKey) { setStatus('Please enter your Anthropic API key above.', false); return; }
+      <div class="use-card">
+        <div class="use-card-icon">📡</div>
+        <div class="use-card-tag">Distribution</div>
+        <div class="use-card-title">Personalisation &amp; Recommendation</div>
+        <div class="use-card-text">AI powers personalised search, notification and recommendation systems. A/B testing of headlines and formats at scale, while editorial oversight is retained over the final experience.</div>
+      </div>
 
-  const own = document.getElementById('own-outlet').value.trim();
-  const competitors = Array.from(document.querySelectorAll('.comp-input'))
-    .map(i => i.value.trim()).filter(Boolean);
-  const selected = Array.from(activeTopics);
+      <div class="use-card">
+        <div class="use-card-icon">🛡️</div>
+        <div class="use-card-tag">Verification</div>
+        <div class="use-card-title">Content Moderation &amp; Fact-Checking</div>
+        <div class="use-card-text">AI assists verification through image and video element recognition and archive cross-referencing. Acts as an assistive layer for human review rather than a fully automated decision maker.</div>
+      </div>
 
-  if (!own) { setStatus('Enter your newsroom domain.', false); return; }
-  if (!competitors.length) { setStatus('Add at least one competitor.', false); return; }
-  if (!selected.length) { setStatus('Select at least one topic.', false); return; }
+      <div class="use-card">
+        <div class="use-card-icon">🎬</div>
+        <div class="use-card-tag">Production</div>
+        <div class="use-card-title">Multimedia Generation &amp; Automation</div>
+        <div class="use-card-text">AI is embedded in video and image pipelines — automated editing, rapid image generation, and agentic assistants that propose graphics — shortening production cycles for social platforms.</div>
+      </div>
 
-  document.getElementById('run-btn').disabled = true;
-  document.getElementById('results').innerHTML = '';
-  setStatus(`Scanning ${selected.length} topics across ${competitors.length + 1} outlets…`, true);
+      <div class="use-card">
+        <div class="use-card-icon">📊</div>
+        <div class="use-card-tag">Investigations</div>
+        <div class="use-card-title">Data Journalism &amp; Analytics</div>
+        <div class="use-card-text">AI accelerates analysis of large textual and numeric datasets, surfacing patterns in document collections. Enables deeper investigative analysis with fewer staff hours.</div>
+      </div>
 
-  try {
-    const data = await fetchGapAnalysis(apiKey, own, competitors, selected);
-    clearStatus();
-    renderResults(own, competitors, selected, data);
-  } catch(e) {
-    clearStatus();
-    document.getElementById('results').innerHTML =
-      `<div class="error-box"><i class="ti ti-alert-triangle" style="margin-right:6px;font-size:15px;vertical-align:-2px;" aria-hidden="true"></i>${e.message}</div>`;
-  } finally {
-    document.getElementById('run-btn').disabled = false;
-  }
-}
+      <div class="use-card">
+        <div class="use-card-icon">💼</div>
+        <div class="use-card-tag">Business</div>
+        <div class="use-card-title">Advertising, Subscriptions &amp; Operations</div>
+        <div class="use-card-text">AI optimises advertising and subscription offers, generates multiplatform formats for conversion, and automates routine operational tasks in both editorial and commercial teams.</div>
+      </div>
+    </div>
+  </section>
 
-async function fetchGapAnalysis(apiKey, own, competitors, topics) {
-  const system = `You are a senior editorial strategist and media analyst.
-The user gives you a newsroom domain, competitor domains, and topics to research.
-Use web_search to find recent coverage of each topic across all outlets.
-Try queries like: "site:radiofarda.com Iran nuclear" or "BBC Persian sanctions Iran 2025".
-Run multiple targeted searches across all outlets and topics.
+  <!-- SECTION 2: ACTORS -->
+  <section class="report-section" id="actors">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Ecosystem Overview</div>
+        <h2 class="section-title">Main Actors &amp; Tools Deployed</h2>
+      </div>
+    </div>
 
-Respond ONLY with a valid JSON object (no markdown, no preamble) in this exact shape:
-{
-  "summary": "<2-sentence overall editorial insight>",
-  "scoop_advantage": [
-    { "topic": "...", "description": "<specific angles your outlet covers that competitors miss>" }
-  ],
-  "missed_stories": [
-    { "topic": "...", "description": "<what competitors cover that your outlet is missing>", "sources": [{"title":"...","url":"...","outlet":"..."}] }
-  ],
-  "topic_matrix": [
-    { "topic": "...", "outlets": { "<domain>": "strong|partial|missing" } }
-  ]
-}
-Include all topics in topic_matrix. Up to 5 scoop_advantage items. Up to 6 missed_stories items.`;
+    <div class="actors-grid">
+      <div class="actor-card">
+        <div class="actor-type">In-House Labs</div>
+        <div class="actor-name">Newsroom R&amp;D Teams</div>
+        <div class="actor-detail">Large legacy organisations run internal experimentation platforms to prototype and deploy customised tools tailored to proprietary archives and workflows.</div>
+      </div>
 
-  const userMsg = `My newsroom: ${own}
-Competitors: ${competitors.join(', ')}
-Topics to scan: ${topics.join(', ')}
+      <div class="actor-card">
+        <div class="actor-type">Wire Services &amp; Public Media</div>
+        <div class="actor-name">Broadcasters &amp; Agencies</div>
+        <div class="actor-detail">Deploy AI for verification, personalised search and workflow automation. Wire services also license content to AI model developers under commercial agreements.</div>
+      </div>
 
-Research recent (last 30 days) coverage of each topic across all outlets and return the gap analysis JSON.`;
+      <div class="actor-card">
+        <div class="actor-type">Digital-Native</div>
+        <div class="actor-name">Digital &amp; Specialist Publishers</div>
+        <div class="actor-detail">Experiment with AI for recommendation, conversational formats and social re-versioning. Some have entered licensing deals with major LLM providers.</div>
+      </div>
 
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-      'anthropic-beta': 'web-search-2025-03-05'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1000,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      system,
-      messages: [{ role: 'user', content: userMsg }]
-    })
-  });
+      <div class="actor-card">
+        <div class="actor-type">Vendors</div>
+        <div class="actor-name">Specialist Startups</div>
+        <div class="actor-detail">Newsrooms source from specialists: Whisper and Otter.ai for transcription; real-time translation vendors for broadcasters; and newsroom automation startups.</div>
+      </div>
 
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error(err.error?.message || `API error ${resp.status}`);
-  }
+      <div class="actor-card">
+        <div class="actor-type">Platforms</div>
+        <div class="actor-name">Major AI &amp; LLM Providers</div>
+        <div class="actor-detail">OpenAI, Anthropic, Google and Microsoft supply foundational models, enterprise products and commercial arrangements that publishers connect to or negotiate with.</div>
+      </div>
+    </div>
+  </section>
 
-  const data = await resp.json();
-  const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
-  const clean = text.replace(/```json|```/g, '').trim();
-  try { return JSON.parse(clean); }
-  catch { throw new Error('Could not parse analysis response. Please try again.'); }
-}
+  <!-- SECTION 3: MARKET -->
+  <section class="report-section" id="market">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Business Models &amp; Partnerships</div>
+        <h2 class="section-title">Market Positioning</h2>
+      </div>
+    </div>
 
-const OUTLET_COLORS = ['#534AB7','#D85A30','#1D9E75','#BA7517','#D4537E'];
+    <div class="col-2">
+      <div class="prose">
+        <div class="subsection-title">Pricing Models</div>
+        <p>Vendor pricing is a mix of subscription, usage-based (token) billing and hybrid approaches. Usage-scaled pricing lowers entry barriers for generative AI but creates variable cost exposure for publishers and vendors alike.</p>
+        <p>Publishers need to balance model quality versus inference cost when deciding which workloads to run on external APIs versus internal tooling.</p>
+      </div>
 
-function coveragePill(status, outlet) {
-  const cls = { strong: 'tag-strong', partial: 'tag-partial', missing: 'tag-missing' };
-  return `<span class="outlet-tag ${cls[status] || 'tag-missing'}">${domainLabel(outlet)}: ${status}</span>`;
-}
+      <div class="prose">
+        <div class="subsection-title">Platform Deals &amp; Partnerships</div>
+        <p>Major platforms pursue both licensing deals with publishers — for content access for model training or product features — and partnership programmes that bundle editorial or distribution services.</p>
+        <p>Google and OpenAI have made high-visibility licensing and partnership deals with news organisations in recent years, often bundling revenue support with technical access.</p>
+      </div>
+    </div>
 
-function renderResults(own, competitors, topics, d) {
-  const allOutlets = [own, ...competitors];
-  const matrix = d.topic_matrix || [];
-  const scoops = d.scoop_advantage || [];
-  const missed = d.missed_stories || [];
-  const strongCount = matrix.filter(r => r.outlets && r.outlets[own] === 'strong').length;
-  const missedCount = missed.length;
-  const partialCount = matrix.filter(r => r.outlets && r.outlets[own] === 'partial').length;
-  const totalTopics = matrix.length || topics.length;
+    <div class="pull-quote">
+      <p>"Collective licensing is often preferred over one-by-one negotiations — publishers anticipate licensing income from AI companies to be significant."</p>
+    </div>
 
-  let html = `<hr class="divider">
-    <div class="metrics-row">
-      <div class="metric"><div class="metric-label">Topics scanned</div><div class="metric-val">${totalTopics}</div><div class="metric-sub">across ${allOutlets.length} outlets</div></div>
-      <div class="metric"><div class="metric-label">Strong coverage</div><div class="metric-val" style="color:#27500A;">${strongCount}</div><div class="metric-sub">topics you lead on</div></div>
-      <div class="metric"><div class="metric-label">Gaps found</div><div class="metric-val" style="color:#791F1F;">${missedCount}</div><div class="metric-sub">stories to chase</div></div>
-      <div class="metric"><div class="metric-label">Partial coverage</div><div class="metric-val" style="color:#633806;">${partialCount}</div><div class="metric-sub">topics to strengthen</div></div>
-    </div>`;
+    <div class="subsection">
+      <div class="subsection-title">Legal Protections in Commercial Arrangements</div>
+      <div class="prose">
+        <p>Some AI vendors position enterprise offerings with legal and contractual protections — including indemnities for customers against copyright claims — reflecting publishers' concern about training data provenance and liability. Market scale indicators point to very large platform audiences and rapid model adoption in enterprise settings, which affects bargaining power and distribution dynamics for publishers.</p>
+      </div>
+    </div>
+  </section>
 
-  if (d.summary) {
-    html += `<div class="result-summary">${d.summary}</div>`;
-  }
+  <!-- SECTION 4: DIFFERENTIATORS -->
+  <section class="report-section" id="differentiators">
+    <div class="section-header">
+      <div class="section-number">04</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Adoption Factors</div>
+        <h2 class="section-title">Key Differentiators</h2>
+      </div>
+    </div>
 
-  if (scoops.length) {
-    html += `<div class="gap-section"><p class="gap-section-title"><i class="ti ti-star" style="font-size:16px;color:#0F6E56;" aria-hidden="true"></i> Your exclusive angles (${scoops.length})</p>`;
-    scoops.forEach(s => {
-      html += `<div class="scoop-item"><p class="scoop-topic">${s.topic}</p><p class="scoop-desc">${s.description}</p></div>`;
-    });
-    html += `</div>`;
-  }
+    <div class="col-2">
+      <div>
+        <div class="subsection-title">Technical Differentiators</div>
+        <div class="risk-list">
+          <div class="risk-item med">
+            <div class="risk-dot"></div>
+            <div class="risk-content">
+              <div class="risk-title">Model Performance &amp; Accuracy</div>
+              <div class="risk-desc">Benchmark comparisons and model updates drive perceived reliability. Published performance metrics influence vendor selection across newsrooms.</div>
+            </div>
+            <div class="risk-badge">High Priority</div>
+          </div>
+          <div class="risk-item med">
+            <div class="risk-dot"></div>
+            <div class="risk-content">
+              <div class="risk-title">Latency &amp; Throughput</div>
+              <div class="risk-desc">Real-time needs — live transcription, translation, video editing — require low-latency inference or specialised architectures.</div>
+            </div>
+            <div class="risk-badge">Live Use</div>
+          </div>
+          <div class="risk-item low">
+            <div class="risk-dot"></div>
+            <div class="risk-content">
+              <div class="risk-title">Data Provenance &amp; RAG</div>
+              <div class="risk-desc">Retrieval-augmented generation tools restricted to in-house archives are favoured where provenance and traceability are required.</div>
+            </div>
+            <div class="risk-badge">Preferred</div>
+          </div>
+          <div class="risk-item low">
+            <div class="risk-dot"></div>
+            <div class="risk-content">
+              <div class="risk-title">Explainability &amp; Double-Check</div>
+              <div class="risk-desc">Some products add search-augmented layers to reduce hallucinations and improve source traceability for editorial use.</div>
+            </div>
+            <div class="risk-badge">Emerging</div>
+          </div>
+        </div>
+      </div>
 
-  if (missed.length) {
-    html += `<div class="gap-section"><p class="gap-section-title"><i class="ti ti-alert-circle" style="font-size:16px;color:#A32D2D;" aria-hidden="true"></i> Stories you're missing (${missed.length})</p>`;
-    missed.forEach(m => {
-      const links = (m.sources || []).map(s =>
-        `<a class="missed-link" href="${s.url}" target="_blank">${s.outlet || domainLabel(s.url)} <i class="ti ti-external-link" aria-hidden="true" style="font-size:10px;vertical-align:-1px;"></i></a>`
-      ).join('');
-      html += `<div class="missed-item"><p class="missed-topic">${m.topic}</p><p class="missed-desc">${m.description}</p>${links ? `<div class="missed-links">${links}</div>` : ''}</div>`;
-    });
-    html += `</div>`;
-  }
+      <div>
+        <div class="subsection-title">Non-Technical Differentiators</div>
+        <div class="risk-list">
+          <div class="risk-item high">
+            <div class="risk-dot"></div>
+            <div class="risk-content">
+              <div class="risk-title">Editorial Control &amp; Brand Trust</div>
+              <div class="risk-desc">Publishers emphasise human oversight as primary control. Public comfort with AI-only production remains limited, especially for serious coverage.</div>
+            </div>
+            <div class="risk-badge">Critical</div>
+          </div>
+          <div class="risk-item high">
+            <div class="risk-dot"></div>
+            <div class="risk-content">
+              <div class="risk-title">Governance &amp; Legal Terms</div>
+              <div class="risk-desc">Indemnity clauses and licensing arrangements affect whether publishers supply content to platform providers or accept vendor integrations.</div>
+            </div>
+            <div class="risk-badge">Critical</div>
+          </div>
+          <div class="risk-item med">
+            <div class="risk-dot"></div>
+            <div class="risk-content">
+              <div class="risk-title">Cost &amp; Integration Effort</div>
+              <div class="risk-desc">Hybrid pricing and per-token billing influence total cost of ownership; internal training and change management are non-trivial investments.</div>
+            </div>
+            <div class="risk-badge">Significant</div>
+          </div>
+          <div class="risk-item med">
+            <div class="risk-dot"></div>
+            <div class="risk-content">
+              <div class="risk-title">Union &amp; Employee Relations</div>
+              <div class="risk-desc">Newsroom pushback has arisen where AI repackages reporters' work without clear attribution or compensation, shaping adoption policies.</div>
+            </div>
+            <div class="risk-badge">Ongoing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  if (matrix.length) {
-    html += `<div class="gap-section"><p class="gap-section-title"><i class="ti ti-layout-grid" style="font-size:16px;color:#888780;" aria-hidden="true"></i> Topic-by-outlet matrix</p>`;
-    matrix.forEach(row => {
-      const tags = allOutlets.map(o => coveragePill((row.outlets && row.outlets[o]) || 'missing', o)).join('');
-      html += `<div class="gap-item"><p class="gap-topic">${row.topic}</p><div class="gap-outlets">${tags}</div></div>`;
-    });
-    html += `</div>`;
-  }
+  <!-- SECTION 5: IMPACTS -->
+  <section class="report-section" id="impacts">
+    <div class="section-header">
+      <div class="section-number">05</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Measured &amp; Reported Evidence</div>
+        <h2 class="section-title">Observed Impacts</h2>
+      </div>
+    </div>
 
-  document.getElementById('results').innerHTML = html;
-}
-</script>
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-value">~50%</div>
+        <div class="stat-label">Reduction in drafting hours reported in one in-house case study using AI drafting tools</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">↑ Eng.</div>
+        <div class="stat-label">AI summarisation for younger audiences increased engagement in reported publisher experiments</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">Mixed</div>
+        <div class="stat-label">Effects on click-through and subscriptions from AI-driven search reducing referral traffic</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">New</div>
+        <div class="stat-label">Specialist AI fluency roles and editorial "last gate" reviewer positions emerging in newsrooms</div>
+      </div>
+    </div>
+
+    <div class="col-2">
+      <div>
+        <div class="subsection-title">Editorial Workflows</div>
+        <div class="prose">
+          <p>Efficiency gains are documented in specific contexts — internal drafting tools have reduced hours spent in drafting by approximately half in at least one reported case. AI is redistributing labour by automating routine and repetitive tasks such as database entries, transcription and simple event write-ups.</p>
+          <p>Journalists are being prompted toward higher-value reporting and editorial curation as a result of these shifts.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="subsection-title">Staffing &amp; Revenue</div>
+        <div class="prose">
+          <p>AI adoption is changing role definitions: editors increasingly act as "last gate" reviewers for AI-assisted outputs, and specialist AI fluency roles and trainers are emerging inside newsrooms.</p>
+          <p>High-profile misuse incidents — including AI-generated content containing fabricated material — have prompted contract terminations and reputational fallout, underscoring that efficiency gains come with operational risks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: RISKS -->
+  <section class="report-section" id="risks">
+    <div class="section-header">
+      <div class="section-number">06</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Legal, Ethical &amp; Operational</div>
+        <h2 class="section-title">Risks &amp; Mitigation Practices</h2>
+      </div>
+    </div>
+
+    <div class="risk-list">
+      <div class="risk-item high">
+        <div class="risk-dot"></div>
+        <div class="risk-content">
+          <div class="risk-title">Copyright &amp; Training Data Liability</div>
+          <div class="risk-desc">Publishers pursue licensing deals and contractual protections with platform providers. Some vendors offer indemnities for enterprise customers against copyright claims as part of their commercial offering.</div>
+        </div>
+        <div class="risk-badge">High Risk</div>
+      </div>
+
+      <div class="risk-item high">
+        <div class="risk-dot"></div>
+        <div class="risk-content">
+          <div class="risk-title">Fabrication, Plagiarism &amp; Hallucinations</div>
+          <div class="risk-desc">Human-in-the-loop editorial rules, verification checklists and RAG constrained to trusted corpora are standard mitigations. High-profile incidents have led to shutdowns and contract terminations.</div>
+        </div>
+        <div class="risk-badge">High Risk</div>
+      </div>
+
+      <div class="risk-item med">
+        <div class="risk-dot"></div>
+        <div class="risk-content">
+          <div class="risk-title">Audience Trust &amp; Acceptance</div>
+          <div class="risk-desc">Transparency about AI use — disclosure policies, editorial control mechanisms, and human oversight — are emphasised to maintain reader trust. Public comfort remains limited for AI-only production.</div>
+        </div>
+        <div class="risk-badge">Medium Risk</div>
+      </div>
+
+      <div class="risk-item med">
+        <div class="risk-dot"></div>
+        <div class="risk-content">
+          <div class="risk-title">Big Tech Infrastructure Dependence</div>
+          <div class="risk-desc">Public media note both the utility and strategic exposure from relying on large platform companies for AI infrastructure and tooling, including geopolitical considerations.</div>
+        </div>
+        <div class="risk-badge">Medium Risk</div>
+      </div>
+
+      <div class="risk-item low">
+        <div class="risk-dot"></div>
+        <div class="risk-content">
+          <div class="risk-title">Agent Security &amp; Governance Frameworks</div>
+          <div class="risk-desc">Some organisations adopt layered governance covering data governance, agent observability, security, and development lifecycle controls specifically designed for agentic systems.</div>
+        </div>
+        <div class="risk-badge">Managed</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7: CASE STUDIES -->
+  <section class="report-section" id="cases">
+    <div class="section-header">
+      <div class="section-number">07</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Diverse Outlet Types &amp; Regions</div>
+        <h2 class="section-title">Representative Case Studies</h2>
+      </div>
+    </div>
+
+    <div class="case-studies-grid">
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-org">Associated Press</div>
+          <div class="case-type">Newswire · US</div>
+        </div>
+        <div class="case-body">
+          <p>Long-running automation for earnings and sports results; since 2023, AP has negotiated licensing and technology collaborations with major model providers, piloting AI to automate repetitive newsroom tasks and deliver local news tips. AI search tools improve discovery while human oversight is maintained for generative use.</p>
+          <div class="case-outcome">
+            <div class="case-outcome-icon">✅</div>
+            <div class="case-outcome-text">Pioneer in automation + active in commercial licensing deals</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-org">Reuters</div>
+          <div class="case-type">Wire Service · Global</div>
+        </div>
+        <div class="case-body">
+          <p>Staff-wide experimentation platform and customer-facing AI features including Fact Genie. Rolled out AI video-editing features under a branded product to speed production, combining internal R&D with productised tools for newsroom efficiency.</p>
+          <div class="case-outcome">
+            <div class="case-outcome-icon">✅</div>
+            <div class="case-outcome-text">Strong R&D culture; balances internal tools with commercial products</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-org">BBC</div>
+          <div class="case-type">Public Broadcaster · UK</div>
+        </div>
+        <div class="case-body">
+          <p>Launched multiple generative AI pilots; moved some tools into public trials (summariser, style-assist) while keeping most internal. Exemplifies a cautious, iterative public-service approach to testing audience-facing features.</p>
+          <div class="case-outcome">
+            <div class="case-outcome-icon">🔄</div>
+            <div class="case-outcome-text">Careful, staged rollout with emphasis on public trust</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-org">Financial Times &amp; dpa</div>
+          <div class="case-type">Newspaper &amp; Agency · Global</div>
+        </div>
+        <div class="case-body">
+          <p>FT introduced organisation-wide AI training and "AI fluency" roles to embed responsible tool use. dpa developed a RAG-based research assistant restricted to its own content — examples of structural investment in upskilling and provenance-constrained tooling.</p>
+          <div class="case-outcome">
+            <div class="case-outcome-icon">✅</div>
+            <div class="case-outcome-text">Structural investment in skills and provenance-first architecture</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-org">Aftonbladet &amp; Helsingin Sanomat</div>
+          <div class="case-type">News Publishers · Europe</div>
+        </div>
+        <div class="case-body">
+          <p>AI-produced article summary bullets for social and younger audiences were reported to increase engagement among those reader segments, illustrating targeted editorial use cases that feed distribution strategies.</p>
+          <div class="case-outcome">
+            <div class="case-outcome-icon">📈</div>
+            <div class="case-outcome-text">Demonstrated engagement uplift for targeted younger audiences</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-org">Sinclair Broadcast Group</div>
+          <div class="case-type">Local Broadcaster · US</div>
+        </div>
+        <div class="case-body">
+          <p>Deployed a vendor system for real-time translated local TV newscasts in multiple languages, demonstrating how broadcasters use specialised vendors to expand language reach for live broadcasts without building internal capability.</p>
+          <div class="case-outcome">
+            <div class="case-outcome-icon">✅</div>
+            <div class="case-outcome-text">Live multilingual broadcast delivery via specialist vendor</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-org">Nota</div>
+          <div class="case-type">Startup · Local News</div>
+        </div>
+        <div class="case-body">
+          <p>A high-visibility failure: the startup launched AI-generated local news sites and later shut down after discovery of widespread plagiarism and unattributed copying. Partner contract cancellations followed, highlighting legal and ethical risks in rapid automated content scale-ups.</p>
+          <div class="case-outcome">
+            <div class="case-outcome-icon">⚠️</div>
+            <div class="case-outcome-text">Cautionary example — shutdown after plagiarism and partner fallout</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: TENSIONS -->
+  <section class="report-section" id="tensions">
+    <div class="section-header">
+      <div class="section-number">08</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Strategic Choices</div>
+        <h2 class="section-title">Key Tensions &amp; Trade-offs</h2>
+      </div>
+    </div>
+
+    <div class="tension-row">
+      <div class="tension-side"><strong>Cost Reduction (Substitution)</strong><br>Pursue AI to reduce headcount and automate output at volume — favoured by actors seeking to scale with limited resources.</div>
+      <div class="tension-vs">vs</div>
+      <div class="tension-side"><strong>Journalist Augmentation (Complementarity)</strong><br>Use AI to enhance capabilities and free journalists for higher-value work — favoured by resource-rich organisations prioritising brand.</div>
+    </div>
+
+    <div class="tension-row">
+      <div class="tension-side"><strong>Centralised Custom Models</strong><br>Wire services and large publishers deploy internal or fine-tuned systems constrained to proprietary archives, gaining control and provenance.</div>
+      <div class="tension-vs">vs</div>
+      <div class="tension-side"><strong>Decentralised SaaS &amp; APIs</strong><br>Smaller outlets rely on third-party APIs and SaaS, affecting control, cost and provenance but lowering barriers to adoption.</div>
+    </div>
+
+    <div class="tension-row">
+      <div class="tension-side"><strong>Commercial Leverage &amp; Revenue</strong><br>Licensing deals and platform partnerships provide income and technical access — valuable for sustainability.</div>
+      <div class="tension-vs">vs</div>
+      <div class="tension-side"><strong>Editorial Independence</strong><br>Same deals create distribution dependencies and risk editorial autonomy. Publishers must weigh terms carefully when negotiating.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: IMPLICATIONS -->
+  <section class="report-section" id="implications">
+    <div class="section-header">
+      <div class="section-number">09</div>
+      <div class="section-title-group">
+        <div class="section-kicker">Inferred from Evidence Patterns</div>
+        <h2 class="section-title">Practical Implications</h2>
+      </div>
+    </div>
+
+    <div class="col-2">
+      <div class="impl-list">
+        <div class="impl-item">
+          <div class="impl-num">1</div>
+          <div class="impl-text">Prioritise <strong>human-in-the-loop controls</strong> for all editorial outputs and maintain clear disclosure policies — audience trust depends on visible human accountability.</div>
+        </div>
+        <div class="impl-item">
+          <div class="impl-num">2</div>
+          <div class="impl-text">Invest in <strong>staff training and AI-fluency roles</strong> to integrate AI safely and productively — structural upskilling is as important as the technology itself.</div>
+        </div>
+        <div class="impl-item">
+          <div class="impl-num">3</div>
+          <div class="impl-text"><strong>Negotiate licensing and contractual protections</strong> — including data use terms and indemnities — before supplying proprietary archives or large volumes of content for commercial model training.</div>
+        </div>
+      </div>
+      <div class="impl-list">
+        <div class="impl-item">
+          <div class="impl-num">4</div>
+          <div class="impl-text">Choose <strong>technical architectures that preserve provenance</strong> — RAG constrained to trusted corpora minimises hallucination risks for verification-sensitive tasks.</div>
+        </div>
+        <div class="impl-item">
+          <div class="impl-num">5</div>
+          <div class="impl-text"><strong>Monitor vendor pricing models</strong> — usage-versus-subscription dynamics and model selection choices significantly affect variable inference cost exposure over time.</div>
+        </div>
+        <div class="impl-item">
+          <div class="impl-num">6</div>
+          <div class="impl-text">Acknowledge <strong>evidence gaps</strong>: quantitative cross-market adoption rates, longitudinal staffing studies, and comparable revenue impact metrics remain limited across the industry.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="report-footer">
+  <div class="footer-inner">
+    <div class="footer-note">
+      This report synthesises verified evidence from primary and reputable secondary sources including newsroom statements, vendor announcements, trade press, and academic and industry reports. Recommendations are inferred from patterns in evidence and do not constitute operational checklists.
+    </div>
+    <div class="footer-logo">AI &amp; the Press</div>
+  </div>
+</footer>
+
 </body>
 </html>
