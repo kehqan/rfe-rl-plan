@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Briefing Prompt Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f0e8;
+    --accent: #c8401a;
+    --muted: #7a7060;
+    --rule: #d4cbb8;
+    --code-bg: #1a1814;
+    --code-text: #e8dfc8;
+    --highlight: #ffd84a;
+    --section-bg: #eee8d8;
+    --blue: #1a4fc8;
+    --green: #1a7a3c;
+    --optional-bg: #f0f6f0;
+    --optional-border: #a8d4b4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 44px 56px 32px;
+    position: relative;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--highlight), var(--blue));
+  }
+  .masthead-eye {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--highlight);
+    margin-bottom: 12px;
+  }
+  .masthead h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(26px, 4vw, 50px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .masthead h1 span { color: var(--highlight); }
+  .masthead p {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #6a6050;
+    max-width: 540px;
+  }
+
+  /* TWO-COLUMN */
+  .wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  /* LEFT PANEL */
+  .panel-left {
+    padding: 36px 40px 60px;
+    border-right: 1.5px solid var(--rule);
+  }
+
+  .panel-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .num {
+    font-size: 9px;
+    padding: 2px 7px;
+    background: var(--ink);
+    color: var(--highlight);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px;
+  }
+  .panel-right .panel-title .num {
+    background: var(--accent);
+    color: white;
+  }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    border: none;
+    border-top: 1.5px solid var(--rule);
+    margin: 28px 0 24px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  /* REQUIRED vs OPTIONAL blocks */
+  .block-required {
+    margin-bottom: 20px;
+  }
+
+  .block-optional {
+    background: var(--optional-bg);
+    border: 1.5px solid var(--optional-border);
+    border-left: 3px solid var(--green);
+    padding: 16px 16px 12px;
+    margin-bottom: 16px;
+  }
+
+  .optional-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--green);
+    color: white;
+    padding: 2px 7px;
+    margin-bottom: 8px;
+  }
+
+  .optional-intro {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #4a7a5a;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--optional-border);
+  }
+
+  /* FIELDS */
+  .field-group { margin-bottom: 16px; }
+  .field-group:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  label .hint {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #aaa098;
+    margin-top: 2px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+  label .hint.green { color: #5a9a6a; }
+
+  input[type="text"],
+  textarea,
+  select {
+    width: 100%;
+    background: white;
+    border: 1.5px solid var(--rule);
+    padding: 9px 11px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+    resize: vertical;
+    line-height: 1.65;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--ink); }
+
+  .block-optional input[type="text"],
+  .block-optional textarea {
+    background: #f8fdf8;
+    border-color: var(--optional-border);
+  }
+  .block-optional input:focus,
+  .block-optional textarea:focus { border-color: var(--green); }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7060'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 11px center;
+    background-color: white;
+    cursor: pointer;
+    resize: none;
+  }
+
+  /* UPLOAD HINT BOX */
+  .upload-box {
+    background: #1a1814;
+    border: 1.5px dashed #3a3428;
+    padding: 14px 16px;
+    margin-top: 6px;
+  }
+  .upload-box p {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #6a6050;
+    line-height: 1.7;
+  }
+  .upload-box p strong { color: var(--highlight); }
+  .upload-box p em { color: #8a8070; font-style: italic; }
+
+  /* RIGHT PANEL */
+  .panel-right {
+    background: var(--code-bg);
+    padding: 36px 40px 60px;
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+  }
+  .panel-right .panel-title {
+    color: #5a5448;
+    border-bottom-color: #2a2820;
+  }
+
+  .prompt-output {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    color: var(--code-text);
+    line-height: 1.85;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* highlight optional sections in prompt */
+  .prompt-output .opt { color: #7daa8a; }
+
+  .copy-btn {
+    display: block;
+    width: 100%;
+    background: var(--highlight);
+    color: var(--ink);
+    border: none;
+    padding: 13px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: #ffc820; }
+  .copy-btn.copied { background: #7dff9d; }
+
+  footer {
+    background: var(--ink);
+    color: #3a3428;
+    padding: 16px 56px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 800px) {
+    .masthead { padding: 28px 20px 20px; }
+    .wrap { grid-template-columns: 1fr; }
+    .panel-left { border-right: none; border-bottom: 1.5px solid var(--rule); padding: 24px 20px 40px; }
+    .panel-right { padding: 24px 20px 40px; position: static; min-height: unset; }
+    footer { flex-direction: column; gap: 6px; padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-eye">AI Prompt Generator · v1.2 · For Microsoft Copilot</div>
+  <h1>Morning <span>Briefing</span></h1>
+  <p>Fill what you need → your Copilot prompt builds live on the right → copy and paste.</p>
+</div>
+
+<div class="wrap">
+
+  <!-- ══ LEFT ══ -->
+  <div class="panel-left">
+    <div class="panel-title"><span class="num">01</span> Settings</div>
+
+    <!-- REQUIRED -->
+    <div class="section-label">Required</div>
+
+    <div class="block-required">
+      <div class="field-group">
+        <label>Briefing Depth</label>
+        <select id="depth" onchange="generate()">
+          <option value="5">Express — 5 min, headlines only</option>
+          <option value="10" selected>Standard — 10 min, headlines + context</option>
+          <option value="15">Deep — 15 min, full analysis</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Output Language</label>
+        <select id="lang" onchange="generate()">
+          <option value="English">English</option>
+          <option value="Persian (Farsi)">Persian (Farsi)</option>
+          <option value="French">French</option>
+          <option value="German">German</option>
+          <option value="Arabic">Arabic</option>
+          <option value="Spanish">Spanish</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Role Recipe
+          <span class="hint">Adds profession-specific instructions.</span>
+        </label>
+        <select id="recipe" onchange="generate()">
+          <option value="none">None — generic</option>
+          <option value="journalist">Journalist / Editor</option>
+          <option value="pm">Product Manager</option>
+          <option value="sales">Sales / Business Dev</option>
+          <option value="exec">Executive / Leader</option>
+          <option value="analyst">Analyst / Researcher</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- OPTIONAL FIELDS -->
+    <div class="section-label">Optional — cherry on top</div>
+
+    <div class="block-optional">
+      <div class="optional-badge">Optional</div>
+      <p class="optional-intro">
+        Copilot already knows who you are — your name, role, org, and the people around you
+        from your M365 profile. These fields are not required.<br><br>
+        Use them only when you want to <strong>sharpen the AI's judgment</strong> beyond what it
+        already knows: to steer it toward a specific angle, add topics it wouldn't guess
+        from your email history, or highlight people outside your org.
+        Leave any field empty and Copilot will use its own knowledge of you.
+      </p>
+
+      <div class="field-group">
+        <label>My Primary Function
+          <span class="hint green">
+            Not your title — what <em>decisions</em> do you make?
+            This anchors every "so what for me?" in the briefing.<br>
+            <strong>e.g.</strong> "I decide which stories get produced and assign journalists covering Iran."
+          </span>
+        </label>
+        <textarea id="fn" rows="2" placeholder="Leave blank — Copilot will infer from your profile." oninput="generate()"></textarea>
+      </div>
+
+      <div class="field-group">
+        <label>Additional Topics to Focus On
+          <span class="hint green">
+            Topics Copilot might not guess from your email alone.
+            One per line. It already knows your main beat — add the edges.
+          </span>
+        </label>
+        <textarea id="topics" rows="4" placeholder="Leave blank — Copilot will use your known interests.&#10;Or add specifics, e.g.:&#10;Iran pharmaceutical crisis&#10;AI deepfakes in state propaganda" oninput="generate()"></textarea>
+      </div>
+
+      <div class="field-group">
+        <label>Extra People to Prioritize
+          <span class="hint green">
+            People outside your org, or contacts Copilot might deprioritize.
+            Internal colleagues are already weighted by your email patterns.
+          </span>
+        </label>
+        <input type="text" id="people" placeholder="e.g. Abbas Araghchi, Steve Witkoff" oninput="generate()">
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- DOCUMENT UPLOAD -->
+    <div class="section-label">Documents to include</div>
+
+    <div class="block-required">
+      <div class="field-group">
+        <label>Document Description & Focus
+          <span class="hint">
+            If you're uploading a file directly into Copilot alongside this prompt,
+            describe it here and what you want Copilot to extract from it.
+            The prompt will tell Copilot how to use it.
+          </span>
+        </label>
+        <textarea id="docs" rows="3" placeholder="e.g. Attached: last week's editorial strategy memo. Extract any open decisions or priorities relevant to today." oninput="generate()"></textarea>
+      </div>
+      <div class="upload-box">
+        <p>
+          <strong>↑ Upload your file directly in Copilot</strong> alongside this prompt —
+          not here in the generator.<br>
+          <em>Supported: Word docs, PDFs, Excel sheets, PowerPoint decks, plain text.</em>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT ══ -->
+  <div class="panel-right">
+    <div class="panel-title"><span class="num">02</span> Your Prompt — copy & paste into Copilot</div>
+    <div class="prompt-output" id="output"></div>
+    <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">⎘ Copy Prompt</button>
+  </div>
+
+</div>
+
+<footer>
+  <span>Morning Briefing System · v1.2 · May 2026</span>
+  <span>Designed for Microsoft Copilot + web-enabled AI assistants</span>
+</footer>
+
+<script>
+const RECIPES = {
+  none: '',
+  journalist: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROLE: JOURNALIST / EDITOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+After Step 3, search competitor outlets for coverage of my topics in the last 24h.
+Flag stories they are running that I have not covered → list as ▸ STORY GAPS.
+Pull any relevant wire alerts (AP, Reuters, AFP).`,
+
+  pm: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROLE: PRODUCT MANAGER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+After Step 3, check for competitor product announcements or release notes.
+Flag any pending PRs, deploys, or open critical issues if accessible.
+Add a ▸ PRODUCT PULSE section to the output.`,
+
+  sales: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROLE: SALES / BUSINESS DEV
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Flag all emails from priority contacts as BUCKET A regardless of subject.
+Search for news about key accounts in the last 24h.
+Flag funding rounds, leadership changes, or deal activity in my space.
+Add a ▸ PIPELINE SIGNALS section to the output.`,
+
+  exec: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROLE: EXECUTIVE / LEADER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Use Express depth — lead with headlines, no elaboration.
+Add ▸ TEAM STATUS: blockers, escalations, personnel issues flagged to me.
+Add ▸ DECISION REQUIRED TODAY: anything needing my sign-off now.`,
+
+  analyst: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROLE: ANALYST / RESEARCHER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+After Step 3, search for new publications, reports, or datasets on my topics this week.
+Note source type (academic / think tank / government / industry).
+Add a ▸ RESEARCH PULSE section to the output.`
+};
+
+function generate() {
+  const fn      = document.getElementById('fn').value.trim();
+  const topics  = document.getElementById('topics').value.trim();
+  const people  = document.getElementById('people').value.trim();
+  const docs    = document.getElementById('docs').value.trim();
+  const depth   = document.getElementById('depth').value;
+  const lang    = document.getElementById('lang').value;
+  const recipe  = document.getElementById('recipe').value;
+
+  // Build optional block — only include lines that have content
+  const optionalLines = [];
+
+  if (fn) {
+    optionalLines.push(`My primary function (use this to sharpen "so what for me?" judgments):\n  ${fn}`);
+  }
+  if (topics) {
+    const tLines = topics.split('\n').filter(t => t.trim()).map(t => `  - ${t.trim()}`).join('\n');
+    optionalLines.push(`Additional topics to focus on beyond what you already know about me:\n${tLines}`);
+  }
+  if (people) {
+    optionalLines.push(`Extra people to flag as priority (in addition to my known frequent contacts):\n  ${people}`);
+  }
+
+  const optionalBlock = optionalLines.length > 0
+    ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADDITIONAL FOCUS (optional overrides)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${optionalLines.join('\n\n')}`
+    : '';
+
+  const docBlock = docs
+    ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+UPLOADED DOCUMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+I have uploaded a file alongside this prompt. Use it as follows:
+  ${docs}
+Cross-reference the document with your findings in Steps 1–4 where relevant.`
+    : '';
+
+  const peopleNote = people
+    ? `\nAlso flag any email from ${people} as BUCKET A regardless of subject.\n`
+    : '';
+
+  const recipeBlock = RECIPES[recipe] || '';
+
+  const prompt =
+`You are an expert briefing assistant preparing my morning briefing.
+Today is [TODAY'S DATE — auto-insert].
+Deliver the briefing in ${lang}, ready to read in ${depth} minutes.
+Be factual, concise, and specific. No padding. No editorializing.
+
+You already know who I am from my Microsoft 365 profile — my name, role,
+organization, team, and email history. Use that knowledge as your baseline.
+${optionalBlock ? '\n' + optionalBlock + '\n' : ''}${docBlock ? '\n' + docBlock + '\n' : ''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1 — SCAN MY CALENDAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+List all meetings today: time, title, location/format.
+Flag prep-required meetings with ★.
+For each ★: pull relevant email threads and write 2–3 bullet prep notes.
+Note any scheduling conflicts or back-to-back pressure points.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — TRIAGE MY INBOX
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Read emails since yesterday 17:00. Sort into:
+
+  BUCKET A — Action required today (reply / decision / follow-up)
+  BUCKET B — Need to know (no action needed, but relevant)
+  BUCKET C — Context (feeds and news relevant to my work)
+  BUCKET D — Noise (skip entirely — do not report)
+${peopleNote}
+Report only A, B, C.
+For A: sender, subject, what is needed, urgency level.
+For B and C: group by theme and summarize — not individual emails.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — WEB SEARCH: MY TOPICS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Based on what you know about my role and work, search for significant
+developments on the topics most relevant to me. Use today's date.
+${topics ? `\nGive extra weight to these specific topics:\n${topics.split('\n').filter(t=>t.trim()).map(t=>`  - ${t.trim()}`).join('\n')}\n` : ''}
+Before including any story, apply this filter:
+  → Did something materially change in the last 24 hours?
+  → Yes: include it.
+  → No: one line only — "[Topic] — no material change. [Status in one sentence.]"
+
+For each new or escalating story:
+  - Lead with what changed, not background.
+  - Note source and reliability: official / semi-official / independent / contested.
+  - End with one "So what for me?" sentence tied to my role.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4 — INTERNAL SIGNALS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+From my email and connected tools, flag:
+  - Org changes (leadership, structure, personnel)
+  - Live internal decisions relevant to my role
+  - Anything unresolved from yesterday still open
+  - Anyone in my frequent contacts waiting on a response from me
+${recipeBlock}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OUTPUT — use this exact format
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚡ TODAY'S SIGNAL
+[The one thing I must not miss today — 1 to 2 sentences only.]
+
+📅 MY DAY
+[TIME | TITLE | LOCATION — one line per meeting]
+[★ meetings followed by 2–3 bullet prep notes]
+
+📬 ACTION REQUIRED
+[→ Sender | Subject | What's needed | Urgency]
+[If none: "No action-required emails since yesterday."]
+
+📰 WHAT'S NEW
+▸ [TOPIC]
+  [What changed — 2 to 4 sentences]
+  [Source · Reliability]
+  [So what for me: one sentence]
+
+🏢 INTERNAL SIGNALS
+[Org changes, open items, people needing response]
+[If none: "Nothing flagged."]
+
+🔎 WATCH TODAY
+[2 to 3 items to check by end of day — one line each]
+
+⚠️ FLAGS
+[Sourcing gaps, sensitivities, risks — omit section if nothing to flag]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INTERACTIVE DRILL-DOWN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Throughout the briefing, whenever you reference a person, meeting, document,
+organization, or news event, treat it as an interactive reference point.
+
+After delivering the full briefing, add this closing instruction:
+
+---
+💬 DRILL DOWN — You can ask me to expand on anything in this briefing.
+Examples of what you can say:
+  · "Tell me more about [person's name]" → I'll pull their role, recent activity, and your email history with them.
+  · "Expand on [meeting name]" → I'll give you full context, attendees, and suggested talking points.
+  · "What's the background on [news topic]?" → I'll give you a deeper briefing with history and key actors.
+  · "What should I say to [person] today?" → I'll draft a suggested message or talking points based on context.
+  · "Summarize the thread with [person or topic]" → I'll pull and summarize the relevant email chain.
+  · "What do I know about [organization]?" → I'll pull what's in my knowledge and your recent interactions.
+Just ask — I'll expand any detail on demand.
+---
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RULES — apply throughout
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ Facts first — no padding or editorializing
+✓ Max 25 words per sentence
+✓ Attribute every claim where the source matters
+✓ Flag uncertainty — never state unconfirmed things as fact
+✓ Prioritize ruthlessly — not everything is equally important
+✗ No filler phrases ("it is worth noting that", "importantly", etc.)
+✗ No generic advice ("you may want to consider...")
+✗ No repetition — say it once, say it well`;
+
+  document.getElementById('output').textContent = prompt;
+}
+
+function copyPrompt() {
+  const text = document.getElementById('output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '⎘ Copy Prompt';
+      btn.classList.remove('copied');
+    }, 2200);
+  });
+}
+
+generate();
+</script>
+</body>
+</html>
