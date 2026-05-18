@@ -3,543 +3,820 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morning Briefing Prompt Generator</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+<title>RFE/RL · Morning Briefing</title>
+<meta name="version" content="5.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #0f0e0c;
-    --paper: #f5f0e8;
-    --accent: #c8401a;
-    --muted: #7a7060;
-    --rule: #d4cbb8;
-    --code-bg: #1a1814;
-    --code-text: #e8dfc8;
-    --highlight: #ffd84a;
-    --section-bg: #eee8d8;
-    --blue: #1a4fc8;
-    --green: #1a7a3c;
-    --optional-bg: #f0f6f0;
-    --optional-border: #a8d4b4;
-  }
+:root{--ink:#111;--paper:#faf8f5;--red:#c0392b;--accent:#0f766e;--mid:#8d8982;--light:#ded8cf;--faint:#f3f1ed;--success:#237a57}
+*{margin:0;padding:0;box-sizing:border-box}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.6}
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Lora', Georgia, serif;
-    font-size: 15px;
-    line-height: 1.7;
-  }
+/* ─── MASTHEAD ─── */
+.masthead{background:#fff;border-top:3px solid var(--red);padding:18px 40px;display:flex;align-items:baseline;gap:16px;border-bottom:1px solid var(--light)}
+.masthead-brand{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red)}
+.masthead h1{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.masthead-meta{margin-left:auto;font-size:10px;color:var(--mid);letter-spacing:1px}
 
-  /* MASTHEAD */
-  .masthead {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 44px 56px 32px;
-    position: relative;
-  }
-  .masthead::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, var(--accent), var(--highlight), var(--blue));
-  }
-  .masthead-eye {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--highlight);
-    margin-bottom: 12px;
-  }
-  .masthead h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(26px, 4vw, 50px);
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    line-height: 1;
-    margin-bottom: 10px;
-  }
-  .masthead h1 span { color: var(--highlight); }
-  .masthead p {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: #6a6050;
-    max-width: 540px;
-  }
+/* ─── LAYOUT ─── */
+.wrap{min-height:calc(100vh - 60px)}
+.panel-left{width:min(860px,100%);margin:0 auto;padding:34px 40px 64px}
 
-  /* TWO-COLUMN */
-  .wrap {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-  }
+/* ─── SECTIONS ─── */
+.sec-head{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--mid);margin:0 0 18px}
+.sec-gap{height:32px}
 
-  /* LEFT PANEL */
-  .panel-left {
-    padding: 36px 40px 60px;
-    border-right: 1.5px solid var(--rule);
-  }
+/* ─── ROLE PILLS ─── */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.pill{display:inline-flex;align-items:center;padding:7px 18px;border:1px solid var(--light);border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--ink);transition:all .15s ease;user-select:none}
+.pill:hover{border-color:var(--ink);background:var(--faint)}
+.pill.active{background:var(--ink);color:#fff;border-color:var(--ink);transform:scale(.98)}
+.role-desc{font-size:13px;color:#666;line-height:1.55;min-height:20px;margin-top:6px;transition:opacity .2s ease}
+.role-desc.fading{opacity:0}
 
-  .panel-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 24px;
-    padding-bottom: 10px;
-    border-bottom: 1.5px solid var(--rule);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .num {
-    font-size: 9px;
-    padding: 2px 7px;
-    background: var(--ink);
-    color: var(--highlight);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 1px;
-  }
-  .panel-right .panel-title .num {
-    background: var(--accent);
-    color: white;
-  }
+/* ─── SEGMENTED CONTROL (depth) ─── */
+.seg{display:inline-flex;border:1px solid var(--light);border-radius:8px;overflow:hidden;margin-bottom:4px}
+.seg-btn{padding:7px 20px;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;background:transparent;border:none;border-right:1px solid var(--light);color:var(--ink);transition:all .15s ease}
+.seg-btn:last-child{border-right:none}
+.seg-btn:hover{background:var(--faint)}
+.seg-btn.active{background:var(--ink);color:#fff}
 
-  /* SECTION DIVIDER */
-  .section-divider {
-    border: none;
-    border-top: 1.5px solid var(--rule);
-    margin: 28px 0 24px;
-  }
+/* ─── INPUTS ─── */
+.field{margin-bottom:20px}
+.field-label{display:block;font-size:12px;font-weight:500;color:#555;margin-bottom:6px}
+.field-hint{font-size:11px;color:var(--mid);font-weight:400}
+.optional-badge{display:inline-flex;align-items:center;margin-left:6px;padding:2px 7px;border-radius:999px;background:rgba(15,118,110,.1);color:var(--accent);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.field input[type="text"],.field textarea,.field select{width:100%;border:none;border-bottom:1.5px solid var(--light);background:transparent;padding:8px 0;font-family:inherit;font-size:14px;color:var(--ink);outline:none;transition:border-color .2s ease;resize:none;line-height:1.5}
+.field input:focus,.field textarea:focus,.field select:focus{border-bottom-color:var(--accent)}
+.field textarea{min-height:36px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 2px center;cursor:pointer;padding-right:18px}
+.sec-intro{font-size:12px;color:var(--mid);margin-bottom:18px;line-height:1.6}
+.optional-note{border-left:3px solid var(--accent);padding:10px 12px;background:rgba(15,118,110,.07);color:#4f5d58;border-radius:0 6px 6px 0}
+.focus-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.focus-card{display:block;text-align:left;border:1px solid var(--light);border-radius:8px;background:#fff;padding:12px;cursor:pointer;font-family:inherit;color:var(--ink);transition:all .15s ease}
+.focus-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.focus-card.active{border-color:var(--accent);background:rgba(15,118,110,.08);box-shadow:inset 0 0 0 1px var(--accent)}
+.focus-title{display:block;font-size:13px;font-weight:600;line-height:1.25}
+.focus-desc{display:block;font-size:11px;color:var(--mid);line-height:1.45;margin-top:3px}
+.field.hidden{display:none}
 
-  .section-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 16px;
-  }
+/* ─── MATERIAL CHECKBOXES ─── */
+.mat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.mat-card{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;padding:10px 12px;border:1px solid var(--light);border-radius:8px;cursor:pointer;transition:all .15s ease-out;user-select:none}
+.mat-card:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.mat-card.checked{border-color:var(--ink);background:rgba(0,0,0,.015)}
+.mat-card input[type="checkbox"]{appearance:none;width:16px;height:16px;border:1.5px solid var(--light);border-radius:4px;margin-top:2px;cursor:pointer;transition:all .15s ease;position:relative}
+.mat-card.checked input[type="checkbox"]{background:var(--ink);border-color:var(--ink)}
+.mat-card.checked input[type="checkbox"]::after{content:'✓';position:absolute;top:-1px;left:2px;font-size:11px;color:#fff;font-weight:700}
+.mat-title{font-size:13px;font-weight:500;line-height:1.3}
+.mat-desc{font-size:11px;color:var(--mid);line-height:1.4;margin-top:2px}
 
-  /* REQUIRED vs OPTIONAL blocks */
-  .block-required {
-    margin-bottom: 20px;
-  }
+/* ─── SUMMARY BAR ─── */
+.summary-bar{background:var(--faint);border:1px solid var(--light);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
+.summary-bar-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.summary-bar-text{font-size:12px;color:#4a4540;line-height:1.6}
+.summary-bar-text strong{color:var(--ink);font-weight:600}
 
-  .block-optional {
-    background: var(--optional-bg);
-    border: 1.5px solid var(--optional-border);
-    border-left: 3px solid var(--green);
-    padding: 16px 16px 12px;
-    margin-bottom: 16px;
-  }
+/* ─── HANDOFF ─── */
+.handoff{margin-top:30px;padding-top:24px;border-top:1px solid var(--light)}
+.copy-btn{display:block;width:100%;background:var(--ink);color:#fff;border:1px solid var(--ink);padding:15px 18px;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;cursor:pointer;border-radius:8px;transition:all .15s ease}
+.copy-btn:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+.copy-btn.copied{background:var(--success);color:#fff;border-color:var(--success)}
+.next-box{margin-top:14px;border:1px solid var(--light);border-radius:8px;background:#fff;padding:16px}
+.next-kicker{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.next-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.next-copy{font-size:12px;color:#5f5a53;line-height:1.6;margin-bottom:12px}
+.link-row{display:flex;flex-wrap:wrap;gap:8px}
+.open-link{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 13px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;text-decoration:none;font-size:12px;font-weight:700}
+.open-link.secondary{background:transparent;color:var(--ink);border-color:var(--light)}
+.open-link:hover{filter:brightness(.96)}
+.prompt-output{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;white-space:pre-wrap}
 
-  .optional-badge {
-    display: inline-block;
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    background: var(--green);
-    color: white;
-    padding: 2px 7px;
-    margin-bottom: 8px;
-  }
+/* ─── DEPTH TOOLTIP ─── */
+.depth-wrap{display:flex;flex-direction:column;gap:0}
+.seg-hint{font-size:11px;color:var(--mid);margin-top:6px;min-height:16px;transition:opacity .15s ease;line-height:1.5}
 
-  .optional-intro {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: #4a7a5a;
-    line-height: 1.6;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--optional-border);
-  }
+/* ─── FOCUS MODE DYNAMIC FIELD ─── */
+.focus-dynamic{margin-top:10px;transition:opacity .2s ease}
+.focus-dynamic.hidden{display:none}
+.focus-dynamic textarea{width:100%;border:none;border-bottom:1.5px solid var(--light);background:transparent;padding:8px 0;font-family:inherit;font-size:14px;color:var(--ink);outline:none;transition:border-color .2s ease;resize:none;line-height:1.5;min-height:36px}
+.focus-dynamic textarea:focus{border-bottom-color:var(--accent)}
+.focus-dynamic-label{font-size:12px;font-weight:500;color:#555;margin-bottom:6px;display:block}
 
-  /* FIELDS */
-  .field-group { margin-bottom: 16px; }
-  .field-group:last-child { margin-bottom: 0; }
+/* ─── SAVE DEFAULT BUTTON ─── */
+.save-default-row{display:flex;align-items:center;gap:10px;margin-top:14px}
+.save-default-btn{background:transparent;border:1px solid var(--light);color:var(--mid);padding:7px 14px;font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;border-radius:6px;font-family:inherit;transition:all .15s ease}
+.save-default-btn:hover{border-color:var(--ink);color:var(--ink)}
+.save-default-btn.saved{border-color:var(--success);color:var(--success)}
+.restore-note{font-size:11px;color:var(--mid)}
 
-  label {
-    display: block;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 5px;
-  }
-  label .hint {
-    display: block;
-    font-size: 10px;
-    letter-spacing: 0;
-    text-transform: none;
-    color: #aaa098;
-    margin-top: 2px;
-    font-style: italic;
-    line-height: 1.5;
-  }
-  label .hint.green { color: #5a9a6a; }
+/* ─── HISTORY PANEL ─── */
+.history-wrap{margin-top:10px}
+.history-toggle{background:none;border:none;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--mid);cursor:pointer;padding:0;display:flex;align-items:center;gap:6px;transition:color .15s ease}
+.history-toggle:hover{color:var(--ink)}
+.history-toggle svg{transition:transform .2s ease}
+.history-toggle.open svg{transform:rotate(180deg)}
+.history-list{margin-top:10px;display:none;flex-direction:column;gap:6px}
+.history-list.visible{display:flex}
+.history-item{display:flex;align-items:center;gap:0;border:1px solid var(--light);border-radius:8px;overflow:hidden;background:#fff;transition:border-color .15s ease}
+.history-item:hover{border-color:var(--ink)}
+.history-restore{flex:1;background:none;border:none;font-family:inherit;font-size:12px;color:var(--ink);padding:10px 12px;text-align:left;cursor:pointer;line-height:1.4}
+.history-restore strong{display:block;font-weight:600}
+.history-restore span{color:var(--mid);font-size:11px}
+.history-delete{background:none;border:none;border-left:1px solid var(--light);padding:10px 12px;cursor:pointer;color:var(--mid);font-size:14px;transition:color .15s ease;line-height:1}
+.history-delete:hover{color:var(--red)}
+.history-empty{font-size:12px;color:var(--mid);font-style:italic;padding:4px 0}
 
-  input[type="text"],
-  textarea,
-  select {
-    width: 100%;
-    background: white;
-    border: 1.5px solid var(--rule);
-    padding: 9px 11px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.15s;
-    resize: vertical;
-    line-height: 1.65;
-  }
-  input:focus, textarea:focus, select:focus { border-color: var(--ink); }
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:500;letter-spacing:.3px;opacity:0;transition:all .25s ease;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  .block-optional input[type="text"],
-  .block-optional textarea {
-    background: #f8fdf8;
-    border-color: var(--optional-border);
-  }
-  .block-optional input:focus,
-  .block-optional textarea:focus { border-color: var(--green); }
+/* ─── BOOKMARKLET CARD ─── */
+.bm-card{margin-top:20px;border:1px solid var(--light);border-radius:8px;background:#fff;padding:20px}
+.bm-kicker{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:6px}
+.bm-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.bm-intro{font-size:12px;color:#5f5a53;line-height:1.6;margin-bottom:16px}
+.bm-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.bm-step{display:flex;align-items:flex-start;gap:10px}
+.bm-step-num{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.bm-step-text{font-size:12px;color:#4a4540;line-height:1.55}
+.bm-step-text strong{color:var(--ink)}
+.bm-drag-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bm-drag-label{font-size:11px;color:var(--mid);font-weight:500;white-space:nowrap}
+.bm-badge{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:grab;text-decoration:none;user-select:none;transition:background .15s ease;white-space:nowrap;border:2px dashed transparent}
+.bm-badge:hover{background:#333}
+.bm-badge:active{cursor:grabbing}
+.bm-badge svg{flex-shrink:0}
+.bm-drag-hint{font-size:11px;color:var(--mid);line-height:1.5;margin-top:8px}
+.bm-already{margin-top:12px;padding-top:12px;border-top:1px solid var(--light);font-size:11px;color:var(--mid);line-height:1.55}
+.bm-already strong{color:var(--ink)}
 
-  select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7060'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 11px center;
-    background-color: white;
-    cursor: pointer;
-    resize: none;
-  }
+footer{background:var(--ink);color:#444;padding:12px 40px;font-size:10px;letter-spacing:1px;display:flex;justify-content:space-between}
 
-  /* UPLOAD HINT BOX */
-  .upload-box {
-    background: #1a1814;
-    border: 1.5px dashed #3a3428;
-    padding: 14px 16px;
-    margin-top: 6px;
-  }
-  .upload-box p {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: #6a6050;
-    line-height: 1.7;
-  }
-  .upload-box p strong { color: var(--highlight); }
-  .upload-box p em { color: #8a8070; font-style: italic; }
-
-  /* RIGHT PANEL */
-  .panel-right {
-    background: var(--code-bg);
-    padding: 36px 40px 60px;
-    position: sticky;
-    top: 0;
-    min-height: 100vh;
-  }
-  .panel-right .panel-title {
-    color: #5a5448;
-    border-bottom-color: #2a2820;
-  }
-
-  .prompt-output {
-    font-family: 'DM Mono', monospace;
-    font-size: 11.5px;
-    color: var(--code-text);
-    line-height: 1.85;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
-  /* highlight optional sections in prompt */
-  .prompt-output .opt { color: #7daa8a; }
-
-  .copy-btn {
-    display: block;
-    width: 100%;
-    background: var(--highlight);
-    color: var(--ink);
-    border: none;
-    padding: 13px;
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    margin-top: 24px;
-    transition: background 0.15s;
-  }
-  .copy-btn:hover { background: #ffc820; }
-  .copy-btn.copied { background: #7dff9d; }
-
-  footer {
-    background: var(--ink);
-    color: #3a3428;
-    padding: 16px 56px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  @media (max-width: 800px) {
-    .masthead { padding: 28px 20px 20px; }
-    .wrap { grid-template-columns: 1fr; }
-    .panel-left { border-right: none; border-bottom: 1.5px solid var(--rule); padding: 24px 20px 40px; }
-    .panel-right { padding: 24px 20px 40px; position: static; min-height: unset; }
-    footer { flex-direction: column; gap: 6px; padding: 16px 20px; }
-  }
+/* ─── RESPONSIVE ─── */
+@media(max-width:800px){
+  .masthead{padding:14px 20px;flex-wrap:wrap}
+  .masthead-meta{width:100%;margin-left:0;margin-top:4px}
+  .panel-left{padding:24px 20px 40px}
+  .focus-grid{grid-template-columns:1fr}
+  .mat-grid{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:4px;padding:12px 20px}
+}
 </style>
 </head>
 <body>
-
-<div class="masthead">
-  <div class="masthead-eye">AI Prompt Generator · v1.2 · For Microsoft Copilot</div>
-  <h1>Morning <span>Briefing</span></h1>
-  <p>Fill what you need → your Copilot prompt builds live on the right → copy and paste.</p>
-</div>
+<header class="masthead">
+  <span class="masthead-brand">RFE/RL</span>
+  <h1>Morning Briefing</h1>
+  <span class="masthead-meta">v5.0 · Briefing Request Builder for Microsoft Copilot</span>
+</header>
 
 <div class="wrap">
+<div class="panel-left">
 
-  <!-- ══ LEFT ══ -->
-  <div class="panel-left">
-    <div class="panel-title"><span class="num">01</span> Settings</div>
+  <!-- ── THE BASICS ── -->
+  <div class="sec-head">The Basics</div>
 
-    <!-- REQUIRED -->
-    <div class="section-label">Required</div>
-
-    <div class="block-required">
-      <div class="field-group">
-        <label>Briefing Depth</label>
-        <select id="depth" onchange="generate()">
-          <option value="5">Express — 5 min, headlines only</option>
-          <option value="10" selected>Standard — 10 min, headlines + context</option>
-          <option value="15">Deep — 15 min, full analysis</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label>Output Language</label>
-        <select id="lang" onchange="generate()">
-          <option value="English">English</option>
-          <option value="Persian (Farsi)">Persian (Farsi)</option>
-          <option value="French">French</option>
-          <option value="German">German</option>
-          <option value="Arabic">Arabic</option>
-          <option value="Spanish">Spanish</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label>Role Recipe
-          <span class="hint">Adds profession-specific instructions.</span>
-        </label>
-        <select id="recipe" onchange="generate()">
-          <option value="none">None — generic</option>
-          <option value="journalist">Journalist / Editor</option>
-          <option value="pm">Product Manager</option>
-          <option value="sales">Sales / Business Dev</option>
-          <option value="exec">Executive / Leader</option>
-          <option value="analyst">Analyst / Researcher</option>
-        </select>
-      </div>
-    </div>
-
-    <hr class="section-divider">
-
-    <!-- OPTIONAL FIELDS -->
-    <div class="section-label">Optional — cherry on top</div>
-
-    <div class="block-optional">
-      <div class="optional-badge">Optional</div>
-      <p class="optional-intro">
-        Copilot already knows who you are — your name, role, org, and the people around you
-        from your M365 profile. These fields are not required.<br><br>
-        Use them only when you want to <strong>sharpen the AI's judgment</strong> beyond what it
-        already knows: to steer it toward a specific angle, add topics it wouldn't guess
-        from your email history, or highlight people outside your org.
-        Leave any field empty and Copilot will use its own knowledge of you.
-      </p>
-
-      <div class="field-group">
-        <label>My Primary Function
-          <span class="hint green">
-            Not your title — what <em>decisions</em> do you make?
-            This anchors every "so what for me?" in the briefing.<br>
-            <strong>e.g.</strong> "I decide which stories get produced and assign journalists covering Iran."
-          </span>
-        </label>
-        <textarea id="fn" rows="2" placeholder="Leave blank — Copilot will infer from your profile." oninput="generate()"></textarea>
-      </div>
-
-      <div class="field-group">
-        <label>Additional Topics to Focus On
-          <span class="hint green">
-            Topics Copilot might not guess from your email alone.
-            One per line. It already knows your main beat — add the edges.
-          </span>
-        </label>
-        <textarea id="topics" rows="4" placeholder="Leave blank — Copilot will use your known interests.&#10;Or add specifics, e.g.:&#10;Iran pharmaceutical crisis&#10;AI deepfakes in state propaganda" oninput="generate()"></textarea>
-      </div>
-
-      <div class="field-group">
-        <label>Extra People to Prioritize
-          <span class="hint green">
-            People outside your org, or contacts Copilot might deprioritize.
-            Internal colleagues are already weighted by your email patterns.
-          </span>
-        </label>
-        <input type="text" id="people" placeholder="e.g. Abbas Araghchi, Steve Witkoff" oninput="generate()">
-      </div>
-    </div>
-
-    <hr class="section-divider">
-
-    <!-- DOCUMENT UPLOAD -->
-    <div class="section-label">Documents to include</div>
-
-    <div class="block-required">
-      <div class="field-group">
-        <label>Document Description & Focus
-          <span class="hint">
-            If you're uploading a file directly into Copilot alongside this prompt,
-            describe it here and what you want Copilot to extract from it.
-            The prompt will tell Copilot how to use it.
-          </span>
-        </label>
-        <textarea id="docs" rows="3" placeholder="e.g. Attached: last week's editorial strategy memo. Extract any open decisions or priorities relevant to today." oninput="generate()"></textarea>
-      </div>
-      <div class="upload-box">
-        <p>
-          <strong>↑ Upload your file directly in Copilot</strong> alongside this prompt —
-          not here in the generator.<br>
-          <em>Supported: Word docs, PDFs, Excel sheets, PowerPoint decks, plain text.</em>
-        </p>
-      </div>
-    </div>
-
+  <div class="field">
+    <div class="pills" id="rolePills"></div>
+    <div class="role-desc" id="roleDesc"></div>
   </div>
 
-  <!-- ══ RIGHT ══ -->
-  <div class="panel-right">
-    <div class="panel-title"><span class="num">02</span> Your Prompt — copy & paste into Copilot</div>
-    <div class="prompt-output" id="output"></div>
-    <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">⎘ Copy Prompt</button>
+  <div class="field">
+    <label class="field-label">Depth</label>
+    <div class="depth-wrap">
+      <div class="seg" id="depthSeg">
+        <button class="seg-btn" data-v="5" onclick="setDepth(this)">Express · 5 min</button>
+        <button class="seg-btn active" data-v="10" onclick="setDepth(this)">Standard · 10 min</button>
+        <button class="seg-btn" data-v="15" onclick="setDepth(this)">Deep · 15 min</button>
+      </div>
+      <div class="seg-hint" id="depthHint">Calendar + inbox triage + web search + internal signals. Recommended for most mornings.</div>
+    </div>
   </div>
 
+  <div class="field">
+    <label class="field-label">Language</label>
+    <select id="lang" onchange="generate()">
+      <option value="Albanian">Albanian</option><option value="Armenian">Armenian</option><option value="Azerbaijani">Azerbaijani</option><option value="Bashkir">Bashkir</option><option value="Belarusian">Belarusian</option><option value="Bosnian">Bosnian</option><option value="Bulgarian">Bulgarian</option><option value="Dari">Dari</option><option value="English" selected>English</option><option value="Georgian">Georgian</option><option value="Hungarian">Hungarian</option><option value="Kazakh">Kazakh</option><option value="Kyrgyz">Kyrgyz</option><option value="Macedonian">Macedonian</option><option value="Montenegrin">Montenegrin</option><option value="Pashto">Pashto</option><option value="Persian (Farsi)">Persian (Farsi)</option><option value="Romanian">Romanian</option><option value="Russian">Russian</option><option value="Serbian">Serbian</option><option value="Tajik">Tajik</option><option value="Tatar">Tatar</option><option value="Turkmen">Turkmen</option><option value="Ukrainian">Ukrainian</option><option value="Uzbek">Uzbek</option>
+    </select>
+  </div>
+
+  <div class="sec-gap"></div>
+
+  <!-- ── MAKE IT YOURS ── -->
+  <div class="sec-head">Make It Yours</div>
+  <p class="sec-intro optional-note">Everything in this section is optional. Leave it blank and Copilot will use your Microsoft 365 profile, calendar, email, and recent work as the baseline.</p>
+
+  <div class="field">
+    <label class="field-label" id="focusLabel">Focus mode <span class="optional-badge">Optional</span></label>
+    <div class="focus-grid" id="focusModeGrid"></div>
+    <div class="focus-dynamic" id="focusDynamic">
+      <label class="focus-dynamic-label" id="focusDynamicLabel"></label>
+      <textarea id="focus" rows="2" oninput="generate()"></textarea>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label" id="focusDetailLabel">Anyone to watch for? <span class="field-hint">— internal RFE/RL colleagues, external contacts, or public figures Copilot may not prioritize</span> <span class="optional-badge">Optional</span></label>
+    <input type="text" id="people" oninput="generate()">
+  </div>
+
+  <!-- ── SAVE DEFAULT + HISTORY ── -->
+  <div class="save-default-row">
+    <button class="save-default-btn" id="saveDefaultBtn" onclick="saveDefault()">Save as my default</button>
+    <span class="restore-note" id="restoreNote"></span>
+  </div>
+  <div class="history-wrap">
+    <button class="history-toggle" id="historyToggle" onclick="toggleHistory()">
+      <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Recent configurations
+    </button>
+    <div class="history-list" id="historyList"></div>
+  </div>
+
+  <div class="sec-gap"></div>
+
+  <!-- ── ATTACH MATERIALS ── -->
+  <div class="sec-head">Attach Materials</div>
+  <p class="sec-intro">Check what you'll include in the Copilot chat alongside this prompt.</p>
+
+  <div class="mat-grid" id="matGrid">
+    <label class="mat-card" onclick="toggleMat(this)">
+      <input type="checkbox" data-key="onedrive">
+      <div><div class="mat-title">📄 OneDrive / SharePoint file</div><div class="mat-desc">Drop a file into the Copilot chat</div></div>
+    </label>
+    <label class="mat-card" onclick="toggleMat(this)">
+      <input type="checkbox" data-key="email">
+      <div><div class="mat-title">📧 Email thread</div><div class="mat-desc">Copilot will search your inbox</div></div>
+    </label>
+    <label class="mat-card" onclick="toggleMat(this)">
+      <input type="checkbox" data-key="meeting">
+      <div><div class="mat-title">🎙️ Meeting transcript</div><div class="mat-desc">Pulled from your recent meetings</div></div>
+    </label>
+    <label class="mat-card" onclick="toggleMat(this)">
+      <input type="checkbox" data-key="chartbeat">
+      <div><div class="mat-title">📊 Chartbeat report</div><div class="mat-desc">From your inbox or dropped manually</div></div>
+    </label>
+    <label class="mat-card" onclick="toggleMat(this)">
+      <input type="checkbox" data-key="editorial">
+      <div><div class="mat-title">📋 Editorial plan / rundown</div><div class="mat-desc">Daily or weekly planning doc</div></div>
+    </label>
+    <label class="mat-card" onclick="toggleMat(this)">
+      <input type="checkbox" data-key="other">
+      <div><div class="mat-title">📎 Other attachment</div><div class="mat-desc">Any file pasted into Copilot</div></div>
+    </label>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Anything specific to extract? <span class="optional-badge">Optional</span></label>
+    <input type="text" id="matExtract" placeholder="e.g. Pull open decisions from the editorial plan" oninput="generate()">
+  </div>
+
+  <div class="handoff">
+    <div class="summary-bar" id="summaryBar">
+      <span class="summary-bar-icon">🤖</span>
+      <span class="summary-bar-text" id="summaryText"></span>
+    </div>
+    <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy My Briefing Request</button>
+    <div class="next-box">
+      <div class="next-kicker">Next step</div>
+      <div class="next-title">Open Copilot, paste, and send</div>
+      <p class="next-copy">First copy the briefing request above. Then open Outlook and select the Copilot chat button. If Copilot does not open inside Outlook, use the Microsoft 365 Copilot Chat fallback and paste the request there.</p>
+      <div class="link-row">
+        <a class="open-link" href="https://outlook.office.com/mail/" target="_blank" rel="noopener">Open Outlook</a>
+        <a class="open-link secondary" href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">Open Copilot Chat</a>
+      </div>
+    </div>
+
+    <!-- ── BOOKMARKLET ── -->
+    <div class="bm-card">
+      <div class="bm-kicker">One-time setup · 10 seconds</div>
+      <div class="bm-title">Open this tool in one click, from anywhere</div>
+      <p class="bm-intro">Instead of searching for this page every morning, you can add a shortcut to your browser's bookmark bar. Once it's there, one click opens this briefing tool and Copilot Chat side by side — from any page you're on.</p>
+      <div class="bm-steps">
+        <div class="bm-step">
+          <div class="bm-step-num">1</div>
+          <div class="bm-step-text">Make sure your <strong>bookmark bar is visible</strong>. In Chrome or Edge: press <strong>Ctrl+Shift+B</strong> (Windows) or <strong>⌘+Shift+B</strong> (Mac). A bar with your saved bookmarks will appear below the address bar.</div>
+        </div>
+        <div class="bm-step">
+          <div class="bm-step-num">2</div>
+          <div class="bm-step-text"><strong>Drag the black button below</strong> into that bookmark bar — the same way you'd drag a file into a folder. Drop it anywhere in the bar. It will appear as a small shortcut called "Morning Briefing".</div>
+        </div>
+        <div class="bm-step">
+          <div class="bm-step-num">3</div>
+          <div class="bm-step-text">That's it. <strong>Every morning, click it</strong> from wherever you are — Outlook, Teams, any webpage — and it will open this briefing tool with your saved settings, ready to go.</div>
+        </div>
+      </div>
+      <div class="bm-drag-row">
+        <span class="bm-drag-label">👇 Drag this into your bookmark bar:</span>
+        <a id="bmBadge" class="bm-badge" title="Drag me to your bookmark bar">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3 5l4 4 4-4M1 11h12" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Morning Briefing
+        </a>
+      </div>
+      <p class="bm-drag-hint">Can't drag? Right-click the button → "Bookmark this link" → save it to your bookmarks bar.</p>
+      <p class="bm-already"><strong>Already installed it?</strong> You can ignore this section. If you ever move or rename this file, drag a fresh copy to replace the old one.</p>
+    </div>
+
+    <div class="prompt-output" id="output" aria-hidden="true"></div>
+  </div>
+
+</div>
 </div>
 
 <footer>
-  <span>Morning Briefing System · v1.2 · May 2026</span>
-  <span>Designed for Microsoft Copilot + web-enabled AI assistants</span>
+  <span>RFE/RL · Morning Briefing System · v5.0 · May 2026</span>
+  <span>Digital Transformation Department · Designed for Microsoft Copilot</span>
 </footer>
+<div class="toast" id="toast"></div>
 
 <script>
-const RECIPES = {
-  none: '',
-  journalist: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ROLE: JOURNALIST / EDITOR
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-After Step 3, search competitor outlets for coverage of my topics in the last 24h.
-Flag stories they are running that I have not covered → list as ▸ STORY GAPS.
-Pull any relevant wire alerts (AP, Reuters, AFP).`,
+// ═══════════════════════════════════════════════════════════════
+// ROLE CONFIG
+// ═══════════════════════════════════════════════════════════════
+const ROLES={
 
-  pm: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ROLE: PRODUCT MANAGER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-After Step 3, check for competitor product announcements or release notes.
-Flag any pending PRs, deploys, or open critical issues if accessible.
-Add a ▸ PRODUCT PULSE section to the output.`,
+journalist:{
+  label:"Journalist / Editor",
+  desc:"Story developments, competitive gaps, wire alerts, source verification, editorial coordination.",
+  focusLabel:"What are you working on?",
+  focusPlaceholder:"e.g. Iran nuclear talks\nKremlin domestic policy\nCentral Asia water crisis",
+  peoplePlaceholder:"e.g. Bureau chief in Tbilisi, AP stringer in Kabul",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a journalist/editor at RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL is a US-funded international news organization broadcasting in 27 languages to 23 countries across Eastern Europe, Central Asia, the Caucasus, the Middle East, and Russia.
+Prioritize story developments, source verification, and competitive coverage positioning.`,
+  inboxExtra:`Flag emails from bureau correspondents, desk editors, and known sources as high-priority for BUCKET A.
+Group editorial planning messages and story coordination threads under BUCKET B.`,
+  webSearchExtra:`Focus on RFE/RL's coverage regions: Russia, Ukraine, Iran, Afghanistan, Central Asia (Kazakhstan, Kyrgyzstan, Tajikistan, Turkmenistan, Uzbekistan), Caucasus (Armenia, Azerbaijan, Georgia), Balkans (Bosnia, Kosovo, North Macedonia, Montenegro, Serbia, Bulgaria, Romania, Moldova), and Belarus.
 
-  sales: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ROLE: SALES / BUSINESS DEV
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Flag all emails from priority contacts as BUCKET A regardless of subject.
-Search for news about key accounts in the last 24h.
-Flag funding rounds, leadership changes, or deal activity in my space.
-Add a ▸ PIPELINE SIGNALS section to the output.`,
+After the main scan, search competitor and monitoring sources for stories I may have missed:
 
-  exec: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ROLE: EXECUTIVE / LEADER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Use Express depth — lead with headlines, no elaboration.
-Add ▸ TEAM STATUS: blockers, escalations, personnel issues flagged to me.
-Add ▸ DECISION REQUIRED TODAY: anything needing my sign-off now.`,
+Wire services (cite as reliable):
+  AP, Reuters, AFP
 
-  analyst: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ROLE: ANALYST / RESEARCHER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-After Step 3, search for new publications, reports, or datasets on my topics this week.
-Note source type (academic / think tank / government / industry).
-Add a ▸ RESEARCH PULSE section to the output.`
+State/semi-official media (monitor for narrative tracking — do NOT cite as reliable without independent verification):
+  TASS, RIA Novosti, Interfax (Russia); IRNA, Fars News, Press TV (Iran); Xinhua, CGTN (China); BelTA (Belarus); Khaama Press (Afghanistan — semi-official)
+
+International broadcasters (independent, cross-check):
+  BBC (all relevant language services), VOA, Deutsche Welle, France 24, Al Jazeera, NHK World
+
+Independent / exile media (generally reliable, note editorial stance):
+  Meduza, The Moscow Times, Novaya Gazeta Europe, Mediazona (Russia)
+  Iran International, IranWire, Manoto (Iran)
+  Kyiv Independent, Ukrainska Pravda, Babel (Ukraine)
+  Charter97, Nasha Niva (Belarus)
+
+Regional specialists (reliable, often first on niche stories):
+  Eurasianet, BIRN (Balkans), OC Media, JAMnews (Caucasus), CABAR.asia (Central Asia), TOLOnews, Pajhwok (Afghanistan), Kloop (Kyrgyzstan), ACCA Media (Tajikistan)
+
+Flag stories competitors are running that RFE/RL has not covered → list as ▸ STORY GAPS.
+Pull any relevant wire alerts (AP, Reuters, AFP) filed in the last 12 hours.`,
+  internalExtra:`Also flag: desk assignment changes, editorial priority shifts, story coordination requests from other services, any NPS/Pyramid planning updates affecting your workflow.`,
+  extraOutput:`▸ STORY GAPS
+[Stories competitors are running that RFE/RL has not covered — source, headline, one-line summary]
+[If none: "No significant gaps identified."]
+
+▸ WIRE WATCH
+[Relevant wire alerts filed in the last 12 hours — AP, Reuters, AFP]
+[If none: "No new wire alerts on your topics."]`
+},
+
+service_director:{
+  label:"Service Director",
+  desc:"Service editorial priorities, audience signals, staffing, programming, cross-service coordination.",
+  focusLabel:"What's top of mind for your service?",
+  focusPlaceholder:"e.g. Audience growth in diaspora\nUpcoming election coverage\nStaffing gaps",
+  peoplePlaceholder:"e.g. Regional manager, EIC office, key correspondents",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a Language Service Director at RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL is a US-funded international news organization broadcasting in 27 languages to 23 countries.
+A Service Director oversees one language service's editorial output, staffing, audience strategy, and coordination with regional management and the Editor in Chief.
+Prioritize service-level editorial priorities, audience signals, staffing, and cross-service coordination.`,
+  inboxExtra:`Flag emails from the Editor in Chief, regional managers, and service staff escalations as BUCKET A.
+Group service-internal editorial discussions and routine coordination under BUCKET B.
+Flag audience metrics alerts, HR/staffing notices, and vendor/partner communications under BUCKET B if relevant, BUCKET C otherwise.`,
+  webSearchExtra:`Focus on your service's specific coverage region and language area.
+Search for:
+  - Breaking or escalating stories in your region
+  - Media landscape changes: shutdowns, bans, censorship laws, journalist arrests, internet restrictions
+  - Competitor positioning in your language and region
+
+Scan these sources:
+Wire services: AP, Reuters, AFP
+International broadcasters (relevant language services): BBC, VOA, Deutsche Welle, France 24, Al Jazeera
+Regional/local competitors: scan based on the service's region (e.g., Meduza for Russian, Iran International for Persian, Kyiv Independent for Ukrainian, BIRN for Balkans, etc.)
+State media (for narrative tracking only): TASS, IRNA, BelTA, Xinhua — note when state narratives conflict with independent reporting
+Press freedom monitors: CPJ, RSF, IFEX
+
+Flag stories competitors in your language are running that your service has not covered → list as ▸ COVERAGE GAPS.`,
+  internalExtra:`Also flag:
+  - Staffing changes or leave affecting coverage capacity
+  - Service-level editorial directives from EIC or regional manager
+  - Audience metric alerts (traffic spikes, drops, social engagement)
+  - Cross-service coordination requests (shared stories, translations)
+  - NPS/Pyramid or editorial tool updates affecting your service
+  - Training schedules or tool adoption deadlines`,
+  extraOutput:`📊 SERVICE PULSE
+[Audience signals, staffing status, programming changes — 2 to 3 bullet points]
+[If nothing notable: "No service-level alerts."]
+
+🤝 COORDINATION ITEMS
+[Cross-service requests, shared stories, translation needs, EIC directives]
+[If none: "No coordination items pending."]
+
+▸ COVERAGE GAPS
+[Stories competitors in your language are running that your service has not covered]
+[If none: "No significant gaps identified."]`
+},
+
+regional_manager:{
+  label:"Regional Manager",
+  desc:"Regional geopolitics, cross-service alignment, bureau operations, journalist safety, resources.",
+  focusLabel:"What's moving in your region?",
+  focusPlaceholder:"e.g. Media law changes in Georgia\nBureau security in Kabul\nCross-service Ukraine coordination",
+  peoplePlaceholder:"e.g. Service directors, bureau chiefs, security officer",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a Regional Manager at RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL is a US-funded international news organization broadcasting in 27 languages to 23 countries.
+A Regional Manager oversees multiple language services within a geographic region, coordinating editorial strategy, bureau operations, resource allocation, and journalist safety.
+Prioritize regional geopolitical developments, cross-service alignment, bureau operations, and resource coordination.`,
+  inboxExtra:`Flag emails from service directors, bureau chiefs, EIC, and security/operations staff as BUCKET A.
+Flag budget/resource requests and HR escalations as BUCKET A if they require your decision today.
+Group routine service reports and coordination threads under BUCKET B.`,
+  webSearchExtra:`Focus on your region's geopolitical landscape across all services you manage.
+Search for:
+  - Regional geopolitical shifts: government changes, military developments, diplomatic moves
+  - Media freedom and journalist safety: arrests, laws, threats, access restrictions (CPJ, RSF, IFEX)
+  - Cross-cutting stories that span multiple services in your region
+  - Humanitarian developments affecting coverage (displacement, infrastructure, access)
+
+Scan these sources:
+Wire services: AP, Reuters, AFP
+Regional specialists: Eurasianet, BIRN (Balkans), OC Media, JAMnews (Caucasus), CABAR.asia (Central Asia), TOLOnews (Afghanistan), ICG (International Crisis Group)
+International broadcasters: BBC, VOA, Deutsche Welle, Al Jazeera (regional desks)
+Press freedom: CPJ, RSF, IFEX, OSCE Representative on Freedom of the Media
+State media (narrative tracking only): TASS, IRNA, BelTA, Xinhua
+
+Identify stories with cross-service potential → list as ▸ CROSS-SERVICE STORIES.`,
+  internalExtra:`Also flag:
+  - Bureau security alerts or travel advisories
+  - Resource allocation requests from service directors
+  - Service director escalations requiring your intervention
+  - Personnel changes (hires, departures, reassignments) across your services
+  - NPS/Pyramid or workflow tool issues reported by services
+  - Any unresolved items from yesterday's coordination`,
+  extraOutput:`🌍 REGIONAL OVERVIEW
+[Top 2-3 geopolitical developments across your region — one line each]
+
+🏢 BUREAU STATUS
+[Security alerts, operational issues, staffing — by bureau]
+[If nothing flagged: "All bureaus operating normally."]
+
+▸ CROSS-SERVICE STORIES
+[Stories with coverage potential across multiple services in your region]
+[If none: "No cross-service opportunities identified."]`
+},
+
+eic:{
+  label:"Editor in Chief",
+  desc:"Decisions needed, editorial standards, reputation watch, top stories across all regions.",
+  focusLabel:"What's on your radar?",
+  focusPlaceholder:"e.g. Standards review follow-up\nRussia-Iran cross-cutting story\nBreaking news readiness",
+  peoplePlaceholder:"e.g. Board liaison, regional managers, legal counsel",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for the Editor in Chief of RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL is a US-funded international news organization broadcasting in 27 languages to 23 countries across Eastern Europe, Central Asia, the Caucasus, the Middle East, and Russia.
+The EIC oversees all editorial output, standards, and strategic direction.
+Lead with decisions needed, reputation risks, and the top stories across all coverage regions. Be maximally concise — the EIC's time is the scarcest resource.`,
+  inboxExtra:`Flag as BUCKET A: anything requiring editorial sign-off, standards/ethics escalations, breaking news decisions, leadership/board communications, legal matters.
+Deprioritize routine operational emails — push to BUCKET C or skip.
+Flag service director and regional manager escalations that need EIC-level attention under BUCKET A.`,
+  webSearchExtra:`Scan the top stories across ALL RFE/RL coverage regions (Russia, Ukraine, Iran, Afghanistan, Central Asia, Caucasus, Balkans, Belarus, and beyond).
+Focus on:
+  - Breaking or rapidly escalating stories requiring editorial positioning
+  - Sourcing and verification sensitivities (conflicting reports, contested claims)
+  - Stories receiving major global attention where RFE/RL must have a position
+  - Media freedom incidents affecting RFE/RL staff or operations
+  - Disinformation narratives that RFE/RL may need to counter
+
+Scan these sources for the global picture:
+Tier 1 wires: Reuters, AP, AFP
+Global outlets: BBC, CNN, NYT, Washington Post, The Guardian, Financial Times, Al Jazeera
+Regional wires/outlets: Interfax, TASS (narrative tracking), IRNA (narrative tracking), Xinhua (narrative tracking)
+Press freedom: CPJ, RSF
+
+Monitor state media (TASS, IRNA, BelTA, Xinhua, RT) for disinformation angles and counter-narrative needs.
+
+Identify stories requiring EIC-level editorial decisions → flag in ⚖️ DECISIONS REQUIRED.`,
+  internalExtra:`Also flag:
+  - Leadership and personnel changes across RFE/RL
+  - Editorial standards issues (complaints, corrections, retractions pending)
+  - Policy decisions pending your sign-off
+  - Reputation risks (legal threats, public criticism, social media escalations)
+  - Breaking news readiness (staffing, bureau coverage capacity)
+  - Board or donor communications requiring response
+  - Any escalations from regional managers or service directors`,
+  extraOutput:`⚖️ DECISIONS REQUIRED
+[Items needing EIC sign-off today — decision, deadline, who is waiting]
+[If none: "No decisions pending."]
+
+🛡️ EDITORIAL WATCH
+[Standards issues, reputation risks, corrections, legal — one line each]
+[If none: "No editorial risks flagged."]
+
+🌐 CROSS-CUTTING STORIES
+[Stories spanning multiple regions/services that need unified editorial direction]
+[If none: "No cross-cutting stories requiring coordination."]`
+},
+
+digital_transformation:{
+  label:"Digital Transformation",
+  desc:"Tech adoption, AI in media, NPS/Pyramid rollout, Copilot, workflow tools, editorial staff feedback.",
+  focusLabel:"What tools or projects are you tracking?",
+  focusPlaceholder:"e.g. NPS/Pyramid rollout blockers\nAI summarization pilot\nCopilot adoption metrics",
+  peoplePlaceholder:"e.g. Vendor contacts, Jan Sapar (NPS), pilot service leads",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a member of the Digital Transformation Department at RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL is a US-funded international news organization broadcasting in 27 languages to 23 countries.
+The Digital Transformation Department drives technology adoption, AI integration, editorial workflow modernization, and tool rollouts across the organization. Key systems include NPS/Pyramid (Dalet-based editorial planning), SharePoint, Microsoft Teams, Microsoft 365 Copilot, and various CMS platforms.
+Prioritize technology adoption signals, AI/ML developments in media, internal tool rollout status, and workflow optimization.`,
+  inboxExtra:`Flag emails about: tool adoption blockers, vendor updates (Dalet, Microsoft, others), training requests, NPS/Pyramid issues, Copilot feedback, and editorial staff complaints about digital tools as BUCKET A.
+Group routine IT notifications, system maintenance notices, and non-urgent vendor comms under BUCKET B.
+Flag industry newsletters and AI/media news under BUCKET C.`,
+  webSearchExtra:`Focus on AI/ML developments in newsrooms and media organizations, and on tools directly relevant to RFE/RL's stack.
+
+Search for developments in:
+  - AI in newsrooms: automated transcription, translation, summarization, fact-checking, content moderation
+  - CMS and editorial planning tools: Dalet Pyramid, ENPS, Superdesk, Kordiam, Vizrt
+  - Microsoft 365 ecosystem: Copilot updates, Teams features, SharePoint enhancements, Power Platform
+  - Media workflow automation: MAM systems, cloud-based editing, remote production
+  - Digital audience tools: analytics platforms, SEO, social distribution, newsletter tools
+
+Scan these sources:
+Industry/journalism tech: Nieman Lab, Reuters Institute, Press Gazette, Journalism.co.uk, Poynter, INMA
+AI/tech news: TechCrunch, The Verge, VentureBeat, MIT Technology Review, The Decoder, Ars Technica
+Microsoft ecosystem: Microsoft 365 Blog, Microsoft Tech Community, Windows Central, WinBuzzer
+Vendor announcements: Dalet blog, Anthropic blog (Claude), OpenAI blog
+
+Flag developments that could affect RFE/RL's current or planned tool stack.`,
+  internalExtra:`Also flag:
+  - NPS/Pyramid rollout status: training schedules, service adoption progress, reported issues
+  - Microsoft 365 Copilot: adoption feedback, new features relevant to editorial workflows
+  - SharePoint/Teams issues reported by editorial staff
+  - Training schedule updates and upcoming sessions
+  - Vendor contract milestones or renewal deadlines
+  - Editorial staff requests for new digital tools or workflow changes
+  - Any unresolved support tickets or escalations from yesterday`,
+  extraOutput:`🔧 TOOL ADOPTION PULSE
+[NPS/Pyramid rollout status, Copilot adoption, other tool updates — 2 to 3 bullets]
+[If nothing notable: "No adoption updates."]
+
+📡 TECH RADAR
+[AI/media tech developments relevant to RFE/RL — what changed, why it matters]
+[If nothing new: "No significant developments in the last 24 hours."]
+
+📋 SUPPORT QUEUE
+[Open issues, training requests, vendor follow-ups needing attention]
+[If clear: "No open support items."]`
+},
+
+generic:{
+  label:"Generic / Other",
+  desc:"General-purpose briefing tailored from your M365 profile.",
+  focusLabel:"Anything specific on your mind?",
+  focusPlaceholder:"Leave blank — Copilot will use what it knows about you.",
+  peoplePlaceholder:"e.g. External contacts Copilot might miss",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a staff member at RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL is a US-funded international news organization broadcasting in 27 languages to 23 countries.
+Tailor the briefing to what you know about this person from their Microsoft 365 profile — their name, role, department, team, and email patterns.`,
+  inboxExtra:'',
+  webSearchExtra:`Based on what you know about my role and work at RFE/RL, search for significant developments on the topics most relevant to me. Use today's date.`,
+  internalExtra:'',
+  extraOutput:''
+}
+
 };
 
-function generate() {
-  const fn      = document.getElementById('fn').value.trim();
-  const topics  = document.getElementById('topics').value.trim();
-  const people  = document.getElementById('people').value.trim();
-  const docs    = document.getElementById('docs').value.trim();
-  const depth   = document.getElementById('depth').value;
-  const lang    = document.getElementById('lang').value;
-  const recipe  = document.getElementById('recipe').value;
+// ═══════════════════════════════════════════════════════════════
+// MATERIAL DESCRIPTIONS FOR PROMPT
+// ═══════════════════════════════════════════════════════════════
+const MATERIALS={
+  onedrive:{title:"OneDrive/SharePoint file",instruction:"I have attached a file from OneDrive or SharePoint. Analyze its contents and cross-reference with the briefing findings."},
+  email:{title:"Email thread",instruction:"Search my Outlook inbox for recent email threads relevant to today's briefing topics. Use them as context for prep notes and action items."},
+  meeting:{title:"Meeting transcript",instruction:"Pull notes or transcripts from my recent meetings. Use them to identify open items, decisions made, and follow-ups."},
+  chartbeat:{title:"Chartbeat analytics report",instruction:"A Chartbeat analytics report is included. It may be found as a recent email in my Outlook inbox (search for 'Chartbeat') or I have manually attached it to this chat. Use it to identify audience trends, top-performing content, and traffic patterns relevant to my role."},
+  editorial:{title:"Editorial plan / rundown",instruction:"I have included our editorial plan or daily rundown. Extract story assignments, priorities, deadlines, and any gaps or conflicts."},
+  other:{title:"Other attachment",instruction:"I have attached an additional file. Analyze its contents and integrate relevant findings into the briefing."}
+};
 
-  // Build optional block — only include lines that have content
-  const optionalLines = [];
+const FOCUS_MODES={
+  none:{
+    title:"Use my normal day",
+    desc:"No special steer; let Copilot infer priorities.",
+    instruction:"Use my Microsoft 365 profile, calendar, inbox, meetings, files, and recent work to infer today's main priorities."
+  },
+  meetings:{
+    title:"Meetings first",
+    desc:"Prepare me for calls, decisions, and follow-ups.",
+    instruction:"Make today's meetings, calls, decisions, prep notes, and follow-ups the main focus of the briefing."
+  },
+  delivery:{
+    title:"Deliver a task",
+    desc:"Help me finish a report, story, plan, or deadline.",
+    instruction:"Make the task, report, story, plan, or deadline I am trying to deliver the main focus of the briefing."
+  },
+  topic:{
+    title:"Follow a topic",
+    desc:"Track a story, article, region, issue, or public figure.",
+    instruction:"Make the topic, article, region, issue, organization, or public figure I name the main focus of the briefing."
+  },
+  other:{
+    title:"Other",
+    desc:"Write the main focus manually.",
+    instruction:"Use the focus I describe manually as the main focus of the briefing."
+  }
+};
 
-  if (fn) {
-    optionalLines.push(`My primary function (use this to sharpen "so what for me?" judgments):\n  ${fn}`);
-  }
-  if (topics) {
-    const tLines = topics.split('\n').filter(t => t.trim()).map(t => `  - ${t.trim()}`).join('\n');
-    optionalLines.push(`Additional topics to focus on beyond what you already know about me:\n${tLines}`);
-  }
-  if (people) {
-    optionalLines.push(`Extra people to flag as priority (in addition to my known frequent contacts):\n  ${people}`);
-  }
+// ═══════════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════════
+const LS_DEFAULT='rferl_briefing_default';
+const LS_HISTORY='rferl_briefing_history';
+const MAX_HISTORY=5;
 
-  const optionalBlock = optionalLines.length > 0
-    ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const DEPTH_HINTS={
+  '5':'Calendar + inbox triage only. Web search and internal signals skipped. Best for busy mornings when you need the essentials fast.',
+  '10':'Calendar + inbox triage + web search + internal signals. Recommended for most mornings.',
+  '15':'Full briefing plus deeper narrative context, drill-down prompts, and expanded sourcing. Best for heavy prep days or breaking news.'
+};
+
+// Dynamic field prompts per focus mode — what Copilot needs to know
+const FOCUS_MODE_PROMPTS={
+  none:  {label:null, placeholder:null},
+  meetings:{label:'Any meeting you want to prep for?', placeholder:'e.g. Editorial board call at 10am — need talking points on Ukraine coverage gaps'},
+  delivery:{label:'What are you working on and when is it due?', placeholder:'e.g. Analysis piece on Iran nuclear talks — deadline Friday 18:00'},
+  topic:  {label:'Which topic, region, or public figure?', placeholder:'e.g. Kremlin succession signals\nAfghanistan Taliban media policy\nKyrgyzstan election candidates'},
+  other:  {label:'Describe what you need', placeholder:'e.g. I need a full background brief on the new Azerbaijani ambassador before our interview at noon'}
+};
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let currentRole='journalist';
+let currentDepth='10';
+let currentFocusMode='none';
+
+// ═══════════════════════════════════════════════════════════════
+// BUILD ROLE PILLS
+// ═══════════════════════════════════════════════════════════════
+function buildPills(){
+  const c=document.getElementById('rolePills');
+  c.innerHTML='';
+  for(const[k,v]of Object.entries(ROLES)){
+    const b=document.createElement('button');
+    b.className='pill'+(k===currentRole?' active':'');
+    b.textContent=v.label;
+    b.dataset.role=k;
+    b.onclick=function(){setRole(k)};
+    c.appendChild(b);
+  }
+}
+
+function buildFocusModes(){
+  const c=document.getElementById('focusModeGrid');
+  c.innerHTML='';
+  for(const[k,v]of Object.entries(FOCUS_MODES)){
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='focus-card'+(k===currentFocusMode?' active':'');
+    b.dataset.focusMode=k;
+    b.innerHTML=`<span class="focus-title">${v.title}</span><span class="focus-desc">${v.desc}</span>`;
+    b.onclick=function(){setFocusMode(k)};
+    c.appendChild(b);
+  }
+}
+
+function setFocusMode(mode){
+  currentFocusMode=mode;
+  document.querySelectorAll('.focus-card').forEach(b=>b.classList.toggle('active',b.dataset.focusMode===mode));
+
+  const dynWrap=document.getElementById('focusDynamic');
+  const dynLabel=document.getElementById('focusDynamicLabel');
+  const dynArea=document.getElementById('focus');
+  const prompt=FOCUS_MODE_PROMPTS[mode];
+
+  if(mode==='none'||!prompt.label){
+    dynWrap.classList.add('hidden');
+    dynArea.value='';
+  } else {
+    dynWrap.classList.remove('hidden');
+    dynLabel.textContent=prompt.label;
+    dynArea.placeholder=prompt.placeholder;
+  }
+  generate();
+}
+
+function setRole(r){
+  currentRole=r;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('active',p.dataset.role===r));
+  const d=document.getElementById('roleDesc');
+  d.classList.add('fading');
+  setTimeout(()=>{
+    d.textContent=ROLES[r].desc;
+    d.classList.remove('fading');
+  },150);
+  document.getElementById('people').placeholder=ROLES[r].peoplePlaceholder;
+  setFocusMode(currentFocusMode);
+  generate();
+}
+
+function setDepth(el){
+  currentDepth=el.dataset.v;
+  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const hint=document.getElementById('depthHint');
+  hint.style.opacity='0';
+  setTimeout(()=>{
+    hint.textContent=DEPTH_HINTS[currentDepth];
+    hint.style.opacity='1';
+  },120);
+  generate();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MATERIAL CHECKBOXES
+// ═══════════════════════════════════════════════════════════════
+function toggleMat(card){
+  setTimeout(()=>{
+    const cb=card.querySelector('input[type="checkbox"]');
+    card.classList.toggle('checked',cb.checked);
+    generate();
+  },0);
+}
+
+function getCheckedMaterials(){
+  const out=[];
+  document.querySelectorAll('.mat-card input[type="checkbox"]:checked').forEach(cb=>{
+    out.push(cb.dataset.key);
+  });
+  return out;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROMPT GENERATION
+// ═══════════════════════════════════════════════════════════════
+function generate(){
+  const cfg=ROLES[currentRole];
+  const lang=document.getElementById('lang').value;
+  const focusMode=FOCUS_MODES[currentFocusMode];
+  const focus=document.getElementById('focus').value.trim();
+  const people=document.getElementById('people').value.trim();
+  const extract=document.getElementById('matExtract').value.trim();
+  const mats=getCheckedMaterials();
+
+  const optLines=[];
+  if(currentFocusMode!=='none')optLines.push(`Main focus for today (optional user steer):\n  ${focusMode.title}: ${focusMode.instruction}`);
+  if(focus){
+    const fl=focus.split('\n').filter(t=>t.trim()).map(t=>`  - ${t.trim()}`).join('\n');
+    optLines.push(`Additional focus detail (give extra weight to this):\n${fl}`);
+  }
+  if(people)optLines.push(`Extra people to flag as priority (internal RFE/RL colleagues, external contacts, or public figures outside my usual orbit):\n  ${people}`);
+
+  const optBlock=optLines.length>0?`
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ADDITIONAL FOCUS (optional overrides)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${optionalLines.join('\n\n')}`
-    : '';
+${optLines.join('\n\n')}
+`:'';
 
-  const docBlock = docs
-    ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-UPLOADED DOCUMENT
+  let matBlock='';
+  if(mats.length>0){
+    const lines=mats.map(k=>`• ${MATERIALS[k].title}: ${MATERIALS[k].instruction}`).join('\n');
+    matBlock=`
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-I have uploaded a file alongside this prompt. Use it as follows:
-  ${docs}
-Cross-reference the document with your findings in Steps 1–4 where relevant.`
-    : '';
+MATERIALS PROVIDED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The following materials are available for this briefing:
+${lines}${extract?'\n\nSpecific extraction request: '+extract:''}
+Cross-reference these materials with your findings in Steps 1–4 where relevant.
+`;
+  }
 
-  const peopleNote = people
-    ? `\nAlso flag any email from ${people} as BUCKET A regardless of subject.\n`
-    : '';
+  const peopleNote=people?`\nAlso flag any email, meeting, document, or news mention involving ${people} as priority context. This can include RFE/RL colleagues, external contacts, or public figures.\n`:'';
+  const focusTopics=focus?`\nGive extra weight to these specific focus details:\n${focus.split('\n').filter(t=>t.trim()).map(t=>`  - ${t.trim()}`).join('\n')}\n`:'';
+  const inboxExtraBlock=cfg.inboxExtra?`\n${cfg.inboxExtra}\n`:'';
+  const internalExtraBlock=cfg.internalExtra?`\n${cfg.internalExtra}\n`:'';
+  const extraOutputBlock=cfg.extraOutput?`\n${cfg.extraOutput}\n`:'';
 
-  const recipeBlock = RECIPES[recipe] || '';
+  const today=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-  const prompt =
-`You are an expert briefing assistant preparing my morning briefing.
-Today is [TODAY'S DATE — auto-insert].
-Deliver the briefing in ${lang}, ready to read in ${depth} minutes.
+  const prompt=
+`${cfg.systemNote}
+
+Today is ${today}.
+Deliver the briefing in ${lang}, ready to read in ${currentDepth} minutes.
 Be factual, concise, and specific. No padding. No editorializing.
 
 You already know who I am from my Microsoft 365 profile — my name, role,
-organization, team, and email history. Use that knowledge as your baseline.
-${optionalBlock ? '\n' + optionalBlock + '\n' : ''}${docBlock ? '\n' + docBlock + '\n' : ''}
+service, department, team, and email history. Use that knowledge as your baseline.
+${optBlock}${matBlock}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 STEP 1 — SCAN MY CALENDAR
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -559,7 +836,7 @@ Read emails since yesterday 17:00. Sort into:
   BUCKET B — Need to know (no action needed, but relevant)
   BUCKET C — Context (feeds and news relevant to my work)
   BUCKET D — Noise (skip entirely — do not report)
-${peopleNote}
+${inboxExtraBlock}${peopleNote}
 Report only A, B, C.
 For A: sender, subject, what is needed, urgency level.
 For B and C: group by theme and summarize — not individual emails.
@@ -568,9 +845,8 @@ For B and C: group by theme and summarize — not individual emails.
 STEP 3 — WEB SEARCH: MY TOPICS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Based on what you know about my role and work, search for significant
-developments on the topics most relevant to me. Use today's date.
-${topics ? `\nGive extra weight to these specific topics:\n${topics.split('\n').filter(t=>t.trim()).map(t=>`  - ${t.trim()}`).join('\n')}\n` : ''}
+${cfg.webSearchExtra}
+${focusTopics}
 Before including any story, apply this filter:
   → Did something materially change in the last 24 hours?
   → Yes: include it.
@@ -585,12 +861,14 @@ For each new or escalating story:
 STEP 4 — INTERNAL SIGNALS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-From my email and connected tools, flag:
+From my email, Teams messages, and connected Microsoft 365 tools, flag:
   - Org changes (leadership, structure, personnel)
   - Live internal decisions relevant to my role
   - Anything unresolved from yesterday still open
   - Anyone in my frequent contacts waiting on a response from me
-${recipeBlock}
+  - NPS/Pyramid planning updates or editorial tool changes
+  - SharePoint, Teams, or workflow-related announcements
+${internalExtraBlock}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OUTPUT — use this exact format
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -613,7 +891,7 @@ OUTPUT — use this exact format
   [So what for me: one sentence]
 
 🏢 INTERNAL SIGNALS
-[Org changes, open items, people needing response]
+[Org changes, open items, people needing response, tool updates]
 [If none: "Nothing flagged."]
 
 🔎 WATCH TODAY
@@ -621,7 +899,7 @@ OUTPUT — use this exact format
 
 ⚠️ FLAGS
 [Sourcing gaps, sensitivities, risks — omit section if nothing to flag]
-
+${extraOutputBlock}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 INTERACTIVE DRILL-DOWN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -652,28 +930,283 @@ RULES — apply throughout
 ✓ Attribute every claim where the source matters
 ✓ Flag uncertainty — never state unconfirmed things as fact
 ✓ Prioritize ruthlessly — not everything is equally important
+✓ RFE/RL editorial standards apply: accuracy, fairness, balance
 ✗ No filler phrases ("it is worth noting that", "importantly", etc.)
 ✗ No generic advice ("you may want to consider...")
-✗ No repetition — say it once, say it well`;
+✗ No repetition — say it once, say it well
+✗ Never cite state media (TASS, IRNA, BelTA, Xinhua) as reliable without independent verification`;
 
-  document.getElementById('output').textContent = prompt;
+  document.getElementById('output').textContent=prompt;
+  updateSummary();
 }
 
-function copyPrompt() {
-  const text = document.getElementById('output').textContent;
-  if (!text) return;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = '✓ Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '⎘ Copy Prompt';
-      btn.classList.remove('copied');
-    }, 2200);
+// ═══════════════════════════════════════════════════════════════
+// PLAIN ENGLISH SUMMARY
+// ═══════════════════════════════════════════════════════════════
+function updateSummary(){
+  const cfg=ROLES[currentRole];
+  const lang=document.getElementById('lang').value;
+  const focus=document.getElementById('focus').value.trim();
+  const people=document.getElementById('people').value.trim();
+  const mats=getCheckedMaterials();
+  const focusMode=FOCUS_MODES[currentFocusMode];
+
+  // Depth phrase
+  const depthPhrase={
+    '5':'an express 5-minute',
+    '10':'a standard 10-minute',
+    '15':'a deep 15-minute'
+  }[currentDepth]||'a';
+
+  // Role label — lower-case, readable
+  const roleLabel=cfg.label.toLowerCase();
+
+  // Language note
+  const langNote=lang==='English'?'in English':` in ${lang}`;
+
+  // Focus phrase
+  let focusPart='';
+  if(currentFocusMode!=='none'&&focusMode){
+    focusPart=`, focused on <strong>${focusMode.title.toLowerCase()}</strong>`;
+    if(focus){
+      const first=focus.split('\n')[0].trim();
+      if(first)focusPart+=` (${first}${focus.split('\n').filter(t=>t.trim()).length>1?'…':''})`;
+    }
+  } else if(focus){
+    const first=focus.split('\n')[0].trim();
+    focusPart=`, with extra weight on <strong>${first}${focus.split('\n').filter(t=>t.trim()).length>1?'…':''}</strong>`;
+  }
+
+  // Materials phrase
+  let matPart='';
+  if(mats.length===1){
+    matPart=`, using your <strong>${MATERIALS[mats[0]].title.toLowerCase()}</strong>`;
+  } else if(mats.length===2){
+    matPart=`, using your <strong>${MATERIALS[mats[0]].title.toLowerCase()}</strong> and <strong>${MATERIALS[mats[1]].title.toLowerCase()}</strong>`;
+  } else if(mats.length>2){
+    matPart=`, with <strong>${mats.length} materials attached</strong>`;
+  }
+
+  // People phrase
+  const peoplePart=people?`, and flagging anything involving <strong>${people.split(',')[0].trim()}${people.split(',').length>1?'…':''}</strong>`:'';
+
+  const sentence=`Copilot will prepare ${depthPhrase} briefing for a <strong>${roleLabel}</strong>${langNote}${focusPart}${matPart}${peoplePart}.`;
+
+  document.getElementById('summaryText').innerHTML=sentence;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SAVE DEFAULT CONFIG
+// ═══════════════════════════════════════════════════════════════
+function getConfig(){
+  return{
+    role:currentRole,
+    depth:currentDepth,
+    lang:document.getElementById('lang').value,
+    focusMode:currentFocusMode,
+    people:document.getElementById('people').value.trim()
+  };
+}
+
+function applyConfig(cfg,skipHistory){
+  currentRole=cfg.role||'journalist';
+  currentDepth=cfg.depth||'10';
+  currentFocusMode=cfg.focusMode||'none';
+
+  // Role pills
+  document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('active',p.dataset.role===currentRole));
+  document.getElementById('roleDesc').textContent=ROLES[currentRole].desc;
+
+  // Depth
+  document.querySelectorAll('.seg-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.v===currentDepth);
   });
+  document.getElementById('depthHint').textContent=DEPTH_HINTS[currentDepth];
+
+  // Language
+  if(cfg.lang)document.getElementById('lang').value=cfg.lang;
+
+  // People
+  if(cfg.people)document.getElementById('people').value=cfg.people;
+  document.getElementById('people').placeholder=ROLES[currentRole].peoplePlaceholder;
+
+  // Focus mode
+  document.querySelectorAll('.focus-card').forEach(b=>b.classList.toggle('active',b.dataset.focusMode===currentFocusMode));
+  const prompt=FOCUS_MODE_PROMPTS[currentFocusMode];
+  const dynWrap=document.getElementById('focusDynamic');
+  const dynLabel=document.getElementById('focusDynamicLabel');
+  const dynArea=document.getElementById('focus');
+  if(currentFocusMode==='none'||!prompt.label){
+    dynWrap.classList.add('hidden');
+  } else {
+    dynWrap.classList.remove('hidden');
+    dynLabel.textContent=prompt.label;
+    dynArea.placeholder=prompt.placeholder;
+  }
+
+  generate();
 }
 
-generate();
+function saveDefault(){
+  const cfg=getConfig();
+  localStorage.setItem(LS_DEFAULT,JSON.stringify(cfg));
+  const btn=document.getElementById('saveDefaultBtn');
+  btn.textContent='Saved ✓';
+  btn.classList.add('saved');
+  setTimeout(()=>{btn.textContent='Save as my default';btn.classList.remove('saved');},2000);
+  showToast('Default saved — restored automatically next time you open this.');
+  // also push to history
+  pushHistory(cfg);
+}
+
+function loadDefault(){
+  try{
+    const raw=localStorage.getItem(LS_DEFAULT);
+    if(!raw)return false;
+    const cfg=JSON.parse(raw);
+    applyConfig(cfg,true);
+    const note=document.getElementById('restoreNote');
+    note.textContent='Your saved default was restored.';
+    setTimeout(()=>note.textContent='',3500);
+    return true;
+  }catch(e){return false;}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════════════════════
+function pushHistory(cfg){
+  try{
+    let h=JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
+    const label=ROLES[cfg.role].label;
+    const entry={...cfg,label,ts:Date.now()};
+    // dedupe by role+depth+lang+focusMode
+    h=h.filter(e=>!(e.role===cfg.role&&e.depth===cfg.depth&&e.lang===cfg.lang&&e.focusMode===cfg.focusMode));
+    h.unshift(entry);
+    h=h.slice(0,MAX_HISTORY);
+    localStorage.setItem(LS_HISTORY,JSON.stringify(h));
+    renderHistory();
+  }catch(e){}
+}
+
+function renderHistory(){
+  try{
+    const h=JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
+    const list=document.getElementById('historyList');
+    const toggle=document.getElementById('historyToggle');
+    if(h.length===0){
+      list.innerHTML='<div class="history-empty">No recent configurations yet.</div>';
+      return;
+    }
+    list.innerHTML=h.map((e,i)=>{
+      const d=new Date(e.ts);
+      const when=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      const modeLabel=e.focusMode&&e.focusMode!=='none'?` · ${FOCUS_MODES[e.focusMode]?.title||e.focusMode}`:'';
+      return`<div class="history-item">
+        <button class="history-restore" onclick="restoreHistory(${i})">
+          <strong>${e.label} · ${e.depth} min · ${e.lang}${modeLabel}</strong>
+          <span>${when}</span>
+        </button>
+        <button class="history-delete" title="Remove" onclick="deleteHistory(${i})">✕</button>
+      </div>`;
+    }).join('');
+  }catch(e){}
+}
+
+function restoreHistory(i){
+  try{
+    const h=JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
+    if(!h[i])return;
+    applyConfig(h[i],true);
+    showToast('Configuration restored.');
+  }catch(e){}
+}
+
+function deleteHistory(i){
+  try{
+    let h=JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
+    h.splice(i,1);
+    localStorage.setItem(LS_HISTORY,JSON.stringify(h));
+    renderHistory();
+  }catch(e){}
+}
+
+function toggleHistory(){
+  const list=document.getElementById('historyList');
+  const btn=document.getElementById('historyToggle');
+  const open=list.classList.toggle('visible');
+  btn.classList.toggle('open',open);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COPY — log to history on copy
+// ═══════════════════════════════════════════════════════════════
+function copyPrompt(){
+  const t=document.getElementById('output').textContent;
+  if(!t)return;
+  const done=()=>{
+    const b=document.getElementById('copyBtn');
+    b.textContent='Copied - paste it in Copilot';
+    b.classList.add('copied');
+    setTimeout(()=>{b.textContent='Copy My Briefing Request';b.classList.remove('copied')},2600);
+    // log this config to history
+    pushHistory(getConfig());
+  };
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(t).then(done);
+    return;
+  }
+  const area=document.createElement('textarea');
+  area.value=t;
+  area.setAttribute('readonly','');
+  area.style.position='fixed';
+  area.style.left='-9999px';
+  document.body.appendChild(area);
+  area.select();
+  document.execCommand('copy');
+  document.body.removeChild(area);
+  done();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+buildPills();
+buildFocusModes();
+
+// try restoring saved default; fall back to built-in defaults
+const restored=loadDefault();
+if(!restored){
+  document.getElementById('roleDesc').textContent=ROLES[currentRole].desc;
+  document.getElementById('people').placeholder=ROLES[currentRole].peoplePlaceholder;
+  document.getElementById('depthHint').textContent=DEPTH_HINTS[currentDepth];
+  setFocusMode(currentFocusMode);
+  generate();
+}
+
+renderHistory();
+
+// ── BOOKMARKLET ──
+// Build the href at runtime so it always points to wherever this file is hosted
+(function(){
+  const toolUrl=window.location.href.split('?')[0];
+  const copilotUrl='https://m365.cloud.microsoft/chat';
+  const code=`(function(){window.open('${toolUrl}','_blank');window.open('${copilotUrl}','_blank');})();`;
+  const badge=document.getElementById('bmBadge');
+  if(badge)badge.href='javascript:'+code;
+})();
 </script>
 </body>
 </html>
