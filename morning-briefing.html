@@ -4,19 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RFE/RL · Morning Briefing</title>
-<meta name="version" content="6.0">
+<meta name="version" content="7.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#111;--paper:#faf8f5;--red:#c0392b;--accent:#0f766e;--mid:#8d8982;--light:#ded8cf;--faint:#f3f1ed;--success:#237a57}
+:root{
+  --ink:#1A3948;
+  --paper:#F8F7F6;
+  --red:#FF5400;
+  --flame:#FF5400;
+  --teal:#1A3948;
+  --ivory:#F8F7F6;
+  --stone:#B9CCCC;
+  --tender:#F3D4D6;
+  --accent:#1A3948;
+  --mid:#7A8A8F;
+  --light:#D6E0E0;
+  --faint:#F0F4F4;
+  --success:#237a57;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
 
 body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.6}
 
 /* ─── MASTHEAD ─── */
-.masthead{background:#fff;border-top:3px solid var(--red);padding:18px 40px;display:flex;align-items:baseline;gap:16px;border-bottom:1px solid var(--light)}
-.masthead-brand{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red)}
-.masthead h1{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.masthead{background:#fff;border-top:4px solid var(--flame);border-bottom:1px solid var(--light)}
+.masthead-inner{width:min(860px,100%);margin:0 auto;padding:12px 40px;display:flex;align-items:center;gap:0}
+.masthead-brand{display:none}
+.masthead h1{display:none}
 .masthead-meta{margin-left:auto;font-size:10px;color:var(--mid);letter-spacing:1px}
 
 /* ─── LAYOUT ─── */
@@ -31,7 +46,7 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
 .pill{display:inline-flex;align-items:center;padding:7px 18px;border:1px solid var(--light);border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--ink);transition:all .15s ease;user-select:none}
 .pill:hover{border-color:var(--ink);background:var(--faint)}
-.pill.active{background:var(--ink);color:#fff;border-color:var(--ink);transform:scale(.98)}
+.pill.active{background:var(--teal);color:#fff;border-color:var(--teal);transform:scale(.98)}
 .role-desc{font-size:13px;color:#666;line-height:1.55;min-height:20px;margin-top:6px;transition:opacity .2s ease}
 .role-desc.fading{opacity:0}
 
@@ -40,7 +55,7 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .seg-btn{padding:7px 20px;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;background:transparent;border:none;border-right:1px solid var(--light);color:var(--ink);transition:all .15s ease}
 .seg-btn:last-child{border-right:none}
 .seg-btn:hover{background:var(--faint)}
-.seg-btn.active{background:var(--ink);color:#fff}
+.seg-btn.active{background:var(--teal);color:#fff}
 
 /* ─── INPUTS ─── */
 .field{margin-bottom:20px}
@@ -120,7 +135,7 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .history-list{margin-top:10px;display:none;flex-direction:column;gap:6px}
 .history-list.visible{display:flex}
 .history-item{display:flex;align-items:center;gap:0;border:1px solid var(--light);border-radius:8px;overflow:hidden;background:#fff;transition:border-color .15s ease}
-.history-item:hover{border-color:var(--ink)}
+.history-item:hover{border-color:var(--teal)}
 .history-restore{flex:1;background:none;border:none;font-family:inherit;font-size:12px;color:var(--ink);padding:10px 12px;text-align:left;cursor:pointer;line-height:1.4}
 .history-restore strong{display:block;font-weight:600}
 .history-restore span{color:var(--mid);font-size:11px}
@@ -143,7 +158,7 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 /* right: content panel */
 .crs-content{display:flex;flex-direction:column;justify-content:center;padding:28px 28px 28px 24px;background:#fff;gap:14px}
 .crs-step-chip{display:inline-flex;align-items:center;gap:6px;width:fit-content;background:#F3F1ED;border-radius:20px;padding:4px 12px 4px 6px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mid)}
-.crs-step-chip-num{width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.crs-step-chip-num{width:18px;height:18px;border-radius:50%;background:var(--teal);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .crs-headline{font-size:17px;font-weight:700;color:var(--ink);line-height:1.25;letter-spacing:-.3px}
 .crs-body{font-size:12.5px;color:#5A5550;line-height:1.65;max-width:52ch}
 .crs-body strong{color:var(--ink);font-weight:600}
@@ -155,18 +170,18 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .crs-dot.active{background:var(--ink);width:18px;border-radius:3px}
 .crs-arrows{display:flex;gap:8px}
 .crs-arrow{height:36px;padding:0 14px;border-radius:8px;border:1.5px solid var(--light);background:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--ink);font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;transition:all .15s ease;white-space:nowrap}
-.crs-arrow:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.crs-arrow:hover{background:var(--teal);border-color:var(--teal);color:#fff}
 .crs-arrow:hover svg path{stroke:#fff}
 .crs-arrow:disabled{opacity:.22;cursor:not-allowed;pointer-events:none}
 /* progress bar across top */
 .crs-progress{height:3px;background:var(--light)}
-.crs-progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),#0ea47a);transition:width .45s ease}
+.crs-progress-bar{height:100%;background:linear-gradient(90deg,var(--flame),#FF8040);transition:width .45s ease}
 /* dual CTA row */
 .crs-cta{padding:0 16px 16px;background:#fff;display:flex;gap:10px}
 .crs-cta-copy{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;border-radius:8px;border:none;background:#1a1a1a;color:#fff;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .15s ease}
 .crs-cta-copy:hover{background:#333}
 .crs-cta-copy.copied{background:var(--success)}
-.crs-cta-outlook{display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:8px;border:1.5px solid var(--light);background:#fff;color:var(--ink);text-decoration:none;font-size:12px;font-weight:600;white-space:nowrap;transition:all .15s ease}
+.crs-cta-outlook{display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:8px;border:1.5px solid var(--stone);background:#fff;color:var(--teal);text-decoration:none;font-size:12px;font-weight:600;white-space:nowrap;transition:all .15s ease}
 .crs-cta-outlook:hover{border-color:var(--ink);background:var(--faint)}
 /* responsive */
 @media(max-width:600px){
@@ -186,7 +201,7 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .crs-header-sub{font-size:11px;color:var(--mid);margin-top:3px;font-weight:500}
 .crs-header-badge{display:inline-flex;align-items:center;gap:5px;background:var(--faint);border:1px solid var(--light);border-radius:20px;padding:5px 11px;font-size:10px;font-weight:600;color:var(--mid);white-space:nowrap;letter-spacing:.3px}
 
-footer{background:var(--ink);color:#444;padding:12px 40px;font-size:10px;letter-spacing:1px;display:flex;justify-content:space-between}
+footer{background:var(--teal);color:rgba(255,255,255,.45);padding:12px 40px;font-size:10px;letter-spacing:1px;display:flex;justify-content:space-between}
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:800px){
@@ -201,9 +216,16 @@ footer{background:var(--ink);color:#444;padding:12px 40px;font-size:10px;letter-
 </head>
 <body>
 <header class="masthead">
-  <span class="masthead-brand">RFE/RL</span>
-  <h1>Morning Briefing</h1>
-  <span class="masthead-meta">v6.0 · Briefing Request Builder for Microsoft Copilot</span>
+  <div class="masthead-inner">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="20 55 150 295" height="36" style="display:block;flex-shrink:0">
+      <path fill="#FF5400" d="m159.87,156.67c-20.84,2.43-26.68,23.98-42.36,42.58-20.95,24.86-52.01,12.08-52.01,12.08,20.95-2.6,26.97-24.31,43.03-42.84,21.29-24.57,51.35-11.82,51.35-11.82Zm-75.52,36.47s26.06-20.64,14.82-51.06c-8.47-22.95-24.8-39.21-16.15-58.34,0,0-25.81,20.94-15.06,51.06,8.22,23.04,25.04,39.2,16.39,58.34Zm-1.5-4.39s2.5-33.47-26.36-46.17c-22.51-9.91-46.18-8.99-54.29-28.37,0,0-3.22,33.25,27.41,46.13,22.68,9.54,45.13,9.04,53.23,28.41Zm-34.32,56.18h58.56l13.66-27.49H48.54v27.49Zm9.33,80.62h4.94l33.6-76.93h-38.53v76.93Z"/>
+    </svg>
+    <div style="margin-left:14px">
+      <div style="font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.1px;line-height:1.2">Morning Briefing</div>
+      <div style="font-size:10px;color:var(--mid);margin-top:2px;letter-spacing:.2px">Briefing Request Builder for Microsoft Copilot</div>
+    </div>
+    <span class="masthead-meta">v7.0</span>
+  </div>
 </header>
 
 <div class="wrap">
@@ -361,7 +383,7 @@ footer{background:var(--ink);color:#444;padding:12px 40px;font-size:10px;letter-
                 <text x="30" y="42" font-family="Inter,sans-serif" font-size="9.5" fill="#111" font-weight="700">Morning Briefing</text>
                 <!-- summary bar -->
                 <rect x="26" y="54" width="228" height="18" rx="5" fill="#F3F1ED" stroke="#E1DFDD" stroke-width=".5"/>
-                <text x="36" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#555">🤖 Copilot will prepare a </text>
+                <text x="36" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#555">📝 Copilot will prepare a </text>
                 <text x="126" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#111" font-weight="700">10-min briefing</text>
                 <text x="192" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#555"> for a </text>
                 <text x="213" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#111" font-weight="700">journalist</text>
@@ -561,7 +583,7 @@ footer{background:var(--ink);color:#444;padding:12px 40px;font-size:10px;letter-
 </div>
 
 <footer>
-  <span>RFE/RL · Morning Briefing System · v5.0 · May 2026</span>
+  <span>RFE/RL · Morning Briefing System · v7.0 · May 2026</span>
   <span>Digital Transformation Department · Designed for Microsoft Copilot</span>
 </footer>
 <div class="toast" id="toast"></div>
