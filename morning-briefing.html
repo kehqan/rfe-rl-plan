@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RFE/RL · Morning Briefing</title>
-<meta name="version" content="5.0">
+<meta name="version" content="6.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#111;--paper:#faf8f5;--red:#c0392b;--accent:#0f766e;--mid:#8d8982;--light:#ded8cf;--faint:#f3f1ed;--success:#237a57}
@@ -132,25 +132,59 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:500;letter-spacing:.3px;opacity:0;transition:all .25s ease;z-index:999;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ─── BOOKMARKLET CARD ─── */
-.bm-card{margin-top:20px;border:1px solid var(--light);border-radius:8px;background:#fff;padding:20px}
-.bm-kicker{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:6px}
-.bm-title{font-size:15px;font-weight:700;margin-bottom:4px}
-.bm-intro{font-size:12px;color:#5f5a53;line-height:1.6;margin-bottom:16px}
-.bm-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
-.bm-step{display:flex;align-items:flex-start;gap:10px}
-.bm-step-num{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
-.bm-step-text{font-size:12px;color:#4a4540;line-height:1.55}
-.bm-step-text strong{color:var(--ink)}
-.bm-drag-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.bm-drag-label{font-size:11px;color:var(--mid);font-weight:500;white-space:nowrap}
-.bm-badge{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:grab;text-decoration:none;user-select:none;transition:background .15s ease;white-space:nowrap;border:2px dashed transparent}
-.bm-badge:hover{background:#333}
-.bm-badge:active{cursor:grabbing}
-.bm-badge svg{flex-shrink:0}
-.bm-drag-hint{font-size:11px;color:var(--mid);line-height:1.5;margin-top:8px}
-.bm-already{margin-top:12px;padding-top:12px;border-top:1px solid var(--light);font-size:11px;color:var(--mid);line-height:1.55}
-.bm-already strong{color:var(--ink)}
+/* ─── CAROUSEL v2 — split-screen ─── */
+.crs-box{margin-top:16px;border-radius:14px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.crs-track-wrap{overflow:hidden;position:relative}
+.crs-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
+.crs-slide{min-width:100%;display:grid;grid-template-columns:1fr 1fr;min-height:220px}
+/* left: illustration */
+.crs-visual{position:relative;overflow:hidden}
+.crs-visual svg{width:100%;height:100%;display:block}
+/* right: content panel */
+.crs-content{display:flex;flex-direction:column;justify-content:center;padding:28px 28px 28px 24px;background:#fff;gap:14px}
+.crs-step-chip{display:inline-flex;align-items:center;gap:6px;width:fit-content;background:#F3F1ED;border-radius:20px;padding:4px 12px 4px 6px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mid)}
+.crs-step-chip-num{width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.crs-headline{font-size:17px;font-weight:700;color:var(--ink);line-height:1.25;letter-spacing:-.3px}
+.crs-body{font-size:12.5px;color:#5A5550;line-height:1.65;max-width:52ch}
+.crs-body strong{color:var(--ink);font-weight:600}
+.crs-key{display:inline-flex;align-items:center;gap:4px;background:#F3F1ED;border:1px solid #E0DBCF;border-radius:5px;padding:2px 8px;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--ink)}
+/* bottom nav bar */
+.crs-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-top:1px solid var(--light)}
+.crs-dots{display:flex;gap:6px;align-items:center}
+.crs-dot{width:6px;height:6px;border-radius:50%;background:var(--light);border:none;padding:0;cursor:pointer;transition:all .2s ease}
+.crs-dot.active{background:var(--ink);width:18px;border-radius:3px}
+.crs-arrows{display:flex;gap:8px}
+.crs-arrow{height:36px;padding:0 14px;border-radius:8px;border:1.5px solid var(--light);background:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--ink);font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;transition:all .15s ease;white-space:nowrap}
+.crs-arrow:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.crs-arrow:hover svg path{stroke:#fff}
+.crs-arrow:disabled{opacity:.22;cursor:not-allowed;pointer-events:none}
+/* progress bar across top */
+.crs-progress{height:3px;background:var(--light)}
+.crs-progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),#0ea47a);transition:width .45s ease}
+/* dual CTA row */
+.crs-cta{padding:0 16px 16px;background:#fff;display:flex;gap:10px}
+.crs-cta-copy{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;border-radius:8px;border:none;background:#1a1a1a;color:#fff;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .15s ease}
+.crs-cta-copy:hover{background:#333}
+.crs-cta-copy.copied{background:var(--success)}
+.crs-cta-outlook{display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:8px;border:1.5px solid var(--light);background:#fff;color:var(--ink);text-decoration:none;font-size:12px;font-weight:600;white-space:nowrap;transition:all .15s ease}
+.crs-cta-outlook:hover{border-color:var(--ink);background:var(--faint)}
+/* responsive */
+@media(max-width:600px){
+  .crs-slide{grid-template-columns:1fr;grid-template-rows:180px auto}
+  .crs-content{padding:18px 18px 22px}
+  .crs-headline{font-size:15px}
+}
+/* SVG pulse animation */
+@keyframes crs-pulse{0%{opacity:.9;r:7}60%{opacity:.2;r:13}100%{opacity:0;r:15}}
+.crs-pulse{animation:crs-pulse 2s ease-out infinite}
+@keyframes crs-blink{0%,100%{opacity:1}50%{opacity:0}}
+.crs-blink{animation:crs-blink 1s step-end infinite}
+
+/* ─── CAROUSEL HEADER ─── */
+.crs-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 0}
+.crs-header-title{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.3px;line-height:1.2}
+.crs-header-sub{font-size:11px;color:var(--mid);margin-top:3px;font-weight:500}
+.crs-header-badge{display:inline-flex;align-items:center;gap:5px;background:var(--faint);border:1px solid var(--light);border-radius:20px;padding:5px 11px;font-size:10px;font-weight:600;color:var(--mid);white-space:nowrap;letter-spacing:.3px}
 
 footer{background:var(--ink);color:#444;padding:12px 40px;font-size:10px;letter-spacing:1px;display:flex;justify-content:space-between}
 
@@ -169,7 +203,7 @@ footer{background:var(--ink);color:#444;padding:12px 40px;font-size:10px;letter-
 <header class="masthead">
   <span class="masthead-brand">RFE/RL</span>
   <h1>Morning Briefing</h1>
-  <span class="masthead-meta">v5.0 · Briefing Request Builder for Microsoft Copilot</span>
+  <span class="masthead-meta">v6.0 · Briefing Request Builder for Microsoft Copilot</span>
 </header>
 
 <div class="wrap">
@@ -275,50 +309,251 @@ footer{background:var(--ink);color:#444;padding:12px 40px;font-size:10px;letter-
 
   <div class="handoff">
     <div class="summary-bar" id="summaryBar">
-      <span class="summary-bar-icon">📝</span>
+      <span class="summary-bar-icon">🤖</span>
       <span class="summary-bar-text" id="summaryText"></span>
     </div>
-    <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy My Briefing Request</button>
-    <div class="next-box">
-      <div class="next-kicker">Next step</div>
-      <div class="next-title">Open Copilot, paste, and send</div>
-      <p class="next-copy">First copy the briefing request above. Then open Outlook and select the Copilot chat button. If Copilot does not open inside Outlook, use the Microsoft 365 Copilot Chat fallback and paste the request there.</p>
-      <div class="link-row">
-        <a class="open-link" href="https://outlook.office.com/mail/" target="_blank" rel="noopener">Open Outlook</a>
-        <a class="open-link secondary" href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">Open Copilot Chat</a>
+    <!-- ══ ILLUSTRATED CAROUSEL ══ -->
+    <div class="crs-box" id="stepCarousel">
+      <div class="crs-progress"><div class="crs-progress-bar" id="crsProgress" style="width:33.3%"></div></div>
+      <div class="crs-header">
+        <div class="crs-header-left">
+          <div class="crs-header-title">Now send it to Copilot</div>
+          <div class="crs-header-sub">3 steps · takes about 20 seconds</div>
+        </div>
+        <div class="crs-header-badge">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M6 4v3M6 8.5v.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          How it works
+        </div>
       </div>
-    </div>
+      <div class="crs-track-wrap">
+        <div class="crs-track" id="crsTrack">
 
-    <!-- ── BOOKMARKLET ── -->
-    <div class="bm-card">
-      <div class="bm-kicker">One-time setup · 10 seconds</div>
-      <div class="bm-title">Open this tool in one click, from anywhere</div>
-      <p class="bm-intro">Instead of searching for this page every morning, you can add a shortcut to your browser's bookmark bar. Once it's there, one click opens this briefing tool and Copilot Chat side by side — from any page you're on.</p>
-      <div class="bm-steps">
-        <div class="bm-step">
-          <div class="bm-step-num">1</div>
-          <div class="bm-step-text">Make sure your <strong>bookmark bar is visible</strong>. In Chrome or Edge: press <strong>Ctrl+Shift+B</strong> (Windows) or <strong>⌘+Shift+B</strong> (Mac). A bar with your saved bookmarks will appear below the address bar.</div>
-        </div>
-        <div class="bm-step">
-          <div class="bm-step-num">2</div>
-          <div class="bm-step-text"><strong>Drag the black button below</strong> into that bookmark bar — the same way you'd drag a file into a folder. Drop it anywhere in the bar. It will appear as a small shortcut called "Morning Briefing".</div>
-        </div>
-        <div class="bm-step">
-          <div class="bm-step-num">3</div>
-          <div class="bm-step-text">That's it. <strong>Every morning, click it</strong> from wherever you are — Outlook, Teams, any webpage — and it will open this briefing tool with your saved settings, ready to go.</div>
+          <!-- ══ SLIDE 1: Copy ══ -->
+          <div class="crs-slide">
+            <!-- LEFT: illustration -->
+            <div class="crs-visual">
+              <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id="cs1bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#1B2A3B"/>
+                    <stop offset="100%" stop-color="#0F3D2E"/>
+                  </linearGradient>
+                  <linearGradient id="cs1btn" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#1a1a1a"/>
+                    <stop offset="100%" stop-color="#111111"/>
+                  </linearGradient>
+                </defs>
+                <rect width="280" height="220" fill="url(#cs1bg)"/>
+                <!-- subtle grid -->
+                <line x1="0" y1="55" x2="280" y2="55" stroke="#fff" stroke-width=".3" opacity=".08"/>
+                <line x1="0" y1="110" x2="280" y2="110" stroke="#fff" stroke-width=".3" opacity=".08"/>
+                <line x1="0" y1="165" x2="280" y2="165" stroke="#fff" stroke-width=".3" opacity=".08"/>
+                <line x1="70" y1="0" x2="70" y2="220" stroke="#fff" stroke-width=".3" opacity=".08"/>
+                <line x1="140" y1="0" x2="140" y2="220" stroke="#fff" stroke-width=".3" opacity=".08"/>
+                <line x1="210" y1="0" x2="210" y2="220" stroke="#fff" stroke-width=".3" opacity=".08"/>
+                <!-- tool card floating -->
+                <rect x="18" y="18" width="244" height="150" rx="10" fill="#FAF8F5" opacity=".97"/>
+                <!-- red top stripe -->
+                <rect x="18" y="18" width="244" height="4" rx="3" fill="#C0392B"/>
+                <!-- header -->
+                <rect x="18" y="22" width="244" height="26" fill="#fff" rx="0"/>
+                <text x="30" y="32" font-family="Inter,sans-serif" font-size="6" fill="#C0392B" font-weight="700" letter-spacing="1.5">RFE/RL</text>
+                <text x="30" y="42" font-family="Inter,sans-serif" font-size="9.5" fill="#111" font-weight="700">Morning Briefing</text>
+                <!-- summary bar -->
+                <rect x="26" y="54" width="228" height="18" rx="5" fill="#F3F1ED" stroke="#E1DFDD" stroke-width=".5"/>
+                <text x="36" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#555">🤖 Copilot will prepare a </text>
+                <text x="126" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#111" font-weight="700">10-min briefing</text>
+                <text x="192" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#555"> for a </text>
+                <text x="213" y="66" font-family="Inter,sans-serif" font-size="6.5" fill="#111" font-weight="700">journalist</text>
+                <!-- form skeleton -->
+                <rect x="26" y="80" width="140" height="6" rx="2" fill="#DDD9D3"/>
+                <rect x="26" y="91" width="180" height="6" rx="2" fill="#E5E2DC"/>
+                <rect x="26" y="102" width="110" height="6" rx="2" fill="#E5E2DC"/>
+                <!-- THE COPY BUTTON — glowing -->
+                <rect x="26" y="116" width="228" height="34" rx="7" fill="url(#cs1btn)"/>
+                <!-- button glow halo -->
+                <rect x="22" y="112" width="236" height="42" rx="9" fill="none" stroke="#fff" stroke-width="1" opacity=".12"/>
+                <text x="140" y="137" font-family="Inter,sans-serif" font-size="10.5" fill="#fff" font-weight="700" text-anchor="middle" letter-spacing=".8">Copy My Briefing Request</text>
+                <!-- cursor on button -->
+                <polygon points="218,126 218,140 222,137 224,142 226,141 224,136 229,136" fill="#fff" opacity=".85"/>
+                <!-- copied badge below card -->
+                <rect x="72" y="176" width="136" height="22" rx="7" fill="#0D3D2A"/>
+                <text x="140" y="191" font-family="Inter,sans-serif" font-size="8.5" fill="#4ADE80" font-weight="600" text-anchor="middle">✓ Copied to clipboard</text>
+              </svg>
+            </div>
+            <!-- RIGHT: content -->
+            <div class="crs-content">
+              <div class="crs-step-chip"><span class="crs-step-chip-num">1</span>Copy</div>
+              <div class="crs-headline">Hit the Copy button</div>
+              <div class="crs-body">Press <strong>Copy My Briefing Request</strong>. Your personalised prompt lands on your clipboard — ready to paste in one keystroke.</div>
+            </div>
+          </div>
+
+          <!-- ══ SLIDE 2: Open Outlook & find Copilot ══ -->
+          <div class="crs-slide">
+            <div class="crs-visual">
+              <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id="cs2bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#1B1B3A"/>
+                    <stop offset="100%" stop-color="#2D1B4E"/>
+                  </linearGradient>
+                  <linearGradient id="g_b2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38B6FF"/><stop offset="100%" stop-color="#B044E0"/></linearGradient>
+                  <linearGradient id="g_w2" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF8C00"/><stop offset="100%" stop-color="#B044E0"/></linearGradient>
+                </defs>
+                <rect width="280" height="220" fill="url(#cs2bg)"/>
+                <!-- Outlook window card -->
+                <rect x="12" y="12" width="256" height="196" rx="10" fill="#1B1B3A" stroke="#ffffff" stroke-width=".3" opacity="1"/>
+                <!-- sidebar strip -->
+                <rect x="12" y="12" width="52" height="196" rx="10" fill="#141428"/>
+                <rect x="52" y="12" width="12" height="196" fill="#141428"/>
+                <!-- waffle -->
+                <rect x="22" y="22" width="4" height="4" rx=".7" fill="#fff" opacity=".55"/>
+                <rect x="28" y="22" width="4" height="4" rx=".7" fill="#fff" opacity=".55"/>
+                <rect x="34" y="22" width="4" height="4" rx=".7" fill="#fff" opacity=".55"/>
+                <rect x="22" y="28" width="4" height="4" rx=".7" fill="#fff" opacity=".55"/>
+                <rect x="28" y="28" width="4" height="4" rx=".7" fill="#fff" opacity=".55"/>
+                <rect x="34" y="28" width="4" height="4" rx=".7" fill="#fff" opacity=".55"/>
+                <!-- O logo -->
+                <circle cx="36" cy="52" r="11" fill="#0F6CBD"/>
+                <text x="36" y="57" font-family="Georgia,serif" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">O</text>
+                <!-- mail active -->
+                <rect x="14" y="70" width="48" height="28" rx="4" fill="#2B3A6E"/>
+                <rect x="14" y="70" width="3" height="28" rx="1.5" fill="#4FA3E0"/>
+                <rect x="22" y="77" width="22" height="14" rx="1.5" fill="none" stroke="#fff" stroke-width="1.2"/>
+                <path d="M22 79 L33 86 L44 79" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                <!-- calendar -->
+                <rect x="22" y="106" width="20" height="16" rx="1.5" fill="none" stroke="#fff" stroke-width="1.1" opacity=".6"/>
+                <line x1="22" y1="110" x2="42" y2="110" stroke="#fff" stroke-width="1" opacity=".6"/>
+                <line x1="27" y1="103" x2="27" y2="106" stroke="#fff" stroke-width="1.2" opacity=".6"/>
+                <line x1="37" y1="103" x2="37" y2="106" stroke="#fff" stroke-width="1.2" opacity=".6"/>
+                <!-- people -->
+                <circle cx="32" cy="136" r="5" fill="none" stroke="#fff" stroke-width="1.1" opacity=".6"/>
+                <path d="M22 148 Q22 143 32 143 Q42 143 42 148" fill="none" stroke="#fff" stroke-width="1.1" opacity=".6"/>
+                <!-- todo -->
+                <rect x="22" y="157" width="16" height="14" rx="1.5" fill="none" stroke="#fff" stroke-width="1.1" opacity=".6"/>
+                <path d="M25 164 L28 167 L35 159" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".6"/>
+                <!-- COPILOT — highlighted with glow -->
+                <rect x="12" y="176" width="52" height="30" rx="5" fill="#fff" opacity=".1"/>
+                <rect x="12" y="176" width="52" height="30" rx="5" fill="none" stroke="#F0C040" stroke-width="1.5"/>
+                <path d="M38 181 C34 181,31 184,31 188 C31 191,33 193,36 194 C34 192,34 190,35 188 C36 185,39 183,42 184 C41 182,39 181,38 181Z" fill="url(#g_b2)"/>
+                <path d="M38 197 C42 197,45 194,45 190 C45 187,43 185,40 184 C42 186,42 188,41 190 C40 193,37 195,34 194 C35 196,37 197,38 197Z" fill="url(#g_w2)"/>
+                <!-- pulse -->
+                <circle cx="38" cy="189" r="7" fill="none" stroke="#F0C040" stroke-width="1.5" class="crs-pulse"/>
+                <!-- folder panel -->
+                <rect x="64" y="12" width="84" height="196" fill="#F5F4F0" opacity=".97"/>
+                <rect x="64" y="12" width="84" height="28" fill="#fff" opacity=".97"/>
+                <text x="72" y="30" font-family="Inter,sans-serif" font-size="9" fill="#0F6CBD" font-weight="700">Outlook</text>
+                <text x="72" y="52" font-family="Inter,sans-serif" font-size="7" fill="#888">Favorites</text>
+                <text x="76" y="66" font-family="Inter,sans-serif" font-size="7.5" fill="#333">Inbox</text>
+                <text x="76" y="80" font-family="Inter,sans-serif" font-size="7.5" fill="#666" opacity=".7">Drafts</text>
+                <text x="76" y="94" font-family="Inter,sans-serif" font-size="7.5" fill="#666" opacity=".7">Sent</text>
+                <line x1="64" y1="100" x2="148" y2="100" stroke="#E1DFDD" stroke-width=".6"/>
+                <text x="72" y="114" font-family="Inter,sans-serif" font-size="7.5" fill="#333" font-weight="600">Inbox</text>
+                <circle cx="136" cy="111" r="7" fill="#0F6CBD"/>
+                <text x="136" y="115" font-family="Inter,sans-serif" font-size="6" fill="#fff" font-weight="700" text-anchor="middle">12</text>
+                <!-- email list -->
+                <rect x="148" y="12" width="120" height="196" fill="#fff"/>
+                <rect x="148" y="12" width="120" height="28" fill="#F5F4F0"/>
+                <text x="156" y="29" font-family="Inter,sans-serif" font-size="8" fill="#323130" font-weight="600">Inbox</text>
+                <rect x="148" y="41" width="120" height="32" fill="#EEF4FC" stroke="#E1DFDD" stroke-width=".4"/>
+                <circle cx="160" cy="57" r="8" fill="#0F6CBD"/>
+                <text x="160" y="61" font-family="Inter,sans-serif" font-size="6" fill="#fff" font-weight="700" text-anchor="middle">RB</text>
+                <text x="173" y="52" font-family="Inter,sans-serif" font-size="7" fill="#1A1A2E" font-weight="600">Radio Bureau</text>
+                <rect x="173" y="57" width="80" height="4" rx="1.5" fill="#B0AAA3"/>
+                <rect x="148" y="74" width="120" height="28" fill="#fff" stroke="#E1DFDD" stroke-width=".3"/>
+                <rect x="148" y="103" width="120" height="28" fill="#fff" stroke="#E1DFDD" stroke-width=".3"/>
+                <!-- label pointing to Copilot -->
+                <rect x="16" y="210" width="108" height="14" rx="4" fill="#F0C040"/>
+                <text x="70" y="220" font-family="Inter,sans-serif" font-size="7" fill="#1A1A2E" font-weight="700" text-anchor="middle">👆 Find Copilot here</text>
+              </svg>
+            </div>
+            <div class="crs-content">
+              <div class="crs-step-chip"><span class="crs-step-chip-num">2</span>Open Outlook</div>
+              <div class="crs-headline">Find Copilot in the sidebar</div>
+              <div class="crs-body">Open <strong>Outlook in your browser</strong>. Look at the dark left sidebar — find the <strong>colourful Copilot swirl</strong> near the bottom and click it.</div>
+            </div>
+          </div>
+
+          <!-- ══ SLIDE 3: Paste and send ══ -->
+          <div class="crs-slide">
+            <div class="crs-visual">
+              <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id="cs3bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0A2340"/>
+                    <stop offset="100%" stop-color="#0D3B2E"/>
+                  </linearGradient>
+                  <linearGradient id="g_b3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38B6FF"/><stop offset="100%" stop-color="#B044E0"/></linearGradient>
+                  <linearGradient id="g_w3" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF8C00"/><stop offset="100%" stop-color="#B044E0"/></linearGradient>
+                </defs>
+                <rect width="280" height="220" fill="url(#cs3bg)"/>
+                <!-- Copilot panel card -->
+                <rect x="20" y="12" width="240" height="196" rx="10" fill="#FAFAF8" stroke="#E1DFDD" stroke-width=".8"/>
+                <!-- header -->
+                <rect x="20" y="12" width="240" height="40" rx="10" fill="#0F6CBD"/>
+                <rect x="20" y="32" width="240" height="20" fill="#0F6CBD"/>
+                <!-- copilot icon in header -->
+                <path d="M36 20 C32 20,29 23,29 27 C29 30,31 32,34 33 C32 31,32 29,33 27 C34 24,37 22,40 23 C39 21,37 20,36 20Z" fill="url(#g_b3)"/>
+                <path d="M36 36 C40 36,43 33,43 29 C43 26,41 24,38 23 C40 25,40 27,39 29 C38 32,35 34,32 32 C33 35,35 36,36 36Z" fill="url(#g_w3)"/>
+                <text x="52" y="35" font-family="Inter,sans-serif" font-size="12" fill="#fff" font-weight="700">Copilot</text>
+                <!-- AI response bubbles -->
+                <rect x="30" y="60" width="170" height="14" rx="5" fill="#EEF4FC"/>
+                <rect x="30" y="79" width="140" height="14" rx="5" fill="#EEF4FC"/>
+                <rect x="30" y="98" width="160" height="14" rx="5" fill="#EEF4FC"/>
+                <!-- USER paste bubble -->
+                <rect x="48" y="122" width="190" height="40" rx="8" fill="#EAF6FB" stroke="#0F6CBD" stroke-width=".8"/>
+                <text x="60" y="137" font-family="Inter,sans-serif" font-size="7" fill="#0F6CBD" font-weight="700">Your Morning Briefing Request</text>
+                <rect x="60" y="141" width="130" height="4" rx="1.5" fill="#0F6CBD" opacity=".2"/>
+                <rect x="60" y="148" width="100" height="4" rx="1.5" fill="#0F6CBD" opacity=".15"/>
+                <!-- input bar -->
+                <rect x="26" y="172" width="208" height="22" rx="7" fill="#fff" stroke="#0F6CBD" stroke-width="1.2"/>
+                <text x="36" y="186" font-family="Inter,sans-serif" font-size="7" fill="#999">Ctrl+V  ·  then press Enter ↵</text>
+                <!-- send button -->
+                <rect x="220" y="174" width="22" height="18" rx="4" fill="#0F6CBD"/>
+                <path d="M225 183 L235 183 M232 179 L236 183 L232 187" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <!-- done badge -->
+                <rect x="72" y="200" width="136" height="18" rx="6" fill="#0D3D2A"/>
+                <circle cx="88" cy="209" r="5" fill="#22C55E" opacity=".9"/>
+                <path d="M85 209 L87 211 L92 206" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <text x="140" y="213" font-family="Inter,sans-serif" font-size="7.5" fill="#4ADE80" font-weight="600" text-anchor="middle">Copilot is now working</text>
+              </svg>
+            </div>
+            <div class="crs-content">
+              <div class="crs-step-chip"><span class="crs-step-chip-num">3</span>Paste &amp; send</div>
+              <div class="crs-headline">Paste into Copilot chat</div>
+              <div class="crs-body">Click the input box, press <span class="crs-key">Ctrl+V</span> to paste, then hit <span class="crs-key">Enter ↵</span>. Copilot starts your briefing immediately.</div>
+            </div>
+          </div>
+
+        </div><!-- /track -->
+      </div>
+
+      <div class="crs-nav">
+        <div class="crs-dots" id="crsDots"></div>
+        <div class="crs-arrows">
+          <button class="crs-arrow" id="crsPrev" onclick="crsMove(-1)" aria-label="Previous step">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back
+          </button>
+          <button class="crs-arrow" id="crsNext" onclick="crsMove(1)" aria-label="Next step">
+            Next
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
       </div>
-      <div class="bm-drag-row">
-        <span class="bm-drag-label">👇 Drag this into your bookmark bar:</span>
-        <a id="bmBadge" class="bm-badge" title="Drag me to your bookmark bar">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3 5l4 4 4-4M1 11h12" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Morning Briefing
+
+      <div class="crs-cta">
+        <button class="crs-cta-copy" id="copyBtn" onclick="copyPrompt()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="5" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.3"/><path d="M4 4V3a1 1 0 011-1h5a1 1 0 011 1v5a1 1 0 01-1 1H9" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Copy My Briefing Request
+        </button>
+        <a class="crs-cta-outlook" href="https://outlook.office.com/mail/" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M4 4h5M4 6.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Open Outlook →
         </a>
       </div>
-      <p class="bm-drag-hint">Can't drag? Right-click the button → "Bookmark this link" → save it to your bookmarks bar.</p>
-      <p class="bm-already"><strong>Already installed it?</strong> You can ignore this section. If you ever move or rename this file, drag a fresh copy to replace the old one.</p>
     </div>
-
     <div class="prompt-output" id="output" aria-hidden="true"></div>
   </div>
 
@@ -807,6 +1042,9 @@ Cross-reference these materials with your findings in Steps 1–4 where relevant
 
   const today=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
+  const isExpress = currentDepth === '5';
+  const isDeep    = currentDepth === '15';
+
   const prompt=
 `${cfg.systemNote}
 
@@ -814,9 +1052,117 @@ Today is ${today}.
 Deliver the briefing in ${lang}, ready to read in ${currentDepth} minutes.
 Be factual, concise, and specific. No padding. No editorializing.
 
-You already know who I am from my Microsoft 365 profile — my name, role,
-service, department, team, and email history. Use that knowledge as your baseline.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXECUTION PRIORITY — honour this order if instructions conflict
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. REASONING MODE (absolute — always apply)
+2. OUTPUT STRUCTURE (strict — never skip or reorder sections)
+3. FILTERING LOGIC (strict — bucket rules and source rules)
+4. STYLE RULES (flexible — apply where possible)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHO I AM — active personalisation rules
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+You know who I am from my Microsoft 365 profile. Apply that knowledge actively:
+- Elevate communications from people I interact with frequently (top 10 email/Teams contacts).
+- Elevate topics I have engaged with in the last 72 hours (opened, replied to, or mentioned).
+- Escalate any thread where I am the expected responder and have not yet replied.
+- Deprioritize senders or topics I rarely engage with, unless urgency overrides this.
 ${optBlock}${matBlock}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REASONING MODE — do this before writing anything
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`
++ (isExpress ? `
+Express mode — apply these 3 rules only (keep cognitive load minimal):
+
+1. CLUSTER + DEDUPLICATE: Merge signals from the same topic across sources into one entry.
+   Always preserve the exact entity name (meeting title, person, document) — never paraphrase.
+
+2. PRIORITIZE: urgency × impact only. Action-required items first. Discard noise silently.
+
+3. DECISION SUPPORT: For every ACTION REQUIRED item include why it matters now + next action.
+` : `
+Before producing any output, silently apply all of these thinking rules:
+
+1. CLUSTER: Group related signals across all sources (email + calendar + Teams + web + documents).
+   If the same topic appears in more than one source, merge into a single insight and note the sources.
+   Never report the same topic twice in different sections.
+
+2. DEDUPLICATE: If an email, a Teams message, and a web story all reference the same event —
+   produce one entry only, in the most relevant section, with sources listed.
+   When merging, always preserve at least one explicit named reference:
+   the exact meeting title, person's full name, or document title as it appears in M365.
+   Never collapse all sources into an abstract summary that loses the original entity name.
+
+3. PATTERN-DETECT: Identify topics that have appeared on multiple days.
+   Mark them with 🔁 RECURRING and note how many days this has been active.
+
+4. PRIORITIZE by urgency × impact — not by volume or recency.
+   Ask for every item: "Does this require action, or only awareness?"
+   → Action required: ACTION REQUIRED section
+   → Awareness only: WHAT'S NEW or INTERNAL SIGNALS
+   → Neither: discard silently
+
+5. DECISION SUPPORT: For every item in ACTION REQUIRED and TOP PRIORITY,
+   include: why it matters now + what the next action is.
+
+6. TIMELINE AWARENESS: Apply time pressure logic to every item:
+   → Overdue (deadline already passed): escalate to top of its section, mark ⚠️ OVERDUE.
+   → Due today: highlight prominently, mark ⚡ TODAY.
+   → Due this week: include normally.
+   → Future with no urgency signals: deprioritise unless strategically important.
+
+7. DECISION PRESSURE: Flag items where two or more of these are true:
+   → Multiple people are waiting on my response.
+   → A deadline is today or already passed.
+   → The conversation thread is active (3+ messages in last 24 hours).
+   Mark these with 🔥 HIGH PRESSURE and place them at the top of ACTION REQUIRED.
+`)
++ `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ENTITY PRESERVATION — critical for interactive output
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Copilot renders interactive cards (clickable meeting windows, person cards, document links)
+when it can match output text to real M365 objects. To maximise this:
+
+- NEVER paraphrase or rename meeting titles. Use the exact title as it appears in my calendar.
+  ✗ Wrong: "morning editorial call"
+  ✓ Right: "Editorial Strategy Weekly — RFE/RL Prague"
+
+- NEVER paraphrase people's names. Use full name as it appears in the org directory.
+  ✗ Wrong: "the editor"
+  ✓ Right: "Jan Sapar"
+
+- NEVER paraphrase document titles. Use the exact filename or SharePoint title.
+  ✗ Wrong: "the Q2 report"
+  ✓ Right: "Q2 Digital Transformation Progress Report — May 2026"
+
+- Present meetings, people, and documents as ISOLATED REFERENCE LINES — not embedded
+  in the middle of a long sentence. A line break before and after each entity increases
+  the probability Copilot renders it as an interactive object.
+
+ENTITY PRIORITY ORDER — when choosing what to isolate as a reference block, prioritise:
+  1. Meetings happening today (highest card probability)
+  2. Emails or threads requiring my response (person + subject = two linkable entities)
+  3. People I interact with frequently (org graph links)
+  4. Documents mentioned in ACTION REQUIRED (SharePoint/OneDrive linkable)
+Apply this order when space or structure requires a trade-off.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADAPTIVE PRIORITISATION — adjust output weight dynamically
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before writing, assess the signal landscape and shift emphasis accordingly:
+- If 3+ BUCKET A emails exist → lead with ACTION REQUIRED, compress WHAT'S NEW.
+- If calendar has 4+ meetings → expand MY DAY prep notes, compress INTERNAL SIGNALS.
+- If a breaking story is detected in web search → elevate WHAT'S NEW to top, flag in TODAY'S SIGNAL.
+- If no urgent emails exist → expand WHAT'S NEW with fuller context per item.
+- If internal signals dominate → give INTERNAL SIGNALS equal weight to WHAT'S NEW.
+Do not mention this adjustment in the output — just apply it silently.
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 STEP 1 — SCAN MY CALENDAR
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -825,7 +1171,8 @@ List all meetings today: time, title, location/format.
 Flag prep-required meetings with ★.
 For each ★: pull relevant email threads and write 2–3 bullet prep notes.
 Note any scheduling conflicts or back-to-back pressure points.
-
+`
++ (!isExpress ? `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 STEP 2 — TRIAGE MY INBOX
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -838,9 +1185,18 @@ Read emails since yesterday 17:00. Sort into:
   BUCKET D — Noise (skip entirely — do not report)
 ${inboxExtraBlock}${peopleNote}
 Report only A, B, C.
-For A: sender, subject, what is needed, urgency level.
+For A: sender, subject, what is needed, urgency level, why it matters now.
 For B and C: group by theme and summarize — not individual emails.
+` : `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — TRIAGE MY INBOX (Express mode: critical only)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+Read emails since yesterday 17:00.
+Report BUCKET A only (action required today). Skip everything else.
+For each: sender, subject, what is needed, urgency.
+`)
++ (!isExpress ? `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 STEP 3 — WEB SEARCH: MY TOPICS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -856,7 +1212,9 @@ For each new or escalating story:
   - Lead with what changed, not background.
   - Note source and reliability: official / semi-official / independent / contested.
   - End with one "So what for me?" sentence tied to my role.
-
+  - Add importance tag: [HIGH] / [MEDIUM] / [LOW] based on urgency × impact.
+` : '')
++ (!isExpress ? `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 STEP 4 — INTERNAL SIGNALS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -868,38 +1226,91 @@ From my email, Teams messages, and connected Microsoft 365 tools, flag:
   - Anyone in my frequent contacts waiting on a response from me
   - NPS/Pyramid planning updates or editorial tool changes
   - SharePoint, Teams, or workflow-related announcements
-${internalExtraBlock}
+${internalExtraBlock}` : '')
++ (isDeep ? `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 5 — TREND LAYER (Deep mode only)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Look across the last 5–7 days of my email, Teams, and calendar for:
+  - Topics appearing 2+ times → flag with 🔁 RECURRING + days active
+  - Open threads or decisions that have been pending 48+ hours → flag with ⏳ STALE
+  - Patterns: recurring people, recurring blockers, recurring topics
+  - Anything that was flagged in a prior briefing but not yet resolved
+
+List these under TRENDS & PATTERNS in the output.
+` : '')
++ `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OUTPUT — use this exact format
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ⚡ TODAY'S SIGNAL
-[The one thing I must not miss today — 1 to 2 sentences only.]
+[The single most important thing I must not miss today — 1 to 2 sentences only.
+ Must include: what it is, why it matters, what (if anything) I need to do.]
 
 📅 MY DAY
-[TIME | TITLE | LOCATION — one line per meeting]
-[★ meetings followed by 2–3 bullet prep notes]
+[For each meeting, use this exact structure — each on its own line:]
 
+TIME — EXACT MEETING TITLE AS IN CALENDAR
+Organized by FULL NAME · LOCATION or FORMAT
+[★ if prep required]
+  → [Prep note 1]
+  → [Prep note 2]
+  → [Prep note 3 if needed]
+
+[Do not embed meeting names in sentences. Each meeting is a standalone block.
+ Use the exact calendar title — never paraphrase or shorten it.]
+`
++ (!isExpress ? `
 📬 ACTION REQUIRED
-[→ Sender | Subject | What's needed | Urgency]
+[For each item, use this exact structure:]
+
+🔥 or ⚡ or standard — FULL SENDER NAME · EXACT EMAIL SUBJECT LINE
+What's needed: [one sentence]
+Urgency: [High / Medium] · Why it matters now: [one sentence]
+[For 🔥 HIGH PRESSURE items only, append one suggested follow-up on its own line:]
+→ Ask me: "What should I say to [FULL NAME]?" or "Summarize my thread with [FULL NAME]"
+
+[Do not embed email subjects in prose. Each email is a standalone block.
+ Use the exact subject line as it appears — never paraphrase.]
 [If none: "No action-required emails since yesterday."]
 
 📰 WHAT'S NEW
-▸ [TOPIC]
-  [What changed — 2 to 4 sentences]
-  [Source · Reliability]
-  [So what for me: one sentence]
+[Max 5 items. Sort by importance descending. Each item:]
+▸ [TOPIC] [HIGH/MEDIUM/LOW]
+  [What changed — 2 to 4 sentences. Lead with the change, not the background.]
+  [Source · Reliability: official / semi-official / independent / contested]
+  [So what for me: one sentence tied to my role]
+  [🔁 RECURRING — X days (if applicable)]
+[If more than 5 items exist: group remainder under "Also developing:" as one-liners]
 
 🏢 INTERNAL SIGNALS
 [Org changes, open items, people needing response, tool updates]
+[Each item: signal → implication → action if needed]
 [If none: "Nothing flagged."]
 
 🔎 WATCH TODAY
 [2 to 3 items to check by end of day — one line each]
 
 ⚠️ FLAGS
-[Sourcing gaps, sensitivities, risks — omit section if nothing to flag]
-${extraOutputBlock}
+[Sourcing gaps, sensitivities, risks, unverified claims — omit section if nothing to flag]
+${extraOutputBlock}` : `
+📬 ACTION REQUIRED (Express — critical only)
+[→ Sender | Subject | What's needed | Urgency]
+[If none: "No urgent emails."]
+
+🔎 WATCH TODAY
+[Top 2 items only — one line each]
+`)
++ (isDeep ? `
+📈 TRENDS & PATTERNS
+[🔁 RECURRING topics with days active]
+[⏳ STALE open threads or decisions]
+[Patterns worth noting across the week]
+[If none: "No recurring patterns detected."]
+` : '')
++ `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 INTERACTIVE DRILL-DOWN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -921,6 +1332,12 @@ Examples of what you can say:
 Just ask — I'll expand any detail on demand.
 ---
 
+PROACTIVE TRIGGER RULE: For every item marked 🔥 HIGH PRESSURE or that involves a pending
+decision with a named stakeholder, append one suggested follow-up question directly under
+that item — before moving to the next one. Format:
+→ Ask me: "[natural language question the user would want to ask]"
+This makes the briefing conversational, not just informational.
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RULES — apply throughout
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -929,12 +1346,23 @@ RULES — apply throughout
 ✓ Max 25 words per sentence
 ✓ Attribute every claim where the source matters
 ✓ Flag uncertainty — never state unconfirmed things as fact
-✓ Prioritize ruthlessly — not everything is equally important
+✓ Prioritize ruthlessly — sort every section by importance descending
+✓ Every item in ACTION REQUIRED must answer: "Why does this matter today?"
+✓ Use signal markers consistently: 🔥 HIGH PRESSURE · ⚠️ OVERDUE · ⚡ TODAY · 🔁 RECURRING
+✓ Adaptive output: shift section weight based on the day's actual signal mix
 ✓ RFE/RL editorial standards apply: accuracy, fairness, balance
 ✗ No filler phrases ("it is worth noting that", "importantly", etc.)
 ✗ No generic advice ("you may want to consider...")
-✗ No repetition — say it once, say it well
-✗ Never cite state media (TASS, IRNA, BelTA, Xinhua) as reliable without independent verification`;
+✗ No repetition — if a topic appears in one section, do not repeat it in another
+✗ Never cite state media (TASS, IRNA, BelTA, Xinhua) as reliable without independent verification
+
+VISUAL RHYTHM — treat every item as a card, not a paragraph:
+✓ One blank line between every item within a section
+✓ Two blank lines between sections
+✓ Each entity (meeting, person, document, email) on its own line — never mid-sentence
+✓ Prep notes and follow-up triggers indented with → on their own lines
+✓ TODAY'S SIGNAL: maximum 2 sentences, stands alone — no sub-bullets
+✓ The briefing should feel scannable in 60 seconds, readable in full in ${currentDepth} minutes`;
 
   document.getElementById('output').textContent=prompt;
   updateSummary();
@@ -1158,10 +1586,12 @@ function copyPrompt(){
   if(!t)return;
   const done=()=>{
     const b=document.getElementById('copyBtn');
-    b.textContent='Copied - paste it in Copilot';
+    b.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3 3 6-6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied — now paste in Copilot';
     b.classList.add('copied');
-    setTimeout(()=>{b.textContent='Copy My Briefing Request';b.classList.remove('copied')},2600);
-    // log this config to history
+    setTimeout(()=>{
+      b.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="5" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.3"/><path d="M4 4V3a1 1 0 011-1h5a1 1 0 011 1v5a1 1 0 01-1 1H9" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg> Copy My Briefing Request';
+      b.classList.remove('copied');
+    },2600);
     pushHistory(getConfig());
   };
   if(navigator.clipboard&&window.isSecureContext){
@@ -1198,14 +1628,47 @@ if(!restored){
 
 renderHistory();
 
-// ── BOOKMARKLET ──
-// Build the href at runtime so it always points to wherever this file is hosted
+// ═══════════════════════════════════════════════════════════════
+// CAROUSEL v2
+// ═══════════════════════════════════════════════════════════════
 (function(){
-  const toolUrl=window.location.href.split('?')[0];
-  const copilotUrl='https://m365.cloud.microsoft/chat';
-  const code=`(function(){window.open('${toolUrl}','_blank');window.open('${copilotUrl}','_blank');})();`;
-  const badge=document.getElementById('bmBadge');
-  if(badge)badge.href='javascript:'+code;
+  const TOTAL=3;
+  let cur=0;
+
+  function goTo(n){
+    cur=Math.max(0,Math.min(TOTAL-1,n));
+    document.getElementById('crsTrack').style.transform=`translateX(-${cur*100}%)`;
+    document.getElementById('crsProgress').style.width=((cur+1)/TOTAL*100)+'%';
+    document.querySelectorAll('.crs-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+    document.getElementById('crsPrev').disabled=cur===0;
+    document.getElementById('crsNext').disabled=cur===TOTAL-1;
+  }
+
+  window.crsMove=function(d){goTo(cur+d);};
+
+  const dotsEl=document.getElementById('crsDots');
+  for(let i=0;i<TOTAL;i++){
+    const d=document.createElement('button');
+    d.className='crs-dot'+(i===0?' active':'');
+    d.setAttribute('aria-label','Step '+(i+1));
+    d.onclick=()=>goTo(i);
+    dotsEl.appendChild(d);
+  }
+
+  goTo(0);
+
+  // swipe support
+  let tx=null;
+  const track=document.getElementById('crsTrack');
+  if(track){
+    track.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+    track.addEventListener('touchend',e=>{
+      if(tx===null)return;
+      const dx=e.changedTouches[0].clientX-tx;
+      if(Math.abs(dx)>40)goTo(cur+(dx<0?1:-1));
+      tx=null;
+    },{passive:true});
+  }
 })();
 </script>
 </body>
