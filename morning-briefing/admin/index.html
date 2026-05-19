@@ -203,12 +203,15 @@ footer{background:var(--teal);color:rgba(255,255,255,.4);padding:10px 40px;font-
       <span class="filter-label">Filter by</span>
       <select class="filter-select" id="filterRole" onchange="applyFilters()">
         <option value="">All roles</option>
-        <option value="journalist">Journalist / Editor</option>
+        <option value="journalist">Journalist</option>
+        <option value="editor">Editor</option>
         <option value="service_director">Service Director</option>
         <option value="regional_manager">Regional Manager</option>
         <option value="eic">Editor in Chief</option>
-        <option value="digital_transformation">Digital Transformation</option>
-        <option value="generic">Generic / Other</option>
+        <option value="strategist">Strategist</option>
+        <option value="digital_product">Digital & Product</option>
+        <option value="multimedia_producer">Multimedia Producer</option>
+        <option value="generic">General / Other</option>
       </select>
       <select class="filter-select" id="filterRating" onchange="applyFilters()">
         <option value="">All ratings</option>
@@ -274,7 +277,7 @@ footer{background:var(--teal);color:rgba(255,255,255,.4);padding:10px 40px;font-
 const SUPABASE_URL='https://yiewnykbchfadipznpet.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZXdueWtiY2hmYWRpcHpucGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNzM3NTUsImV4cCI6MjA5NDc0OTc1NX0.utnlpToZGH7hno0QTXlrtWvzKDgP28Gv3Je7BBIRwmM';
 const PASSWORD='dobrerano';
-const ROLE_LABELS={journalist:'Journalist / Editor',service_director:'Service Director',regional_manager:'Regional Manager',eic:'Editor in Chief',digital_transformation:'Digital Transformation',generic:'Generic / Other'};
+const ROLE_LABELS={journalist:'Journalist',editor:'Editor',service_director:'Service Director',regional_manager:'Regional Manager',eic:'Editor in Chief',strategist:'Strategist',digital_product:'Digital & Product',multimedia_producer:'Multimedia Producer',generic:'General / Other'};
 const FOCUS_LABELS={none:'Normal day',meetings:'Meetings',delivery:'Deadline',topic:'Topic',other:'Other'};
 
 let allData=[];
