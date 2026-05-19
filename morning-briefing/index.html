@@ -26,6 +26,7 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .masthead-right{margin-left:auto;display:flex;align-items:center;gap:8px}
 .gear-btn{background:none;border:1px solid var(--light);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--mid);display:flex;align-items:center;gap:6px;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;transition:all .15s ease}
 .gear-btn:hover{border-color:var(--ink);color:var(--ink)}
+.save-setup-btn.saved{border-color:var(--success);color:var(--success)}
 
 /* ─── FEEDBACK MODAL ─── */
 .fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;opacity:0;pointer-events:none;transition:opacity .2s ease;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -310,6 +311,10 @@ footer{background:var(--teal);color:rgba(255,255,255,.45);padding:10px 40px;font
       <div style="font-size:10px;color:var(--mid);margin-top:2px">Briefing Request Builder for Microsoft Copilot</div>
     </div>
     <div class="masthead-right">
+      <button class="gear-btn save-setup-btn" id="mastheadSaveBtn" onclick="mastheadSave()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 2h8l2 2v8a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><rect x="4" y="2" width="5" height="3" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="4" y="8" width="5" height="3" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>
+        Save setup
+      </button>
       <button class="gear-btn" onclick="openFeedback()">
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1C3.686 1 1 3.358 1 6.25c0 1.682.872 3.178 2.25 4.172V12.5l2.23-1.337A7.12 7.12 0 007 11.5c3.314 0 6-2.358 6-5.25S10.314 1 7 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6.25h.007M7 6.25h.007M9.5 6.25h.007" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         Feedback
@@ -932,6 +937,18 @@ function getCheckedMaterials(){
   return out;
 }
 
+// ── MASTHEAD SAVE ──
+function mastheadSave(){
+  const cfg=getConfig();
+  pushHistory(cfg);
+  const btn=document.getElementById('mastheadSaveBtn');
+  const orig=btn.innerHTML;
+  btn.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3 3 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Saved';
+  btn.classList.add('saved');
+  showToast('Setup saved — find it in Settings → Recent configurations.');
+  setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('saved');},2200);
+}
+
 // ── FEEDBACK MODAL ──
 function openFeedback(){
   document.getElementById('fbOverlay').classList.add('open');
@@ -1223,12 +1240,14 @@ function renderHistory(){
         `<button class="star-btn${s<=rating?' active':''}" onclick="setRating(${i},${s})" title="${s} star${s>1?'s':''}" aria-label="${s} stars">★</button>`
       ).join('');
       const ratingChip=rating?`<div class="history-rating-chip">★ ${rating}/5${e.reasons&&e.reasons.length||e.other?' · feedback saved':''}</div>`:'<div class="history-rating-chip" style="color:var(--mid);font-weight:400">Rate this briefing</div>';
-      const reasonsHTML=FEEDBACK_REASONS.map((r,ri)=>{
+      const reasonsHTML=rating===5?''
+        :FEEDBACK_REASONS.map((r,ri)=>{
         const checked=(e.reasons||[]).includes(r)?'checked':'';
         return`<label class="hf-reason"><input type="checkbox" data-reason="${r.replace(/"/g,'&quot;')}" ${checked} onchange="toggleReason(${i},'${r.replace(/'/g,"\\'")}',this.checked)"><span class="hf-reason-text">${r}</span></label>`;
       }).join('');
       const hasSavedFeedback=(e.reasons&&e.reasons.length)||e.other;
-      const feedbackOpen=rating&&rating<5?'open':'';
+      const feedbackOpen=rating?'open':'';
+      const feedbackLabel=rating===5?'Anything to add? <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--mid);font-size:10px">Optional</span>':'What could be better?';
       return`
       <div class="history-item${rating&&rating<5?' has-feedback':''}" id="hitem-${i}">
         <div class="history-row">
@@ -1241,7 +1260,7 @@ function renderHistory(){
           <button class="history-delete" id="hdel-${i}" onclick="deleteHistory(${i})" title="Remove">✕</button>
         </div>
         <div class="history-feedback ${feedbackOpen}" id="hfeedback-${i}">
-          <div class="hf-label">What could be better?</div>
+          <div class="hf-label">${feedbackLabel}</div>
           <div class="hf-reasons">${reasonsHTML}</div>
           <textarea class="hf-other" rows="2" placeholder="Anything else? Write freely…" oninput="saveOther(${i},this.value)">${e.other||''}</textarea>
           <button class="hf-save" id="hfsave-${i}" onclick="saveFeedback(${i})"${hasSavedFeedback?'':''}>Save feedback</button>
@@ -1261,13 +1280,11 @@ function setRating(i,stars){
     if(!h[i].other)h[i].other='';
     localStorage.setItem(LS_HISTORY,JSON.stringify(h));
     renderHistory();
-    // if less than 5 stars, expand feedback panel
-    if(stars<5){
-      setTimeout(()=>{
-        const panel=document.getElementById(`hfeedback-${i}`);
-        if(panel)panel.classList.add('open');
-      },50);
-    }
+    // always open feedback panel after rating
+    setTimeout(()=>{
+      const panel=document.getElementById(`hfeedback-${i}`);
+      if(panel)panel.classList.add('open');
+    },50);
   }catch(e){}
 }
 
