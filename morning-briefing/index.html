@@ -1539,16 +1539,20 @@ function showToast(msg){
 // ── SAVE / HISTORY ──
 function getConfig(){return{role:currentRole,depth:currentDepth,lang:selectedLang.name,focusMode:currentFocusMode,people:document.getElementById('people').value.trim()};}
 
-function applyConfig(cfg){
+function applyConfig(cfg, applyLang=false){
   currentRole=cfg.role||'journalist';
   currentDepth=cfg.depth||'10';
   currentFocusMode=cfg.focusMode||'none';
-  const l=LANGUAGES.find(x=>x.name===cfg.lang);
-  if(l){selectedLang=l;document.getElementById('langFlag').textContent=l.flag;document.getElementById('langLabel').textContent=l.name;}
+  // Only apply saved language when explicitly loading a full saved default —
+  // never on role switches or history restores mid-session.
+  if(applyLang && cfg.lang){
+    const l=LANGUAGES.find(x=>x.name===cfg.lang);
+    if(l){selectedLang=l;document.getElementById('langFlag').textContent=l.flag;document.getElementById('langLabel').textContent=l.name;}
+  }
   document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('active',p.dataset.role===currentRole));
   document.querySelectorAll('.seg-btn').forEach(b=>b.classList.toggle('active',b.dataset.v===currentDepth));
   if(cfg.people)document.getElementById('people').value=cfg.people;
-  document.getElementById('people').placeholder=ROLES[currentRole].peoplePlaceholder;
+  document.getElementById('people').placeholder=ROLES[currentRole]?.peoplePlaceholder||'';
   document.querySelectorAll('.focus-seg-btn').forEach(b=>b.classList.toggle('active',b.dataset.focusMode===currentFocusMode));
   const prompt=FOCUS_PROMPTS[currentFocusMode];
   const dynWrap=document.getElementById('focusDynamic');
@@ -1569,7 +1573,7 @@ function saveDefault(){
 }
 
 function loadDefault(){
-  try{const raw=localStorage.getItem(LS_DEFAULT);if(!raw)return false;applyConfig(JSON.parse(raw));return true;}catch(e){return false;}
+  try{const raw=localStorage.getItem(LS_DEFAULT);if(!raw)return false;applyConfig(JSON.parse(raw),true);return true;}catch(e){return false;}
 }
 
 function pushHistory(cfg){
@@ -2216,6 +2220,10 @@ function updateGreeting(role,animate){
 // ── INIT ──
 buildPills();
 buildFocusModes();
+// Always start with English regardless of any cached state
+selectedLang=LANGUAGES.find(l=>l.name==='English');
+document.getElementById('langFlag').textContent=selectedLang.flag;
+document.getElementById('langLabel').textContent=selectedLang.name;
 buildLangList();
 updateGreeting(currentRole,false);
 const restored=loadDefault();
