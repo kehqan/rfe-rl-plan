@@ -759,12 +759,377 @@ const LANGUAGES=[
 let selectedLang=LANGUAGES.find(l=>l.name==='English');
 
 const ROLES={
-journalist:{label:"Journalist / Editor",focusLabel:"What are you working on?",focusPlaceholder:"e.g. Iran nuclear talks\nKremlin domestic policy",peoplePlaceholder:"e.g. Bureau chief in Tbilisi, AP stringer in Kabul",systemNote:`You are an expert briefing assistant preparing a morning briefing for a journalist/editor at RFE/RL (Radio Free Europe/Radio Liberty).\nRFE/RL is a US-funded international news organization broadcasting in 27 languages to 23 countries across Eastern Europe, Central Asia, the Caucasus, the Middle East, and Russia.\nPrioritize story developments, source verification, and competitive coverage positioning.`,inboxExtra:`Flag emails from bureau correspondents, desk editors, and known sources as high-priority for BUCKET A.\nGroup editorial planning messages and story coordination threads under BUCKET B.`,webSearchExtra:`Focus on RFE/RL's coverage regions: Russia, Ukraine, Iran, Afghanistan, Central Asia, Caucasus, Balkans, and Belarus.\nFlag stories competitors are running that RFE/RL has not covered → list as ▸ STORY GAPS.\nPull any relevant wire alerts (AP, Reuters, AFP) filed in the last 12 hours.`,internalExtra:`Also flag: desk assignment changes, editorial priority shifts, story coordination requests from other services, any NPS/Pyramid planning updates.`,extraOutput:`▸ STORY GAPS\n[Stories competitors are running that RFE/RL has not covered]\n[If none: "No significant gaps identified."]\n\n▸ WIRE WATCH\n[Relevant wire alerts — AP, Reuters, AFP — last 12 hours]\n[If none: "No new wire alerts on your topics."]`},
-service_director:{label:"Service Director",focusLabel:"What's top of mind for your service?",focusPlaceholder:"e.g. Audience growth in diaspora\nUpcoming election coverage",peoplePlaceholder:"e.g. Regional manager, EIC office, key correspondents",systemNote:`You are an expert briefing assistant preparing a morning briefing for a Language Service Director at RFE/RL.\nPrioritize service-level editorial priorities, audience signals, staffing, and cross-service coordination.`,inboxExtra:`Flag emails from the Editor in Chief, regional managers, and service staff escalations as BUCKET A.`,webSearchExtra:`Focus on your service's specific coverage region. Flag stories competitors in your language are running that your service has not covered → list as ▸ COVERAGE GAPS.`,internalExtra:`Also flag staffing changes, editorial directives from EIC, audience metric alerts, and cross-service coordination requests.`,extraOutput:`📊 SERVICE PULSE\n[Audience signals, staffing status, programming changes — 2–3 bullets]\n\n🤝 COORDINATION ITEMS\n[Cross-service requests, shared stories, EIC directives]\n[If none: "No coordination items pending."]\n\n▸ COVERAGE GAPS\n[Stories competitors in your language are running that your service has not covered]`},
-regional_manager:{label:"Regional Manager",focusLabel:"What's moving in your region?",focusPlaceholder:"e.g. Media law changes in Georgia\nBureau security in Kabul",peoplePlaceholder:"e.g. Service directors, bureau chiefs, security officer",systemNote:`You are an expert briefing assistant preparing a morning briefing for a Regional Manager at RFE/RL.\nPrioritize regional geopolitical developments, cross-service alignment, bureau operations, and resource coordination.`,inboxExtra:`Flag emails from service directors, bureau chiefs, EIC, and security/operations staff as BUCKET A.`,webSearchExtra:`Focus on your region's geopolitical landscape. Identify stories with cross-service potential → list as ▸ CROSS-SERVICE STORIES.`,internalExtra:`Also flag bureau security alerts, resource requests from service directors, and personnel changes.`,extraOutput:`🌍 REGIONAL OVERVIEW\n[Top 2–3 geopolitical developments — one line each]\n\n🏢 BUREAU STATUS\n[Security alerts, operational issues, staffing — by bureau]\n[If nothing flagged: "All bureaus operating normally."]\n\n▸ CROSS-SERVICE STORIES\n[Stories with coverage potential across multiple services]`},
-eic:{label:"Editor in Chief",focusLabel:"What's on your radar?",focusPlaceholder:"e.g. Standards review follow-up\nBreaking news readiness",peoplePlaceholder:"e.g. Board liaison, regional managers, legal counsel",systemNote:`You are an expert briefing assistant preparing a morning briefing for the Editor in Chief of RFE/RL.\nLead with decisions needed, reputation risks, and the top stories across all coverage regions. Be maximally concise.`,inboxExtra:`Flag as BUCKET A: anything requiring editorial sign-off, standards/ethics escalations, breaking news decisions, leadership/board communications, legal matters.`,webSearchExtra:`Scan the top stories across ALL RFE/RL coverage regions. Identify stories requiring EIC-level editorial decisions → flag in ⚖️ DECISIONS REQUIRED.`,internalExtra:`Also flag leadership changes, editorial standards issues, policy decisions pending sign-off, and reputation risks.`,extraOutput:`⚖️ DECISIONS REQUIRED\n[Items needing EIC sign-off today]\n[If none: "No decisions pending."]\n\n🛡️ EDITORIAL WATCH\n[Standards issues, reputation risks, corrections, legal]\n[If none: "No editorial risks flagged."]\n\n🌐 CROSS-CUTTING STORIES\n[Stories spanning multiple regions/services needing unified direction]`},
-digital_transformation:{label:"Digital Transformation",focusLabel:"What tools or projects are you tracking?",focusPlaceholder:"e.g. NPS/Pyramid rollout blockers\nCopilot adoption metrics",peoplePlaceholder:"e.g. Vendor contacts, Jan Sapar (NPS), pilot service leads",systemNote:`You are an expert briefing assistant preparing a morning briefing for a member of the Digital Transformation Department at RFE/RL.\nPrioritize technology adoption signals, AI/ML developments in media, internal tool rollout status, and workflow optimization.`,inboxExtra:`Flag emails about tool adoption blockers, vendor updates, training requests, NPS/Pyramid issues, and Copilot feedback as BUCKET A.`,webSearchExtra:`Focus on AI/ML developments in newsrooms, CMS tools (Dalet Pyramid), and the Microsoft 365 ecosystem.\nScan: Nieman Lab, Reuters Institute, Microsoft 365 Blog, Dalet blog, Anthropic blog.`,internalExtra:`Also flag NPS/Pyramid rollout status, Copilot adoption feedback, SharePoint/Teams issues, training schedules, and vendor contract milestones.`,extraOutput:`🔧 TOOL ADOPTION PULSE\n[NPS/Pyramid rollout, Copilot adoption, other tool updates — 2–3 bullets]\n\n📡 TECH RADAR\n[AI/media tech developments relevant to RFE/RL]\n[If nothing new: "No significant developments in the last 24 hours."]\n\n📋 SUPPORT QUEUE\n[Open issues, training requests, vendor follow-ups]\n[If clear: "No open support items."]`},
-generic:{label:"Generic / Other",focusLabel:"Anything specific on your mind?",focusPlaceholder:"Leave blank — Copilot will use what it knows about you.",peoplePlaceholder:"e.g. External contacts Copilot might miss",systemNote:`You are an expert briefing assistant preparing a morning briefing for a staff member at RFE/RL.\nTailor the briefing to what you know about this person from their Microsoft 365 profile.`,inboxExtra:'',webSearchExtra:`Based on what you know about my role and work at RFE/RL, search for significant developments on the topics most relevant to me.`,internalExtra:'',extraOutput:''}
+
+journalist:{
+  label:"Journalist",
+  focusLabel:"What story are you working on?",
+  focusPlaceholder:"e.g. Iran nuclear talks\nKremlin domestic policy\nCentral Asia water crisis",
+  peoplePlaceholder:"e.g. Bureau chief in Tbilisi, AP stringer in Kabul, key source",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a Journalist at RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL broadcasts in 27 languages to 23 countries across Eastern Europe, Central Asia, the Caucasus, the Middle East, and Russia.
+The journalist is in execution mode. Their briefing goes VERTICAL — deep on one story or a small cluster of related stories. Not wide.
+Core mindset: "What do I write today, and how do I do it right?"`,
+  inboxExtra:`Flag emails from bureau correspondents, known sources, wire desks, and desk editors as BUCKET A.
+Flag story coordination threads and editorial check-in requests as BUCKET B.`,
+  webSearchExtra:`Focus exclusively on the journalist's specific story topic or coverage region.
+For each relevant development:
+  - Lead with what changed — not background.
+  - Flag source and reliability: official / semi-official / independent / contested.
+  - End with one "So what for my story?" line.
+
+Wire services (reliable): AP, Reuters, AFP.
+State/semi-official (narrative tracking only — do NOT cite as reliable): TASS, IRNA, BelTA, Xinhua.
+Independent media: Meduza, Iran International, Kyiv Independent, BIRN, Eurasianet, OC Media.
+
+After the main scan:
+▸ STORY GAPS: List angles competitors are pursuing that RFE/RL has not covered.
+▸ WIRE WATCH: Pull relevant wire alerts (AP, Reuters, AFP) filed in the last 12 hours.`,
+  internalExtra:`Also flag: desk assignment changes, source messages awaiting reply, editorial check-ins, any story coordination requests from other services.`,
+  extraOutput:`📰 STORY DEVELOPMENTS
+[What changed overnight on the journalist's focus topic]
+▸ [DEVELOPMENT] [HIGH/MEDIUM/LOW]
+  What changed · Source · Reliability
+  So what for my story: [one line]
+[If no material change: "[Topic] — no material change. [Status in one sentence.]"]
+
+🧠 CONTEXT LAYER
+[Key actors and current positions · Historical context · Conflicting narratives]
+[Keep to 3 bullets max — only what's directly relevant to today's story]
+
+🔍 GAPS & ANGLES
+▸ [Missed angle or competitor pursuit — one line each]
+[If none: "No significant gaps identified."]
+
+🧾 SOURCE SIGNALS
+[Recent statements from key figures · Wire alerts · Any known contacts who have posted]
+[If none: "No new source signals."]
+
+▸ STORY GAPS
+[Stories competitors are running that RFE/RL has not covered]
+[If none: "No significant gaps identified."]
+
+▸ WIRE WATCH
+[Relevant wire alerts — AP, Reuters, AFP — last 12 hours]
+[If none: "No new wire alerts on your topics."]`
+},
+
+editor:{
+  label:"Editor",
+  focusLabel:"What's the editorial focus today?",
+  focusPlaceholder:"e.g. Today's lineup review\nCoverage gaps in Central Asia\nVerification backlog",
+  peoplePlaceholder:"e.g. Correspondents, desk editors, bureau chiefs",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for an Editor at RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL broadcasts in 27 languages to 23 countries.
+The editor is in orchestration mode. Their briefing goes HORIZONTAL — across the full coverage portfolio. Not deep on one story.
+Core mindset: "What do we cover today — and how? What do I assign, prioritise, fix, or stop?"
+Key distinction: the editor does NOT need narrative depth. They need decision intelligence — priority ranking, coverage gaps, risk flags, and resource awareness.`,
+  inboxExtra:`Flag as BUCKET A: emails requiring editorial sign-off, reporter check-ins needing assignment decisions, source escalations, legal or standards concerns.
+Flag editorial planning threads and lineup coordination under BUCKET B.
+Deprioritize story background and narrative detail — push to BUCKET C or skip.`,
+  webSearchExtra:`Scan RFE/RL's full coverage regions for stories that require editorial action today.
+For each: what is the editorial angle, what stage is it at, what decision is needed.
+Do NOT produce narrative background — the editor needs decision signals, not story summaries.
+
+Focus on:
+  - Breaking or escalating stories requiring assignment or prioritisation.
+  - Stories with sourcing or verification gaps in the current pipeline.
+  - Competitor coverage that suggests a gap in RFE/RL's lineup.
+
+Wire services: AP, Reuters, AFP.
+State media (narrative tracking only): TASS, IRNA, BelTA, Xinhua.
+Regional specialists: Eurasianet, BIRN, OC Media, Kyiv Independent, Iran International.
+
+▸ COVERAGE GAPS: Stories competitors are running that are not in today's RFE/RL lineup.`,
+  internalExtra:`Also flag: reporter availability changes, desk capacity issues, cross-service coordination requests, story hand-offs, verification backlogs.`,
+  extraOutput:`🟡 TODAY'S PRIORITIES
+[Top 3–5 stories ranked by urgency × impact]
+1. [STORY TITLE] — [Stage: pitch/reporting/ready] — [Owner]
+   Angle: [one line] · Status: [one line] · Decision needed: [one line]
+
+🌍 COVERAGE GAPS
+▸ [Gap or commissioning opportunity]
+  Competitor: [who is covering it] · Recommended action: [one line]
+[If none: "No significant gaps today."]
+
+⚠️ RISK & VERIFICATION FLAGS
+▸ [Story] — [Risk type: sourcing/legal/standards] — [Action needed]
+[If none: "No verification flags."]
+
+👥 RESOURCE AWARENESS
+[Correspondent availability · Capacity gaps · Cross-desk coordination needed]
+[If nothing flagged: "No resource issues."]`
+},
+
+service_director:{
+  label:"Service Director",
+  focusLabel:"What's top of mind for your service today?",
+  focusPlaceholder:"e.g. Audience growth in diaspora\nUpcoming election coverage\nStaffing gaps",
+  peoplePlaceholder:"e.g. Regional manager, EIC office, key correspondents",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a Language Service Director at RFE/RL (Radio Free Europe/Radio Liberty).
+A Service Director oversees one language service's full editorial output, staffing, audience strategy, and coordination with regional management and the Editor in Chief.
+Core mindset: "How is my service performing — and where do I need to act today?"
+Needs a service-level view: what's working, what's at risk, and what requires their decision.`,
+  inboxExtra:`Flag as BUCKET A: emails from the Editor in Chief, regional managers, staff escalations, and anything requiring a service-level decision today.
+Flag audience metric alerts, cross-service coordination requests, and vendor/tool issues as BUCKET B.
+Group routine service-internal coordination under BUCKET C.`,
+  webSearchExtra:`Focus on the service's specific coverage region and language area.
+Search for:
+  - Breaking or escalating stories in the region.
+  - Media landscape changes: shutdowns, censorship laws, journalist arrests, internet restrictions.
+  - Competitor positioning in the same language.
+
+Scan: AP, Reuters, AFP, BBC (relevant language services), VOA, regional specialists.
+State media for narrative tracking only: TASS, IRNA, BelTA, Xinhua.
+Press freedom monitors: CPJ, RSF, IFEX.
+
+▸ COVERAGE GAPS: Stories competitors in the same language are running that the service has not covered.`,
+  internalExtra:`Also flag: staffing changes affecting coverage capacity, service-level editorial directives from EIC or regional manager, audience metric alerts (spikes, drops, social engagement), cross-service coordination requests, NPS/Pyramid or tool updates affecting the service.`,
+  extraOutput:`📊 SERVICE PULSE
+[Audience signals, top content, staffing status — 3 bullets max]
+▸ [Signal 1]
+▸ [Signal 2]
+▸ [Signal 3]
+[If nothing notable: "No service-level alerts."]
+
+🌍 COVERAGE REVIEW
+▸ [Story or gap] — [Status] — [Action needed]
+
+🤝 COORDINATION ITEMS
+[Cross-service requests · EIC directives · Vendor/tool issues]
+[If none: "No coordination items."]
+
+▸ COVERAGE GAPS
+[Stories competitors in the same language are running that the service has not covered]
+[If none: "No significant gaps identified."]`
+},
+
+regional_manager:{
+  label:"Regional Manager",
+  focusLabel:"What's moving across your region today?",
+  focusPlaceholder:"e.g. Media law changes in Georgia\nBureau security in Kabul\nCross-service Ukraine coordination",
+  peoplePlaceholder:"e.g. Service directors, bureau chiefs, security officer",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a Regional Manager at RFE/RL (Radio Free Europe/Radio Liberty).
+A Regional Manager oversees multiple language services within a geographic region — coordinating editorial strategy, bureau operations, resource allocation, and journalist safety.
+Core mindset: "What's moving across my region — and where do I need to act?"
+Needs a wide-angle view across all services in the region: geopolitical developments, cross-service alignment, bureau safety, and resource decisions.`,
+  inboxExtra:`Flag as BUCKET A: emails from service directors, bureau chiefs, EIC, and security/operations staff. Flag budget or resource requests requiring a decision today.
+Group routine service reports and coordination threads under BUCKET B.`,
+  webSearchExtra:`Focus on the regional geopolitical landscape across all services managed.
+Search for:
+  - Regional geopolitical shifts: government changes, military developments, diplomatic moves.
+  - Media freedom and journalist safety: arrests, laws, threats, access restrictions (CPJ, RSF, IFEX).
+  - Cross-cutting stories spanning multiple services in the region.
+  - Humanitarian developments affecting coverage (displacement, infrastructure, access).
+
+Scan: AP, Reuters, AFP, Eurasianet, BIRN, OC Media, JAMnews, CABAR.asia, TOLOnews, ICG.
+Press freedom: CPJ, RSF, IFEX, OSCE.
+State media (narrative tracking only): TASS, IRNA, BelTA, Xinhua.
+
+▸ CROSS-SERVICE STORIES: Stories with coverage potential across multiple services in the region.`,
+  internalExtra:`Also flag: bureau security alerts or travel advisories, resource allocation requests from service directors, personnel changes across services, NPS/Pyramid or workflow tool issues reported by services, unresolved items from yesterday.`,
+  extraOutput:`🌍 REGIONAL OVERVIEW
+▸ [Development] — [Impact on coverage] — [Services affected]
+▸ [Development] — [Impact] — [Services affected]
+[Top 2–3 max — one line each]
+
+🏢 BUREAU STATUS
+[Security · Operational issues · Staffing — by bureau]
+[If nothing flagged: "All bureaus operating normally."]
+
+⚖️ DECISIONS NEEDED
+[Resource requests · Escalations · Unresolved items from yesterday]
+[If none: "No decisions pending."]
+
+▸ CROSS-SERVICE STORIES
+[Stories with coverage potential across multiple services]
+[If none: "No cross-service opportunities identified."]`
+},
+
+eic:{
+  label:"Editor in Chief",
+  focusLabel:"What's on your radar today?",
+  focusPlaceholder:"e.g. Standards review follow-up\nRussia-Iran cross-cutting story\nBreaking news readiness",
+  peoplePlaceholder:"e.g. Board liaison, regional managers, legal counsel",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for the Editor in Chief of RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL broadcasts in 27 languages to 23 countries.
+Core mindset: "What decisions can only I make today?"
+Maximum signal, minimum noise. The EIC needs the global editorial picture in the shortest possible scan — decisions, risks, and cross-cutting stories. Routine operational detail is noise. Be maximally concise.`,
+  inboxExtra:`Flag as BUCKET A ONLY: anything requiring EIC sign-off, standards/ethics escalations, breaking news decisions, leadership/board/donor communications, legal matters, service director or regional manager escalations needing EIC-level intervention.
+Deprioritize ALL routine operational emails — push to BUCKET C or skip entirely.`,
+  webSearchExtra:`Scan top stories across ALL RFE/RL coverage regions (Russia, Ukraine, Iran, Afghanistan, Central Asia, Caucasus, Balkans, Belarus).
+Focus on:
+  - Breaking or rapidly escalating stories requiring editorial positioning.
+  - Sourcing and verification sensitivities — conflicting reports, contested claims.
+  - Stories receiving major global attention where RFE/RL must have a position.
+  - Media freedom incidents affecting RFE/RL staff or operations.
+  - Disinformation narratives RFE/RL may need to counter.
+
+Tier 1 wires: Reuters, AP, AFP.
+Global outlets: BBC, NYT, Washington Post, Financial Times, Al Jazeera.
+State media (disinformation/narrative tracking only): TASS, IRNA, BelTA, Xinhua, RT.
+Press freedom: CPJ, RSF.
+
+Flag stories requiring EIC-level editorial decisions → ⚖️ DECISIONS REQUIRED.`,
+  internalExtra:`Also flag: leadership and personnel changes across RFE/RL, editorial standards issues (complaints, corrections, retractions pending), policy decisions pending sign-off, reputation risks (legal threats, public criticism, social escalations), breaking news readiness (staffing, bureau coverage capacity), board or donor communications.`,
+  extraOutput:`⚖️ DECISIONS REQUIRED
+🔥 or standard — [ITEM]
+Decision: [one line] · Deadline: [date/time] · Waiting: [who]
+→ Ask me: "What should I say to [FULL NAME]?"
+[If none: "No decisions pending."]
+
+🛡️ EDITORIAL WATCH
+▸ [Issue] — [Risk level] — [Action needed]
+[If none: "No editorial risks flagged."]
+
+🌐 CROSS-CUTTING STORIES
+▸ [Story] — [Regions/services affected] — [Direction needed]
+[If none: "No cross-cutting stories requiring coordination."]`
+},
+
+strategist:{
+  label:"Strategist",
+  focusLabel:"What are you analysing today?",
+  focusPlaceholder:"e.g. Instagram performance this week\nAudience drop in Persian service\nVideo vs text comparison",
+  peoplePlaceholder:"e.g. Editors to share signals with, platform leads, service directors",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for an Audience & Planning Strategist at RFE/RL (Radio Free Europe/Radio Liberty).
+The Strategist translates performance data and audience signals into editorial direction. They do NOT assign stories or make editorial decisions — they produce evidence-backed direction signals that inform editors, service directors, and planning meetings.
+Core mindset: "What does performance tell us — and what should we do next?"
+This is the only role that looks BACKWARD (what worked) and FORWARD (what to do differently) at the same time.
+NEVER include: detailed story summaries, source-level reporting, or editorial instructions ("assign this"). Those belong to Journalist and Editor roles.`,
+  inboxExtra:`Flag as BUCKET A: Chartbeat alerts, audience metric reports, platform performance notifications, analytics tool updates, editorial planning requests needing data input.
+Flag competitor intelligence, industry reports, and newsletter digests under BUCKET B or C.`,
+  webSearchExtra:`Focus on audience intelligence, platform trends, and competitive signals — NOT story narrative.
+Search for:
+  - Platform algorithm changes or feature launches (Instagram, TikTok, YouTube, X) in the last 24–48 hours.
+  - Competitor content that is significantly outperforming RFE/RL equivalents in the same region or language.
+  - Audience behavior trends in RFE/RL's coverage regions: what topics are people searching for, sharing, engaging with.
+  - Industry signals: format trends (reels, shorts, newsletters, audio), distribution shifts, new tools.
+
+Sources: Nieman Lab, Reuters Institute Digital News Report, Press Gazette, Social Media Today, Axios Media, Pew Research (media), Chartbeat blog, platform newsrooms (Meta, Google, TikTok).
+
+DO NOT produce story summaries. Produce audience intelligence only.`,
+  internalExtra:`Also flag: Chartbeat or analytics tool data from inbox (if emailed reports), editorial pipeline signals from planning docs, NPS/Pyramid data relevant to audience performance, upcoming planning meetings needing data prep.`,
+  extraOutput:`📊 PERFORMANCE SNAPSHOT
+▸ TOP: [Story/content] — [Platform] — [Why it worked: signal, not opinion]
+▸ UNDER: [Story/content] — [Why it missed: signal, not opinion]
+Platform breakdown: Web [x%] · Social [x%] · Video [x%]
+[Pull from Chartbeat report if attached, otherwise note: "No analytics data attached — signals based on available M365 context."]
+
+📈 PATTERNS
+▸ RISING: [Topic or format] — [Evidence]
+▸ DECLINING: [Topic or format] — [Evidence]
+▸ OUTLIER: [What and why — spike or drop outside normal range]
+[If no clear pattern: "Insufficient data for pattern detection today."]
+
+⚖️ COVERAGE VS DEMAND
+▸ OVER-COVERED: [Topic] — [Evidence of low audience interest relative to output]
+▸ UNDER-COVERED: [Topic] — [Evidence of high audience interest relative to output]
+[If none: "Coverage and demand appear aligned based on available signals."]
+
+🎯 DIRECTION SIGNALS
+→ [Signal 1 — evidence-backed, one line, no opinions]
+→ [Signal 2 — evidence-backed, one line]
+→ [Signal 3 — evidence-backed, one line]
+[Maximum 5 signals. Each must reference a data point or observable trend.]
+
+🗓️ PLANNING INPUTS
+[Upcoming events worth building editorial plans around · Pipeline gaps · Signals to bring to next planning meeting]`
+},
+
+digital_product:{
+  label:"Digital & Product",
+  focusLabel:"What tools or projects are you tracking?",
+  focusPlaceholder:"e.g. NPS/Pyramid rollout blockers\nAI summarisation pilot\nCopilot adoption metrics",
+  peoplePlaceholder:"e.g. Vendor contacts, Jan Sapar (NPS), pilot service leads",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a Digital & Product team member at RFE/RL (Radio Free Europe/Radio Liberty).
+This role drives technology adoption, tool rollouts, and editorial workflow modernisation across the organisation. Key systems: NPS/Pyramid (Dalet-based editorial planning), SharePoint, Microsoft Teams, Microsoft 365 Copilot, and various CMS platforms.
+Core mindset: "What moved in the stack overnight — and what needs my attention today?"
+Prioritize: adoption blockers, vendor updates, editorial staff tool issues, AI developments in media, and support queue items.`,
+  inboxExtra:`Flag as BUCKET A: tool adoption blockers, vendor updates (Dalet, Microsoft, others), training requests, NPS/Pyramid issues, Copilot feedback, editorial staff complaints about digital tools.
+Flag routine IT notifications, system maintenance notices, and non-urgent vendor comms under BUCKET B.
+Flag industry newsletters and AI/media news under BUCKET C.`,
+  webSearchExtra:`Focus on AI/ML developments in newsrooms and tools directly relevant to RFE/RL's stack.
+Search for:
+  - AI in newsrooms: transcription, translation, summarisation, fact-checking, content moderation.
+  - CMS and editorial planning tools: Dalet Pyramid, ENPS, Superdesk, Kordiam, Vizrt.
+  - Microsoft 365 ecosystem: Copilot updates, Teams features, SharePoint enhancements, Power Platform.
+  - Media workflow automation: MAM systems, cloud-based editing, remote production.
+  - Digital audience tools: analytics platforms, SEO, social distribution, newsletter tools.
+
+Scan: Nieman Lab, Reuters Institute, Press Gazette, Journalism.co.uk, Poynter, INMA, TechCrunch, The Verge, MIT Technology Review, Microsoft 365 Blog, Dalet blog, Anthropic blog, OpenAI blog.
+
+Flag developments that could affect RFE/RL's current or planned tool stack.`,
+  internalExtra:`Also flag: NPS/Pyramid rollout status (training schedules, service adoption progress, reported issues), Copilot adoption feedback and new features relevant to editorial workflows, SharePoint/Teams issues reported by editorial staff, training schedule updates, vendor contract milestones or renewal deadlines, editorial staff requests for new tools or workflow changes, unresolved support tickets from yesterday.`,
+  extraOutput:`🔧 TOOL ADOPTION PULSE
+▸ NPS/Pyramid: [Status — training progress, blockers, service adoption]
+▸ Copilot: [Adoption signal — feedback, new feature, usage update]
+▸ Other: [Tool issue or update]
+[If nothing notable: "No adoption updates."]
+
+📡 TECH RADAR
+▸ [Development] — [Why it matters for RFE/RL's stack — one line]
+[If nothing new: "No significant developments in last 24 hours."]
+
+📋 SUPPORT QUEUE
+▸ [Ticket or request] — [Urgency] — [Action needed]
+[If clear: "No open support items."]`
+},
+
+multimedia_producer:{
+  label:"Multimedia Producer",
+  focusLabel:"What are you producing today?",
+  focusPlaceholder:"e.g. Instagram Reels for Iran coverage\nYouTube Shorts backlog\nTikTok strategy this week",
+  peoplePlaceholder:"e.g. Social editors, video team leads, platform managers",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a Multimedia Producer (Social & Video) at RFE/RL (Radio Free Europe/Radio Liberty).
+This role lives at the intersection of news and platform culture — producing social content, video, and multimedia formats for RFE/RL's digital platforms.
+Core mindset: "What's trending, what's due, and what do I make today?"
+Needs: platform pulse (what is performing and what algorithms are favouring right now), production queue status (what is scheduled and what is at risk), and story opportunities (what deserves a social/video treatment today).
+Fast, visual, platform-aware. Do not produce long narrative briefings — produce actionable production intelligence.`,
+  inboxExtra:`Flag as BUCKET A: approval requests, asset requests (graphics, footage, translations), platform alert notifications, editorial coordination for video/social, deadline-critical messages.
+Flag platform analytics reports, competitor content alerts, and scheduling updates as BUCKET B.`,
+  webSearchExtra:`Focus on platform culture, content performance, and multimedia story opportunities — NOT political narrative.
+Search for:
+  - What is trending right now on Instagram, TikTok, YouTube, and X in RFE/RL's coverage regions.
+  - Top-performing social/video content from RFE/RL and competitors in the last 24 hours.
+  - Platform algorithm or feature changes announced in the last 48 hours (Reels, Shorts, carousels, live, newsletters).
+  - Format signals: what content type is getting the most organic reach right now.
+  - Story or topic angles that are gaining social traction and would benefit from a video or visual treatment.
+
+Sources: Social Media Today, Later blog, Sprout Social insights, platform newsrooms (Meta, Google, TikTok, X), Axios Media, Nieman Lab (social/video coverage).
+
+Flag any story that is gaining major social traction in RFE/RL's coverage regions and has not received a multimedia treatment → 🔍 STORY OPPORTUNITIES.`,
+  internalExtra:`Also flag: production schedule conflicts, asset gaps (footage, translations, graphics not ready), platform publishing deadline risks, team capacity issues, editorial sign-off pending for scheduled content.`,
+  extraOutput:`📱 PLATFORM PULSE
+▸ [Platform]: [What's trending] — [Relevant to RFE/RL's audience?] — [Format performing]
+▸ [Platform]: [What's trending] — [Relevant?] — [Format]
+Top performing (last 24h): [Content title] — [Platform] — [Signal: reach/engagement/shares]
+Format signal: [What content type is getting reach right now — Reels/Shorts/carousels/live/etc.]
+[Platform algorithm or feature update if any]
+
+🎬 PRODUCTION QUEUE
+[Content item] · [Platform] · [Deadline] · [Owner] · [Status: on track / at risk / blocked]
+⚠️ AT RISK: [Item] — [Why] — [Action needed]
+[If all on track: "Production queue clear."]
+
+🔍 STORY OPPORTUNITIES
+▸ [Story/trend gaining traction] — [Suggested format] — [Platform] — [Why now]
+[If none: "No urgent story opportunities identified."]`
+},
+
+generic:{
+  label:"General / Other",
+  focusLabel:"Anything specific on your mind?",
+  focusPlaceholder:"Leave blank — Copilot will use what it knows about you.",
+  peoplePlaceholder:"e.g. External contacts Copilot might miss",
+  systemNote:`You are an expert briefing assistant preparing a morning briefing for a staff member at RFE/RL (Radio Free Europe/Radio Liberty).
+RFE/RL broadcasts in 27 languages to 23 countries.
+Tailor the briefing to what you know about this person from their Microsoft 365 profile — their name, role, department, team, email patterns, calendar, and recent work.`,
+  inboxExtra:'',
+  webSearchExtra:`Based on what you know about my role and work at RFE/RL, search for significant developments on the topics most relevant to me. Use today's date.`,
+  internalExtra:'',
+  extraOutput:''
+}
+
 };
 
 const MATERIALS={
@@ -1444,9 +1809,15 @@ function copyPrompt(){
 const GREETINGS_EN={
   journalist:{
     morning:["Let's see what the wires brought overnight.","Time to check what the world did while you were asleep.","A new news cycle begins. Let's get you up to speed."],
-    afternoon:["Midday check — stories move fast, let's catch up.","Good time to see what's developed since this morning.","Afternoon. Let's see what needs your attention now."],
+    afternoon:["Midday check — stories move fast, let's catch up.","Good time to see what's developed since this morning.","Afternoon. Let's see what your story needs now."],
     evening:["Wrapping up the day — here's what still needs a look.","The day is winding down. A few things worth catching before you close.","Evening edition. Let's see what's still in motion."],
     late:["Still at it. Let's make sure nothing slipped past you.","Late hours, sharp eyes. Here's what matters right now.","Working late? Let's keep it focused and get you out the door."]
+  },
+  editor:{
+    morning:["Morning. Let's see what the day needs from you editorially.","Time to map the lineup. Let's see what's landed and what needs a decision.","New day, new editorial calls. Let's get the full picture."],
+    afternoon:["Midday editorial check — let's see what's moved and what needs reassigning.","Good moment to take stock of the coverage portfolio.","Afternoon. Let's see where the gaps are and what needs your eye."],
+    evening:["End of day approaching. A few editorial calls still to make.","Winding down — let's see what's open before tomorrow's cycle.","Evening. Let's close out the day with a clear editorial picture."],
+    late:["Still in the chair. Let's keep it to what can't wait.","Late editorial check — here's what needs your sign-off before morning.","One last look at the lineup before you hand it over."]
   },
   service_director:{
     morning:["Morning. Your service has a full day ahead — let's map it out.","Time to see how your team is set up for the day.","A new day for your service. Let's start with the full picture."],
@@ -1466,11 +1837,23 @@ const GREETINGS_EN={
     evening:["Evening. The day's stories are settling — here's the state of play.","Winding down, but a few things still need your sign-off.","Late edition check before the cycle turns."],
     late:["Still at the helm. Let's keep it to what truly matters.","Late hours. Here's what can't wait until morning.","One final look before you hand off the watch."]
   },
-  digital_transformation:{
-    morning:["Morning. Let's see what moved in tech and tools overnight.","A new day in the digital stack. Here's what's worth your attention.","Morning check — tools, adoption, and anything new from the field."],
-    afternoon:["Afternoon. A good moment to check in on what's shipping and what's stuck.","Midday tech check — let's see what's developed.","Good time to take stock of your open threads and inbound signals."],
+  strategist:{
+    morning:["Morning. Let's see what the numbers say before the day starts.","Time to read the signals. What did the audience do overnight?","A new day of data. Let's see what it's telling us."],
+    afternoon:["Midday check — let's see how the morning's content is performing.","Good moment to spot the patterns before the afternoon push.","Afternoon. The signals are in — let's read them."],
+    evening:["End of day. Time to see what landed and what to do differently tomorrow.","The day's performance is in. Let's see what it means.","Winding down — a good moment to pull the day's intelligence together."],
+    late:["Late check on the numbers. Let's keep it focused.","Still watching the data? Here's what matters right now.","One last look at performance before you close the day."]
+  },
+  digital_product:{
+    morning:["Morning. Let's see what moved in the stack overnight.","A new day in the digital layer. Here's what's worth your attention.","Morning check — tools, adoption, and anything new from the field."],
+    afternoon:["Afternoon. A good moment to check what's shipping and what's stuck.","Midday tech check — let's see what's developed.","Good time to take stock of your open threads and inbound signals."],
     evening:["Evening. Let's wrap the day with a clear picture of what's open.","Winding down — a few digital signals worth catching before tomorrow.","End of day check on tools, tickets, and what's on the horizon."],
     late:["Late check on the digital stack. Let's keep it focused.","Still going? Here's what's worth your attention right now.","One last look at the inbox and the radar before you close."]
+  },
+  multimedia_producer:{
+    morning:["Morning. Let's see what's trending before the production day starts.","Time to check the platforms and the queue. Let's see what's moving.","New day, new content. Let's see what needs to be made."],
+    afternoon:["Midday check — let's see how this morning's content is performing.","Good moment to check the production queue and the platform signals.","Afternoon. Let's see what's trending and what's due."],
+    evening:["End of production day. Let's see what's posted, what's pending, and what's trending.","Winding down — a quick check on platform performance and tomorrow's queue.","Evening. Let's close out with a clear production picture."],
+    late:["Still producing? Let's keep it to what matters right now.","Late check on the platforms. Here's what you need to know.","One last look at the queue before you call it a night."]
   },
   generic:{
     morning:["Morning. Let's get you set up for the day.","A fresh start. Here's what's worth your attention this morning.","Good morning. Let's see what the day has in store."],
