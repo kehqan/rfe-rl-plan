@@ -1287,7 +1287,6 @@ function saveFeedback(i){
   try{
     let h=JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
     if(!h[i])return;
-    // collect checked reasons from DOM
     const panel=document.getElementById(`hfeedback-${i}`);
     if(!panel)return;
     const checked=Array.from(panel.querySelectorAll('input[type="checkbox"]:checked')).map(cb=>cb.dataset.reason);
@@ -1296,9 +1295,40 @@ function saveFeedback(i){
     h[i].other=other;
     localStorage.setItem(LS_HISTORY,JSON.stringify(h));
     const note=document.getElementById(`hfsaved-${i}`);
-    if(note){note.classList.add('show');note.textContent='✓ Feedback saved';}
     const btn=document.getElementById(`hfsave-${i}`);
-    if(btn){btn.textContent='Saved ✓';btn.disabled=true;setTimeout(()=>{if(btn)btn.textContent='Save feedback';},2000);}
+    if(btn){btn.textContent='Saving…';btn.disabled=true;}
+    // send to Supabase
+    const payload={
+      role:h[i].role,
+      depth:h[i].depth,
+      lang:h[i].lang,
+      focus_mode:h[i].focusMode||'none',
+      rating:h[i].rating,
+      reasons:checked,
+      other:other,
+      ts:h[i].ts
+    };
+    fetch('https://yiewnykbchfadipznpet.supabase.co/rest/v1/briefing_feedback',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZXdueWtiY2hmYWRpcHpucGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNzM3NTUsImV4cCI6MjA5NDc0OTc1NX0.utnlpToZGH7hno0QTXlrtWvzKDgP28Gv3Je7BBIRwmM',
+        'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZXdueWtiY2hmYWRpcHpucGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNzM3NTUsImV4cCI6MjA5NDc0OTc1NX0.utnlpToZGH7hno0QTXlrtWvzKDgP28Gv3Je7BBIRwmM',
+        'Prefer':'return=minimal'
+      },
+      body:JSON.stringify(payload)
+    }).then(r=>{
+      if(r.ok||r.status===201){
+        if(note){note.classList.add('show');note.textContent='✓ Feedback saved';}
+        if(btn){btn.textContent='Saved ✓';setTimeout(()=>{if(btn){btn.textContent='Save feedback';btn.disabled=false;}},2000);}
+      } else {
+        if(note){note.classList.add('show');note.textContent='✓ Saved locally';}
+        if(btn){btn.textContent='Save feedback';btn.disabled=false;}
+      }
+    }).catch(()=>{
+      if(note){note.classList.add('show');note.textContent='✓ Saved locally';}
+      if(btn){btn.textContent='Save feedback';btn.disabled=false;}
+    });
   }catch(e){}
 }
 
