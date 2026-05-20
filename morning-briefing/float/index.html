@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FloatBox — Floating Web Window</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0e;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --accent: #d4ff4e;
+      --accent-dim: #a8cc3a;
+      --text: #f0f0f0;
+      --muted: #666;
+      --danger: #ff4e4e;
+      --success: #4eff9f;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px;
+    }
+
+    /* ── Header ── */
+    header {
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .logo-icon::after {
+      content: '';
+      width: 14px;
+      height: 10px;
+      border: 2px solid #0e0e0e;
+      border-radius: 2px;
+      position: absolute;
+      bottom: 6px;
+      right: 5px;
+      background: #0e0e0e;
+      box-shadow: -4px -4px 0 -1px #0e0e0e, -4px -4px 0 0px var(--accent);
+    }
+
+    .logo h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo h1 span { color: var(--accent); }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Support Badge ── */
+    #support-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      margin-top: 14px;
+      border: 1px solid;
+      transition: all 0.3s;
+    }
+
+    #support-badge.supported {
+      background: rgba(78, 255, 159, 0.08);
+      border-color: rgba(78, 255, 159, 0.3);
+      color: var(--success);
+    }
+
+    #support-badge.unsupported {
+      background: rgba(255, 78, 78, 0.08);
+      border-color: rgba(255, 78, 78, 0.3);
+      color: var(--danger);
+    }
+
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── Main Card ── */
+    .card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    /* ── URL Input ── */
+    .url-section { padding: 20px; }
+
+    .url-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .url-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0 14px;
+      gap: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .url-input-wrap:focus-within {
+      border-color: var(--accent);
+    }
+
+    .url-prefix {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .url-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 12px 0;
+    }
+
+    .url-input::placeholder { color: var(--muted); }
+
+    /* ── Size Controls ── */
+    .size-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .size-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .size-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .size-input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+
+    .size-input:focus { border-color: var(--accent); }
+
+    /* ── Preset chips ── */
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .preset-chip {
+      padding: 5px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(212, 255, 78, 0.05);
+    }
+
+    .preset-chip.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(212, 255, 78, 0.08);
+    }
+
+    /* ── Quick URLs ── */
+    .quick-urls {
+      padding: 0 20px 20px;
+    }
+
+    .quick-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .quick-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .quick-item:hover {
+      border-color: var(--border);
+      background: #232323;
+      transform: translateY(-1px);
+    }
+
+    .quick-icon {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .quick-info { min-width: 0; }
+
+    .quick-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .quick-url-text {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Launch Button ── */
+    .launch-wrap {
+      padding: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    #launch-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #0e0e0e;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    #launch-btn:hover {
+      background: #e4ff6e;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(212, 255, 78, 0.25);
+    }
+
+    #launch-btn:active { transform: translateY(0); }
+
+    #launch-btn:disabled {
+      background: var(--surface2);
+      color: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-icon {
+      width: 18px; height: 18px;
+    }
+
+    /* ── Active Window Card ── */
+    #active-card {
+      display: none;
+      width: 100%;
+      max-width: 680px;
+      background: rgba(212, 255, 78, 0.04);
+      border: 1px solid rgba(212, 255, 78, 0.25);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #active-card.visible { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+    .active-info { min-width: 0; }
+
+    .active-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .active-url {
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .active-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    .icon-btn {
+      width: 34px; height: 34px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      color: var(--text);
+    }
+
+    .icon-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── How it works ── */
+    .info-card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .info-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .steps { display: flex; flex-direction: column; gap: 10px; }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .step-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-text { font-size: 13px; color: #bbb; line-height: 1.5; }
+
+    .step-text strong { color: var(--text); }
+
+    .note {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: rgba(255, 78, 78, 0.06);
+      border: 1px solid rgba(255, 78, 78, 0.2);
+      border-radius: 7px;
+      font-size: 12px;
+      color: #ff8a8a;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Pip content (injected into pip window) ── */
+    #pip-frame-src { display: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon"></div>
+      <h1>Float<span>Box</span></h1>
+    </div>
+    <p class="tagline">// document picture-in-picture · no extension needed</p>
+    <div id="support-badge" class="unsupported">
+      <span class="dot"></span>
+      <span id="support-text">Checking browser support…</span>
+    </div>
+  </header>
+
+  <!-- Active window status -->
+  <div id="active-card">
+    <div class="active-info">
+      <div class="active-label">
+        <span class="dot"></span>
+        Floating Window Active
+      </div>
+      <div class="active-url" id="active-url-display">—</div>
+    </div>
+    <div class="active-actions">
+      <button class="icon-btn" id="close-btn" title="Close floating window">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Card -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Target URL</span>
+    </div>
+    <div class="url-section">
+      <div class="url-row">
+        <div class="url-input-wrap">
+          <span class="url-prefix">↗</span>
+          <input
+            class="url-input"
+            id="url-input"
+            type="text"
+            placeholder="example.com/page or https://…"
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+      </div>
+
+      <div class="size-row">
+        <div class="size-field">
+          <span class="size-label">Width (px)</span>
+          <input class="size-input" id="w-input" type="number" value="480" min="200" max="1920">
+        </div>
+        <div class="size-field">
+          <span class="size-label">Height (px)</span>
+          <input class="size-input" id="h-input" type="number" value="320" min="150" max="1080">
+        </div>
+      </div>
+
+      <div class="presets">
+        <div class="preset-chip" data-w="320" data-h="240">Compact 320×240</div>
+        <div class="preset-chip active" data-w="480" data-h="320">Default 480×320</div>
+        <div class="preset-chip" data-w="640" data-h="400">Medium 640×400</div>
+        <div class="preset-chip" data-w="800" data-h="500">Large 800×500</div>
+        <div class="preset-chip" data-w="400" data-h="600">Portrait 400×600</div>
+      </div>
+    </div>
+
+    <!-- Quick launch grid -->
+    <div class="quick-urls">
+      <p class="quick-label">Quick Launch</p>
+      <div class="quick-grid">
+        <div class="quick-item" data-url="https://clock.zone/" >
+          <div class="quick-icon" style="background:#1a1a2e">🕐</div>
+          <div class="quick-info">
+            <div class="quick-name">World Clock</div>
+            <div class="quick-url-text">clock.zone</div>
+          </div>
+        </div>
+        <div class="quick-item" data-url="https://www.google.com/maps">
+          <div class="quick-icon" style="background:#1a2e1a">🗺️</div>
+          <div class="quick-info">
+            <div class="quick-name">Google Maps</div>
+            <div class="quick-url-text">google.com/maps</div>
+          </div>
+        </div>
+        <div class="quick-item" data-url="https://translate.google.com">
+          <div class="quick-icon" style="background:#2e1a1a">🌐</div>
+          <div class="quick-info">
+            <div class="quick-name">Translate</div>
+            <div class="quick-url-text">translate.google.com</div>
+          </div>
+        </div>
+        <div class="quick-item" data-url="https://open.spotify.com">
+          <div class="quick-icon" style="background:#1a2e1a">🎵</div>
+          <div class="quick-info">
+            <div class="quick-name">Spotify Web</div>
+            <div class="quick-url-text">open.spotify.com</div>
+          </div>
+        </div>
+        <div class="quick-item" data-url="https://notion.so">
+          <div class="quick-icon" style="background:#1e1e1e">📝</div>
+          <div class="quick-info">
+            <div class="quick-name">Notion</div>
+            <div class="quick-url-text">notion.so</div>
+          </div>
+        </div>
+        <div class="quick-item" data-url="https://calendar.google.com">
+          <div class="quick-icon" style="background:#1a1a2e">📅</div>
+          <div class="quick-info">
+            <div class="quick-name">Google Calendar</div>
+            <div class="quick-url-text">calendar.google.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="launch-wrap">
+      <button id="launch-btn" disabled>
+        <svg class="btn-icon" viewBox="0 0 18 18" fill="none">
+          <rect x="1" y="1" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5 17H13M9 13V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M6 7L9 5L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Launch Floating Window
+      </button>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="info-card">
+    <p class="info-title">How It Works</p>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">1</span>
+        <span class="step-text">Uses the native <strong>Document Picture-in-Picture API</strong> — built into Chrome 116+ and Edge 116+.</span>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <span class="step-text">Opens a real floating browser window that <strong>stays on top</strong> of all other apps — no extension, no hack.</span>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <span class="step-text">The floating window contains an <strong>iframe</strong> loading your target URL at the size you choose.</span>
+      </div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <span class="step-text">Some sites block iframes. If a site doesn't load, try opening it via <strong>a proxy</strong> or use a site that allows embedding.</span>
+      </div>
+    </div>
+    <div class="note">
+      ⚠ Requires Chrome 116+ or Edge 116+. Must be triggered by a user gesture (button click). Firefox not supported yet.
+    </div>
+  </div>
+
+  <script>
+    const urlInput = document.getElementById('url-input');
+    const wInput   = document.getElementById('w-input');
+    const hInput   = document.getElementById('h-input');
+    const launchBtn  = document.getElementById('launch-btn');
+    const activeCard = document.getElementById('active-card');
+    const activeUrlDisplay = document.getElementById('active-url-display');
+    const closeBtn = document.getElementById('close-btn');
+    const badge    = document.getElementById('support-badge');
+    const badgeText = document.getElementById('support-text');
+
+    let pipWindow = null;
+
+    // ── Support check ──
+    const supported = 'documentPictureInPicture' in window;
+    badge.className = supported ? 'supported' : 'unsupported';
+    badgeText.textContent = supported
+      ? 'Document PiP supported — ready'
+      : 'Not supported in this browser (needs Chrome/Edge 116+)';
+    launchBtn.disabled = !supported;
+
+    // ── Preset chips ──
+    document.querySelectorAll('.preset-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        wInput.value = chip.dataset.w;
+        hInput.value = chip.dataset.h;
+      });
+    });
+
+    // ── Quick launch items ──
+    document.querySelectorAll('.quick-item').forEach(item => {
+      item.addEventListener('click', () => {
+        urlInput.value = item.dataset.url;
+      });
+    });
+
+    // ── Normalize URL ──
+    function normalizeUrl(raw) {
+      raw = raw.trim();
+      if (!raw) return null;
+      if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+      try { new URL(raw); return raw; }
+      catch { return null; }
+    }
+
+    // ── Close pip ──
+    function closePip() {
+      if (pipWindow) {
+        try { pipWindow.close(); } catch(e) {}
+        pipWindow = null;
+      }
+      activeCard.classList.remove('visible');
+      launchBtn.textContent = '';
+      launchBtn.innerHTML = `
+        <svg class="btn-icon" viewBox="0 0 18 18" fill="none">
+          <rect x="1" y="1" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5 17H13M9 13V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M6 7L9 5L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Launch Floating Window`;
+    }
+
+    closeBtn.addEventListener('click', closePip);
+
+    // ── Launch ──
+    launchBtn.addEventListener('click', async () => {
+      if (!supported) return;
+
+      const url = normalizeUrl(urlInput.value);
+      if (!url) {
+        urlInput.style.borderColor = 'var(--danger)';
+        urlInput.focus();
+        setTimeout(() => urlInput.style.borderColor = '', 1500);
+        return;
+      }
+
+      const w = Math.max(200, parseInt(wInput.value) || 480);
+      const h = Math.max(150, parseInt(hInput.value) || 320);
+
+      // Close any existing pip
+      if (pipWindow) closePip();
+
+      try {
+        launchBtn.disabled = true;
+        launchBtn.innerHTML = `<span style="font-size:13px;opacity:0.7">Opening…</span>`;
+
+        pipWindow = await window.documentPictureInPicture.requestWindow({
+          width: w,
+          height: h,
+          disallowReturnToOpener: false,
+        });
+
+        // Copy styles into pip window
+        const pipDoc = pipWindow.document;
+
+        // Build pip content
+        pipDoc.head.innerHTML = `
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+              background: #0e0e0e;
+              display: flex;
+              flex-direction: column;
+              height: 100vh;
+              overflow: hidden;
+              font-family: system-ui, sans-serif;
+            }
+            .pip-toolbar {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 0 10px;
+              height: 32px;
+              background: #161616;
+              border-bottom: 1px solid #2a2a2a;
+              flex-shrink: 0;
+              gap: 8px;
+              user-select: none;
+            }
+            .pip-url {
+              flex: 1;
+              font-size: 11px;
+              font-family: monospace;
+              color: #888;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            .pip-btn {
+              width: 22px; height: 22px;
+              border: none;
+              border-radius: 5px;
+              background: #232323;
+              color: #aaa;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+              font-size: 13px;
+              transition: background 0.15s;
+            }
+            .pip-btn:hover { background: #333; color: #fff; }
+            .error-banner {
+              display: none;
+              padding: 8px 12px;
+              background: #2a1010;
+              border-bottom: 1px solid #4a1a1a;
+              font-size: 11px;
+              color: #ff8a8a;
+              font-family: monospace;
+              line-height: 1.4;
+            }
+            iframe {
+              flex: 1;
+              border: none;
+              width: 100%;
+              background: #fff;
+            }
+          </style>
+        `;
+
+        pipDoc.body.innerHTML = `
+          <div class="pip-toolbar">
+            <div class="pip-url" title="${url}">${url}</div>
+            <button class="pip-btn" id="reload-btn" title="Reload">↺</button>
+            <button class="pip-btn" id="open-btn" title="Open in tab">⤤</button>
+          </div>
+          <div class="error-banner" id="err-banner">
+            ⚠ This site blocks embedding. Try opening it in a tab instead.
+          </div>
+          <iframe
+            id="pip-iframe"
+            src="${url}"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation"
+            allow="autoplay; camera; microphone; encrypted-media; fullscreen; geolocation"
+          ></iframe>
+        `;
+
+        // Reload btn
+        pipDoc.getElementById('reload-btn').addEventListener('click', () => {
+          const iframe = pipDoc.getElementById('pip-iframe');
+          iframe.src = iframe.src;
+        });
+
+        // Open in tab btn
+        pipDoc.getElementById('open-btn').addEventListener('click', () => {
+          window.open(url, '_blank');
+        });
+
+        // Detect iframe load error (limited — some errors silent due to X-Frame-Options)
+        const iframe = pipDoc.getElementById('pip-iframe');
+        iframe.addEventListener('error', () => {
+          pipDoc.getElementById('err-banner').style.display = 'block';
+        });
+
+        // Listen for pip window close
+        pipWindow.addEventListener('pagehide', () => {
+          pipWindow = null;
+          activeCard.classList.remove('visible');
+          launchBtn.disabled = false;
+          launchBtn.innerHTML = `
+            <svg class="btn-icon" viewBox="0 0 18 18" fill="none">
+              <rect x="1" y="1" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M5 17H13M9 13V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 7L9 5L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Launch Floating Window`;
+        });
+
+        // Show active card
+        activeUrlDisplay.textContent = url;
+        activeCard.classList.add('visible');
+        launchBtn.disabled = false;
+        launchBtn.innerHTML = `
+          <svg class="btn-icon" viewBox="0 0 18 18" fill="none">
+            <rect x="1" y="1" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5 17H13M9 13V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6 7L9 5L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Relaunch`;
+
+      } catch (err) {
+        console.error('PiP error:', err);
+        launchBtn.disabled = false;
+        launchBtn.innerHTML = `
+          <svg class="btn-icon" viewBox="0 0 18 18" fill="none">
+            <rect x="1" y="1" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5 17H13M9 13V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6 7L9 5L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Launch Floating Window`;
+        alert('Could not open PiP window: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
