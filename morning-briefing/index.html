@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RFE/RL · Morning Briefing</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1A3948">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Morning Briefing">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -27,6 +31,15 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .gear-btn{background:none;border:1px solid var(--light);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--mid);display:flex;align-items:center;gap:6px;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;transition:all .15s ease}
 .gear-btn:hover{border-color:var(--ink);color:var(--ink)}
 .save-setup-btn.saved{border-color:var(--success);color:var(--success)}
+
+/* ─── SIDEBAR / INSTALL BUTTON ─── */
+.sidebar-btn{background:none;border:1px solid var(--light);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--mid);display:flex;align-items:center;gap:6px;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;transition:all .15s ease;white-space:nowrap;text-decoration:none}
+.sidebar-btn:hover{border-color:var(--teal);color:var(--teal);background:rgba(26,57,72,.04)}
+.sidebar-btn.edge{border-color:rgba(0,120,212,.3);color:#0078D4}
+.sidebar-btn.edge:hover{border-color:#0078D4;background:rgba(0,120,212,.05)}
+.sidebar-btn.chrome{border-color:rgba(66,133,244,.3);color:#4285F4}
+.sidebar-btn.chrome:hover{border-color:#4285F4;background:rgba(66,133,244,.05)}
+.sidebar-btn.hidden{display:none}
 
 /* ─── FEEDBACK MODAL ─── */
 .fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;opacity:0;pointer-events:none;transition:opacity .2s ease;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -71,6 +84,24 @@ body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans
 .save-default-btn:hover{border-color:var(--ink)}
 .save-default-btn.saved{border-color:var(--success);color:var(--success)}
 .restore-note{font-size:11px;color:var(--mid);margin-top:8px}
+
+/* ─── EDITORIAL CONTEXT PANEL IN SETTINGS ─── */
+.ctx-panel{margin-top:4px}
+.ctx-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mid);margin-bottom:10px}
+.ctx-dot{width:7px;height:7px;border-radius:50%;background:var(--light);flex-shrink:0}
+.ctx-dot.live{background:var(--success)}
+.ctx-dot.error{background:var(--flame)}
+.ctx-dot.loading{background:#F59E0B}
+.ctx-section-title{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mid);margin-bottom:6px;margin-top:14px;display:block}
+.ctx-items{display:flex;flex-direction:column;gap:5px}
+.ctx-item{font-size:11px;line-height:1.5;padding:7px 10px;border-radius:6px;border-left:2px solid var(--light)}
+.ctx-item.global{border-left-color:var(--teal);background:rgba(26,57,72,.04);color:var(--ink)}
+.ctx-item.add{border-left-color:var(--success);background:rgba(35,122,87,.05);color:#2d5a3d}
+.ctx-item.remove{border-left-color:var(--flame);background:rgba(255,84,0,.05);color:#7a2a00}
+.ctx-item.elevate{border-left-color:#F59E0B;background:rgba(245,158,11,.05);color:#7a4f00}
+.ctx-item-label{font-weight:700;display:inline}
+.ctx-empty{font-size:11px;color:var(--mid);font-style:italic}
+.ctx-meta{font-size:10px;color:var(--mid);margin-top:10px;padding-top:8px;border-top:1px solid var(--light)}
 .history-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
 .history-item{border:1px solid var(--light);border-radius:8px;overflow:hidden;background:#fff;transition:border-color .15s ease}
 .history-item:hover{border-color:var(--teal)}
@@ -311,6 +342,7 @@ footer{background:var(--teal);color:rgba(255,255,255,.45);padding:10px 40px;font
       <div style="font-size:10px;color:var(--mid);margin-top:2px">Briefing Request Builder for Microsoft Copilot</div>
     </div>
     <div class="masthead-right">
+      <button class="sidebar-btn hidden" id="sidebarBtn" onclick="handleSidebarClick()"></button>
       <button class="gear-btn save-setup-btn" id="mastheadSaveBtn" onclick="mastheadSave()">
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 2h8l2 2v8a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><rect x="4" y="2" width="5" height="3" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="4" y="8" width="5" height="3" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>
         Save setup
@@ -382,7 +414,12 @@ footer{background:var(--teal);color:rgba(255,255,255,.45);padding:10px 40px;font
   <div class="restore-note" id="restoreNote"></div>
   <span class="settings-label">Recent configurations</span>
   <div class="history-list" id="historyList"><div class="history-empty">No recent configurations yet.</div></div>
-  <div class="settings-version">Morning Briefing · v8.1 · May 2026<br>Digital Transformation · Designed for Microsoft Copilot</div>
+  <span class="settings-label">This week's editorial context</span>
+  <div class="ctx-panel" id="ctxPanel">
+    <div class="ctx-status"><span class="ctx-dot loading" id="ctxDot"></span><span id="ctxStatusText">Loading…</span></div>
+    <div id="ctxBody"></div>
+  </div>
+  <div class="settings-version">Morning Briefing · v8.2 · May 2026<br>Digital Transformation · Designed for Microsoft Copilot</div>
 </div>
 
 <div class="wrap">
@@ -1237,6 +1274,7 @@ function setRole(r){
   document.getElementById('people').placeholder=ROLES[r].peoplePlaceholder;
   updateGreeting(r,true);
   setFocusMode(currentFocusMode);
+  renderCtxPanel(); // update "For your role" section in settings
   generate();
 }
 
@@ -1302,6 +1340,74 @@ function getCheckedMaterials(){
   return out;
 }
 
+// ── SIDEBAR / PWA INSTALL ──
+let pwaInstallPrompt=null; // captured beforeinstallprompt event
+
+(function initSidebarBtn(){
+  const btn=document.getElementById('sidebarBtn');
+  if(!btn)return;
+
+  const ua=navigator.userAgent;
+  const isEdge=/Edg\//.test(ua);
+  const isChrome=/Chrome\//.test(ua)&&!/Edg\//.test(ua);
+
+  if(isEdge){
+    btn.className='sidebar-btn edge';
+    btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 3h4a1 1 0 011 1v6a1 1 0 01-1 1H8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M6 5l-2 2 2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Pin to sidebar`;
+    btn.classList.remove('hidden');
+  } else if(isChrome){
+    // Show install button only when PWA is installable
+    window.addEventListener('beforeinstallprompt',function(e){
+      e.preventDefault();
+      pwaInstallPrompt=e;
+      btn.className='sidebar-btn chrome';
+      btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 10v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Install app`;
+      btn.classList.remove('hidden');
+    });
+    // Hide once installed
+    window.addEventListener('appinstalled',function(){
+      btn.classList.add('hidden');
+      pwaInstallPrompt=null;
+    });
+  }
+  // Other browsers: button stays hidden
+})();
+
+function handleSidebarClick(){
+  const ua=navigator.userAgent;
+  const isEdge=/Edg\//.test(ua);
+
+  if(isEdge){
+    // Edge: open sidebar add panel dialog
+    // Try the modern Edge sidebar API first, fall back to the settings URL
+    if(window.sidebar&&window.sidebar.addPanel){
+      try{
+        window.sidebar.addPanel('RFE/RL Morning Briefing','https://kehqan.github.io/rfe-rl-plan/morning-briefing/','');
+        return;
+      }catch(e){}
+    }
+    // Modern Edge: open sidebar settings page so user can add manually
+    // The most reliable cross-version approach is a help tooltip
+    showSidebarTooltip();
+  } else {
+    // Chrome: trigger PWA install prompt
+    if(pwaInstallPrompt){
+      pwaInstallPrompt.prompt();
+      pwaInstallPrompt.userChoice.then(function(r){
+        if(r.outcome==='accepted'){
+          document.getElementById('sidebarBtn').classList.add('hidden');
+          pwaInstallPrompt=null;
+        }
+      });
+    }
+  }
+}
+
+function showSidebarTooltip(){
+  // Show a brief toast explaining how to pin in Edge
+  showToast('In Edge: click ··· menu → "Add to sidebar" or press Shift+Ctrl+\'');
+}
+
 // ── MASTHEAD SAVE ──
 function mastheadSave(){
   const cfg=getConfig();
@@ -1346,6 +1452,7 @@ function copyFeedbackEmail(){
 function openSettings(){
   document.getElementById('settingsOverlay').classList.add('open');
   document.getElementById('settingsPanel').classList.add('open');
+  renderCtxPanel(); // refresh context display for current role
 }
 function closeSettings(){
   document.getElementById('settingsOverlay').classList.remove('open');
@@ -1379,6 +1486,7 @@ function generate(){
   const inboxExtra=cfg.inboxExtra?`\n${cfg.inboxExtra}\n`:'';
   const internalExtra=cfg.internalExtra?`\n${cfg.internalExtra}\n`:'';
   const extraOutput=cfg.extraOutput?`\n${cfg.extraOutput}\n`:'';
+  const contextBlock=buildContextBlock();
 
   const today=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const isExpress=currentDepth==='5';
@@ -1398,7 +1506,7 @@ You know who I am from my Microsoft 365 profile. Apply that knowledge actively:
 - Elevate topics I have engaged with in the last 72 hours.
 - Escalate any thread where I am the expected responder and have not yet replied.
 - Deprioritize senders or topics I rarely engage with, unless urgency overrides.
-${optBlock}${matBlock}
+${optBlock}${matBlock}${contextBlock}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 REASONING MODE — do this before writing anything
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2217,6 +2325,160 @@ function updateGreeting(role,animate){
   }
 }
 
+// ── EDITORIAL CONTEXT ──
+// Fetched from GitHub repo — one JSON file your team updates weekly
+const EDITORIAL_CONTEXT_URL='https://raw.githubusercontent.com/kehqan/rfe-rl-plan/main/morning-briefing/editorial-context.json';
+
+let editorialContext=null; // populated after fetch
+
+async function loadEditorialContext(){
+  const dot=document.getElementById('ctxDot');
+  const statusText=document.getElementById('ctxStatusText');
+  try{
+    const res=await fetch(EDITORIAL_CONTEXT_URL+'?t='+Date.now());
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    editorialContext=await res.json();
+    dot.className='ctx-dot live';
+    const d=new Date(editorialContext.updated);
+    const when=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+    statusText.textContent=`Live · Updated ${when} by ${editorialContext.updatedBy||'team'}`;
+    renderCtxPanel();
+    generate(); // re-generate prompt with context injected
+  }catch(e){
+    dot.className='ctx-dot error';
+    statusText.textContent='Could not load — using base prompt';
+    document.getElementById('ctxBody').innerHTML='<div class="ctx-empty">Context file not reachable. Check the GitHub repo or your connection.</div>';
+  }
+}
+
+function renderCtxPanel(){
+  if(!editorialContext)return;
+  const ec=editorialContext.editorialContext||{};
+  const src=editorialContext.sources||{};
+  let html='';
+
+  // Global editorial priorities
+  const global=ec.global||[];
+  if(global.length){
+    html+=`<span class="ctx-section-title">📌 Editorial priorities</span><div class="ctx-items">`;
+    global.forEach(g=>{html+=`<div class="ctx-item global">${escapeHtml(g)}</div>`;});
+    html+=`</div>`;
+  }
+
+  // Role-specific — show for current role
+  const roleLines=(ec.byRole||{})[currentRole]||[];
+  if(roleLines.length){
+    html+=`<span class="ctx-section-title">🎯 For your role</span><div class="ctx-items">`;
+    roleLines.forEach(l=>{html+=`<div class="ctx-item global">${escapeHtml(l)}</div>`;});
+    html+=`</div>`;
+  }
+
+  // Sources added
+  const added=(src.add||[]);
+  if(added.length){
+    html+=`<span class="ctx-section-title">➕ Sources added this week</span><div class="ctx-items">`;
+    added.forEach(s=>{
+      const scope=s.roles?` · ${s.roles.map(r=>ROLES[r]?.label||r).join(', ')} only`:'';
+      html+=`<div class="ctx-item add"><span class="ctx-item-label">${escapeHtml(s.name)}</span>${scope} — ${escapeHtml(s.note)}</div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // Sources removed
+  const removed=(src.remove||[]);
+  if(removed.length){
+    html+=`<span class="ctx-section-title">🚫 Sources suppressed this week</span><div class="ctx-items">`;
+    removed.forEach(s=>{
+      html+=`<div class="ctx-item remove"><span class="ctx-item-label">${escapeHtml(s.name)}</span> — ${escapeHtml(s.reason)}</div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // Sources elevated
+  const elevated=(src.elevate||[]);
+  if(elevated.length){
+    html+=`<span class="ctx-section-title">⬆️ Sources elevated this week</span><div class="ctx-items">`;
+    elevated.forEach(s=>{
+      html+=`<div class="ctx-item elevate"><span class="ctx-item-label">${escapeHtml(s.name)}</span> — ${escapeHtml(s.note)}</div>`;
+    });
+    html+=`</div>`;
+  }
+
+  if(!html)html='<div class="ctx-empty">No editorial context set for this week.</div>';
+
+  html+=`<div class="ctx-meta">This context is injected into your briefing automatically. To update it, edit <code>editorial-context.json</code> in the GitHub repo.</div>`;
+  document.getElementById('ctxBody').innerHTML=html;
+}
+
+function buildContextBlock(){
+  if(!editorialContext)return'';
+  const ec=editorialContext.editorialContext||{};
+  const src=editorialContext.sources||{};
+  const lines=[];
+
+  // Global priorities
+  const global=ec.global||[];
+  if(global.length){
+    lines.push('EDITORIAL CONTEXT — WEEK OF '+editorialContext.updated+' (maintained by '+( editorialContext.updatedBy||'editorial team')+')');
+    lines.push('');
+    lines.push('Organisation-wide editorial priorities this week:');
+    global.forEach(g=>lines.push('  · '+g));
+  }
+
+  // Role-specific
+  const roleLines=(ec.byRole||{})[currentRole]||[];
+  if(roleLines.length){
+    lines.push('');
+    lines.push('Specific to your role this week:');
+    roleLines.forEach(l=>lines.push('  · '+l));
+  }
+
+  // Sources added (filter by role if roles array present)
+  const added=(src.add||[]).filter(s=>!s.roles||s.roles.includes(currentRole));
+  if(added.length){
+    lines.push('');
+    lines.push('Additional sources to include in your web search this week:');
+    added.forEach(s=>{
+      lines.push(`  + ${s.name} (${s.url}) — ${s.type} — ${s.note}`);
+    });
+  }
+
+  // Sources removed
+  const removed=(src.remove||[]);
+  if(removed.length){
+    lines.push('');
+    lines.push('Sources to suppress this week — do NOT cite these:');
+    removed.forEach(s=>{
+      lines.push(`  ✗ ${s.name} — ${s.reason}`);
+    });
+  }
+
+  // Sources elevated
+  const elevated=(src.elevate||[]);
+  if(elevated.length){
+    lines.push('');
+    lines.push('Sources elevated to higher priority this week:');
+    elevated.forEach(s=>{
+      lines.push(`  ↑ ${s.name} — ${s.note}`);
+    });
+  }
+
+  if(!lines.length)return'';
+  return`
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+THIS WEEK'S EDITORIAL CONTEXT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${lines.join('\n')}
+
+Apply this context throughout the briefing. Editorial priorities should influence what you surface in STEP 3 (web search) and TODAY'S SIGNAL. Source additions, removals, and elevations apply to STEP 3 only.
+`;
+}
+
+function escapeHtml(s){
+  if(!s)return'';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // ── INIT ──
 buildPills();
 buildFocusModes();
@@ -2234,6 +2496,8 @@ if(!restored){
   generate();
 }
 renderHistory();
+// Load editorial context from GitHub — async, non-blocking
+loadEditorialContext();
 </script>
 </body>
 </html>
