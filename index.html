@@ -3,1312 +3,1924 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI in Newsrooms — Global Analysis 2025</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>AI in the Newsroom — Global Benchmark Report 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #0d0d0d;
-    --paper: #f5f0e8;
-    --cream: #ede8db;
-    --rust: #c0392b;
-    --amber: #d4892a;
-    --slate: #3a3a4a;
-    --muted: #7a7570;
-    --rule: #c8c0b0;
-    --accent-light: #fdf8f0;
-    --col-gap: clamp(1.5rem, 3vw, 3rem);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* ── MASTHEAD ── */
-  .masthead {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .masthead::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 39px,
-        rgba(255,255,255,.04) 39px,
-        rgba(255,255,255,.04) 40px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 39px,
-        rgba(255,255,255,.04) 39px,
-        rgba(255,255,255,.04) 40px
-      );
-    pointer-events: none;
-  }
-
-  .masthead-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 4rem 2rem 3rem;
-    position: relative;
-    z-index: 1;
-  }
-
-  .masthead-kicker {
-    font-family: 'DM Mono', monospace;
-    font-size: .7rem;
-    letter-spacing: .25em;
-    text-transform: uppercase;
-    color: var(--amber);
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-  }
-  .masthead-kicker::before {
-    content: '';
-    display: inline-block;
-    width: 2rem;
-    height: 1px;
-    background: var(--amber);
-  }
-
-  .masthead h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.6rem, 6vw, 5.5rem);
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -.02em;
-    max-width: 820px;
-  }
-
-  .masthead h1 em {
-    font-style: italic;
-    color: var(--amber);
-  }
-
-  .masthead-meta {
-    display: flex;
-    gap: 2rem;
-    margin-top: 2.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255,255,255,.15);
-    flex-wrap: wrap;
-  }
-
-  .meta-item {
-    font-family: 'DM Mono', monospace;
-    font-size: .72rem;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: rgba(245,240,232,.55);
-  }
-
-  .meta-item strong {
-    display: block;
-    color: var(--paper);
-    font-size: .85rem;
-    margin-top: .2rem;
-  }
-
-  /* ── SUMMARY STRIP ── */
-  .summary-strip {
-    background: var(--rust);
-    color: #fff;
-    padding: 1.5rem 2rem;
-  }
-
-  .summary-strip-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 2rem;
-    align-items: center;
-  }
-
-  .summary-label {
-    font-family: 'DM Mono', monospace;
-    font-size: .68rem;
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    opacity: .8;
-  }
-
-  .summary-text {
-    font-size: .95rem;
-    line-height: 1.55;
-    opacity: .92;
-  }
-
-  /* ── NAV ── */
-  .toc-nav {
-    background: var(--cream);
-    border-bottom: 2px solid var(--ink);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .toc-nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .toc-nav-inner::-webkit-scrollbar { display: none; }
-
-  .toc-link {
-    font-family: 'DM Mono', monospace;
-    font-size: .68rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    padding: .9rem 1rem;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    transition: color .2s, border-color .2s;
-  }
-
-  .toc-link:hover {
-    color: var(--ink);
-    border-color: var(--rust);
-  }
-
-  /* ── MAIN LAYOUT ── */
-  .page-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  /* ── SECTIONS ── */
-  .report-section {
-    padding: 4rem 0;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .report-section:last-child { border-bottom: none; }
-
-  .section-header {
-    display: grid;
-    grid-template-columns: 4rem 1fr;
-    gap: 1.5rem;
-    align-items: baseline;
-    margin-bottom: 2.5rem;
-  }
-
-  .section-number {
-    font-family: 'Playfair Display', serif;
-    font-size: 3rem;
-    font-weight: 900;
-    color: var(--rule);
-    line-height: 1;
-    letter-spacing: -.04em;
-  }
-
-  .section-title-group {}
-
-  .section-kicker {
-    font-family: 'DM Mono', monospace;
-    font-size: .65rem;
-    letter-spacing: .25em;
-    text-transform: uppercase;
-    color: var(--rust);
-    margin-bottom: .4rem;
-  }
-
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.4rem, 3vw, 2rem);
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--ink);
-  }
-
-  /* ── EDITORIAL COLUMNS ── */
-  .col-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--col-gap);
-  }
-
-  .col-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--col-gap);
-  }
-
-  @media (max-width: 780px) {
-    .col-2, .col-3 { grid-template-columns: 1fr; }
-    .section-header { grid-template-columns: 2.5rem 1fr; }
-    .summary-strip-inner { grid-template-columns: 1fr; }
-  }
-
-  /* ── USE CASE CARDS ── */
-  .use-case-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
-    margin-top: 1rem;
-  }
-
-  .use-card {
-    background: #fff;
-    border: 1px solid var(--rule);
-    border-top: 3px solid var(--ink);
-    padding: 1.5rem;
-    position: relative;
-    transition: transform .2s, box-shadow .2s;
-  }
-
-  .use-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,.1);
-  }
-
-  .use-card-icon {
-    font-size: 1.6rem;
-    margin-bottom: .75rem;
-  }
-
-  .use-card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-bottom: .5rem;
-    color: var(--ink);
-  }
-
-  .use-card-text {
-    font-size: .88rem;
-    color: var(--slate);
-    line-height: 1.6;
-  }
-
-  .use-card-tag {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-family: 'DM Mono', monospace;
-    font-size: .6rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    background: var(--cream);
-    padding: .2rem .5rem;
-    color: var(--muted);
-  }
-
-  /* ── STAT CALLOUTS ── */
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin: 2rem 0;
-  }
-
-  .stat-box {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 1.75rem 1.5rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat-box::before {
-    content: '';
-    position: absolute;
-    bottom: -1rem;
-    right: -1rem;
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-    background: rgba(255,255,255,.04);
-  }
-
-  .stat-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--amber);
-    line-height: 1;
-    letter-spacing: -.03em;
-  }
-
-  .stat-label {
-    font-size: .82rem;
-    color: rgba(245,240,232,.7);
-    margin-top: .5rem;
-    line-height: 1.4;
-  }
-
-  /* ── CASE STUDY CARDS ── */
-  .case-studies-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.25rem;
-  }
-
-  .case-card {
-    border: 1px solid var(--rule);
-    background: #fff;
-    padding: 0;
-    overflow: hidden;
-    transition: box-shadow .2s;
-  }
-
-  .case-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.09); }
-
-  .case-card-header {
-    background: var(--cream);
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .case-org {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--ink);
-  }
-
-  .case-type {
-    font-family: 'DM Mono', monospace;
-    font-size: .62rem;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    background: var(--ink);
-    color: var(--paper);
-    padding: .25rem .6rem;
-    white-space: nowrap;
-  }
-
-  .case-body {
-    padding: 1.25rem 1.5rem;
-  }
-
-  .case-body p {
-    font-size: .88rem;
-    color: var(--slate);
-    line-height: 1.65;
-  }
-
-  .case-outcome {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--rule);
-    display: flex;
-    gap: .5rem;
-    align-items: flex-start;
-  }
-
-  .case-outcome-icon {
-    font-size: .9rem;
-    flex-shrink: 0;
-    margin-top: .1rem;
-  }
-
-  .case-outcome-text {
-    font-family: 'DM Mono', monospace;
-    font-size: .72rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  /* ── RISK TABLE ── */
-  .risk-list {
-    display: flex;
-    flex-direction: column;
-    gap: .75rem;
-  }
-
-  .risk-item {
-    display: grid;
-    grid-template-columns: 1.5rem 1fr auto;
-    gap: 1rem;
-    align-items: start;
-    padding: 1.25rem 1.5rem;
-    background: #fff;
-    border: 1px solid var(--rule);
-    border-left: 3px solid var(--rule);
-    transition: border-color .2s;
-  }
-
-  .risk-item.high { border-left-color: var(--rust); }
-  .risk-item.med  { border-left-color: var(--amber); }
-  .risk-item.low  { border-left-color: #6aaa64; }
-
-  .risk-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-top: .55rem;
-    flex-shrink: 0;
-  }
-
-  .high .risk-dot { background: var(--rust); }
-  .med  .risk-dot { background: var(--amber); }
-  .low  .risk-dot { background: #6aaa64; }
-
-  .risk-content {}
-
-  .risk-title {
-    font-weight: 500;
-    font-size: .95rem;
-    margin-bottom: .3rem;
-    color: var(--ink);
-  }
-
-  .risk-desc {
-    font-size: .84rem;
-    color: var(--muted);
-    line-height: 1.55;
-  }
-
-  .risk-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: .6rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    padding: .25rem .65rem;
-    white-space: nowrap;
-    align-self: start;
-  }
-
-  .high .risk-badge { background: #fde8e6; color: var(--rust); }
-  .med  .risk-badge { background: #fdf3e3; color: var(--amber); }
-  .low  .risk-badge { background: #e8f5e9; color: #388e3c; }
-
-  /* ── ACTORS TABLE ── */
-  .actors-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
-  }
-
-  .actor-card {
-    padding: 1.25rem;
-    background: #fff;
-    border: 1px solid var(--rule);
-    border-top: 2px solid var(--amber);
-  }
-
-  .actor-type {
-    font-family: 'DM Mono', monospace;
-    font-size: .62rem;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--amber);
-    margin-bottom: .5rem;
-  }
-
-  .actor-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: .5rem;
-    color: var(--ink);
-  }
-
-  .actor-detail {
-    font-size: .82rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  /* ── TENSIONS TABLE ── */
-  .tension-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 1rem;
-    align-items: center;
-    padding: 1.25rem 0;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .tension-row:last-child { border-bottom: none; }
-
-  .tension-side {
-    padding: 1rem 1.25rem;
-    background: #fff;
-    border: 1px solid var(--rule);
-    font-size: .88rem;
-    color: var(--slate);
-  }
-
-  .tension-vs {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    font-style: italic;
-    color: var(--muted);
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  /* ── IMPLICATIONS ── */
-  .impl-list {
-    counter-reset: impl;
-    display: flex;
-    flex-direction: column;
-    gap: .6rem;
-  }
-
-  .impl-item {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr;
-    gap: 1rem;
-    align-items: start;
-    padding: 1rem 1.25rem;
-    background: #fff;
-    border: 1px solid var(--rule);
-    counter-increment: impl;
-  }
-
-  .impl-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-weight: 900;
-    color: var(--rule);
-    line-height: 1.2;
-  }
-
-  .impl-item::before {
-    display: none;
-  }
-
-  .impl-text {
-    font-size: .9rem;
-    color: var(--slate);
-    line-height: 1.65;
-    padding-top: .15rem;
-  }
-
-  /* ── PULL QUOTE ── */
-  .pull-quote {
-    border-left: 4px solid var(--ink);
-    margin: 2rem 0;
-    padding: 1.25rem 1.75rem;
-    background: var(--cream);
-  }
-
-  .pull-quote p {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    font-style: italic;
-    line-height: 1.5;
-    color: var(--ink);
-  }
-
-  /* ── PROSE ── */
-  .prose p {
-    font-size: .95rem;
-    color: var(--slate);
-    line-height: 1.75;
-    margin-bottom: 1rem;
-  }
-
-  .subsection {
-    margin-top: 2.5rem;
-  }
-
-  .subsection-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 1rem;
-    padding-bottom: .5rem;
-    border-bottom: 1px solid var(--rule);
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-  }
-
-  .subsection-title::before {
-    content: '';
-    display: inline-block;
-    width: .25rem;
-    height: 1.1em;
-    background: var(--rust);
-    flex-shrink: 0;
-  }
-
-  /* ── FOOTER ── */
-  .report-footer {
-    background: var(--ink);
-    color: rgba(245,240,232,.5);
-    padding: 3rem 2rem;
-    margin-top: 2rem;
-  }
-
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-  }
-
-  .footer-note {
-    font-family: 'DM Mono', monospace;
-    font-size: .7rem;
-    line-height: 1.7;
-    max-width: 600px;
-  }
-
-  .footer-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: var(--amber);
-    font-style: italic;
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .report-section {
-    animation: fadeUp .5s ease both;
-  }
-
-  .report-section:nth-child(1) { animation-delay: .05s; }
-  .report-section:nth-child(2) { animation-delay: .1s; }
-  .report-section:nth-child(3) { animation-delay: .15s; }
-  .report-section:nth-child(4) { animation-delay: .2s; }
-  .report-section:nth-child(5) { animation-delay: .25s; }
-  .report-section:nth-child(6) { animation-delay: .3s; }
-
-  .divider {
-    border: none;
-    border-top: 1px solid var(--rule);
-    margin: 2rem 0;
-  }
-
-  .gap-marker {
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-    background: var(--cream);
-    border: 1px solid var(--rule);
-    padding: .3rem .75rem;
-    font-family: 'DM Mono', monospace;
-    font-size: .65rem;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: .5rem;
-  }
+:root {
+  --ivory: #F8F7F6;
+  --teal: #1A3948;
+  --teal2: #24506A;
+  --flame: #FF5400;
+  --stone: #B9CCCC;
+  --honey: #FFC047;
+  --border: rgba(26,57,72,0.09);
+  --muted: rgba(26,57,72,0.52);
+  --soft: rgba(26,57,72,0.36);
+  --glass: rgba(255,255,255,0.55);
+  --glass-b: rgba(255,255,255,0.85);
+  --gs: 0 8px 32px rgba(26,57,72,0.10), 0 1.5px 4px rgba(26,57,72,0.06);
+  --gi: inset 0 1px 0 rgba(255,255,255,0.92), inset 0 -1px 0 rgba(26,57,72,0.03);
+  --eo: cubic-bezier(0.25,0.46,0.45,0.94);
+  --serif: 'Lora', Georgia, serif;
+  --sans: 'Noto Sans', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  color: var(--teal);
+  background: #F0EFED;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SCENE ── */
+.scene {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+  background: #F0EFED;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(90px);
+}
+.o1 {
+  width: 580px; height: 460px; top: -120px; left: -100px;
+  background: radial-gradient(ellipse, rgba(255,84,0,0.28) 0%, rgba(255,140,60,0.11) 45%, transparent 70%);
+}
+.o2 {
+  width: 460px; height: 380px; top: 35%; right: -120px;
+  background: radial-gradient(ellipse, rgba(26,57,72,0.14) 0%, rgba(26,57,72,0.04) 55%, transparent 75%);
+}
+.o3 {
+  width: 360px; height: 300px; bottom: 12%; left: 28%;
+  background: radial-gradient(ellipse, rgba(255,192,71,0.16) 0%, transparent 65%);
+}
+
+/* ── LAYOUT ── */
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 1140px; margin: 0 auto; padding: 0 24px 80px;
+}
+
+/* ── NAV ── */
+.nav-wrap {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; justify-content: center;
+  padding: 14px 24px 0;
+  pointer-events: none;
+}
+.nav-pill {
+  display: inline-flex; align-items: center; gap: 2px;
+  background: rgba(26,57,72,0.82);
+  backdrop-filter: blur(28px) saturate(2);
+  -webkit-backdrop-filter: blur(28px) saturate(2);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px; padding: 5px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.14),
+              inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.18);
+  pointer-events: all;
+  flex-wrap: wrap;
+}
+.wordmark {
+  font-family: var(--serif); font-size: 16px; font-weight: 400;
+  color: rgba(248,247,246,0.92);
+  padding: 6px 14px 6px 12px;
+  border-right: 1px solid rgba(255,255,255,0.10);
+  margin-right: 4px; white-space: nowrap;
+}
+.wordmark em { font-style: normal; color: var(--flame); font-weight: 600; }
+.ntab {
+  font-size: 12.5px; font-weight: 500;
+  color: rgba(185,204,204,0.72);
+  padding: 7px 14px; border-radius: 100px;
+  cursor: pointer; transition: color 180ms, background 180ms;
+  white-space: nowrap;
+}
+.ntab:hover { color: rgba(248,247,246,0.95); }
+.ntab.on {
+  background: rgba(255,255,255,0.13); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.12);
+}
+
+/* ── CARDS ── */
+.card {
+  border-radius: 18px; padding: 24px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--glass-b);
+  box-shadow: var(--gs), var(--gi);
+  transition: transform 200ms var(--eo), box-shadow 200ms;
+  animation: rise 420ms var(--eo) both;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(26,57,72,0.12), 0 2px 6px rgba(26,57,72,0.06),
+              inset 0 1px 0 rgba(255,255,255,0.96);
+}
+.card-dark {
+  border-radius: 18px; padding: 24px;
+  background: rgba(26,57,72,0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 12px 40px rgba(26,57,72,0.28), 0 2px 8px rgba(26,57,72,0.18);
+  color: var(--ivory);
+  animation: rise 420ms var(--eo) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 60px 0 48px;
+  text-align: center;
+}
+.hero-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--flame);
+  margin-bottom: 18px; display: block;
+}
+.hero-title {
+  font-family: var(--serif); font-size: 48px; font-weight: 600;
+  color: var(--teal); line-height: 1.08; margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.hero-sub {
+  font-family: var(--serif); font-size: 18px; font-weight: 400;
+  color: var(--soft); margin-bottom: 40px; font-style: italic;
+}
+.hero-stats {
+  display: inline-grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--glass-b);
+  box-shadow: var(--gs), var(--gi);
+  border-radius: 18px; overflow: hidden;
+  margin-bottom: 20px; min-width: 560px;
+}
+.hstat {
+  padding: 26px 32px;
+  border-right: 1px solid var(--border);
+}
+.hstat:last-child { border-right: none; }
+.hstat-n {
+  font-family: var(--serif); font-size: 44px; font-weight: 400;
+  color: var(--teal); line-height: 1; letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.hstat-l {
+  font-size: 12px; color: var(--muted); line-height: 1.3;
+}
+.hero-src {
+  font-size: 11px; color: var(--soft); letter-spacing: 0.04em;
+}
+.hero-src span { color: var(--flame); font-weight: 600; }
+
+/* ── SECTION HEADERS ── */
+.sec-head {
+  display: flex; align-items: center; gap: 14px;
+  margin: 48px 0 20px;
+}
+.sec-head h2 {
+  font-family: var(--serif); font-size: 22px; font-weight: 400;
+  color: var(--teal); white-space: nowrap;
+}
+.rule { flex: 1; height: 1px; background: var(--border); }
+.uchip {
+  font-size: 11px; font-weight: 700; color: var(--flame);
+  background: rgba(255,84,0,0.08); border: 1px solid rgba(255,84,0,0.18);
+  padding: 3px 11px; border-radius: 100px;
+}
+
+/* ── EYEBROW ── */
+.eyebrow {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--soft); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 7px;
+}
+
+/* ── TAGS / BADGES ── */
+.tag {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 100px;
+  white-space: nowrap; flex-shrink: 0; display: inline-block;
+}
+.t-f { background: rgba(255,84,0,0.10); color: var(--flame); border: 1px solid rgba(255,84,0,0.20); }
+.t-h { background: rgba(255,192,71,0.14); color: #8a5e00; border: 1px solid rgba(255,192,71,0.28); }
+.t-t { background: rgba(26,57,72,0.08); color: var(--teal2); border: 1px solid rgba(26,57,72,0.14); }
+.t-g { background: rgba(46,125,79,0.10); color: #1f7a45; border: 1px solid rgba(46,125,79,0.20); }
+
+/* ── CHIPS (adopter/feature chips) ── */
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.chip {
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 100px;
+  background: rgba(26,57,72,0.08); color: var(--teal2);
+  border: 1px solid rgba(26,57,72,0.14);
+}
+
+/* ── ACCORDION ── */
+.acc-list { display: flex; flex-direction: column; gap: 10px; }
+.acc-item {
+  border-radius: 16px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--glass-b);
+  box-shadow: var(--gs), var(--gi);
+  overflow: hidden;
+  animation: rise 420ms var(--eo) both;
+}
+.acc-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 22px; cursor: pointer;
+  transition: background 180ms;
+}
+.acc-head:hover { background: rgba(255,255,255,0.25); }
+.acc-num {
+  font-family: var(--serif); font-size: 18px; font-weight: 400;
+  color: var(--stone); min-width: 28px;
+}
+.acc-title-wrap { flex: 1; }
+.acc-title {
+  font-family: var(--serif); font-size: 16px; font-weight: 500;
+  color: var(--teal); margin-bottom: 2px;
+}
+.acc-chevron {
+  width: 20px; height: 20px; flex-shrink: 0;
+  color: var(--soft); transition: transform 280ms var(--eo);
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.acc-item.open .acc-chevron { transform: rotate(180deg); }
+.acc-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 380ms var(--eo);
+}
+.acc-inner { padding: 0 22px 22px; border-top: 1px solid var(--border); padding-top: 18px; }
+.acc-summary {
+  font-size: 13.5px; color: var(--teal); line-height: 1.6; margin-bottom: 14px;
+}
+.notable-box {
+  background: rgba(26,57,72,0.82); color: var(--ivory);
+  border-radius: 12px; padding: 14px 18px; margin-top: 14px;
+}
+.notable-box .notable-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--honey); margin-bottom: 6px;
+}
+.notable-box .notable-text {
+  font-size: 13px; color: rgba(248,247,246,0.88); line-height: 1.5;
+}
+
+/* ── OUTLET GRID ── */
+.filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.fc {
+  padding: 6px 15px; border-radius: 100px;
+  font-size: 12px; font-weight: 500;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.60);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--muted); cursor: pointer; transition: all 150ms;
+}
+.fc.on { background: var(--teal); color: var(--ivory); border-color: var(--teal); }
+.fc:hover:not(.on) { background: rgba(255,255,255,0.85); }
+
+.outlet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.outlet-card {
+  border-radius: 16px; padding: 20px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--glass-b);
+  box-shadow: var(--gs), var(--gi);
+  transition: transform 200ms var(--eo), box-shadow 200ms, opacity 280ms;
+  animation: rise 420ms var(--eo) both;
+}
+.outlet-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(26,57,72,0.12), 0 2px 6px rgba(26,57,72,0.06),
+              inset 0 1px 0 rgba(255,255,255,0.96);
+}
+.outlet-card.hidden { display: none; }
+.outlet-name {
+  font-family: var(--serif); font-size: 17px; font-weight: 600;
+  color: var(--teal); margin-bottom: 6px;
+}
+.outlet-region {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--soft); margin-bottom: 12px;
+}
+.pbar-wrap { margin: 14px 0 4px; }
+.pbar-label {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--soft); margin-bottom: 5px;
+}
+.pbg { height: 4px; background: rgba(26,57,72,0.09); border-radius: 100px; overflow: hidden; }
+.pfill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--flame) 0%, #ff7a40 100%);
+  width: 0; transition: width 900ms var(--eo);
+}
+.outlet-src {
+  margin-top: 12px;
+}
+.outlet-src a {
+  font-size: 11px; color: var(--teal2); text-decoration: none;
+  background: rgba(26,57,72,0.07); border: 1px solid rgba(26,57,72,0.13);
+  padding: 3px 10px; border-radius: 100px; display: inline-block;
+  transition: background 150ms;
+}
+.outlet-src a:hover { background: var(--teal); color: var(--ivory); }
+
+/* ── KEY FINDINGS ── */
+.findings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.finding-card {
+  border-radius: 18px; padding: 26px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--glass-b);
+  box-shadow: var(--gs), var(--gi);
+  border-left: 4px solid var(--flame);
+  transition: transform 200ms var(--eo);
+  animation: rise 420ms var(--eo) both;
+}
+.finding-card:hover { transform: translateY(-2px); }
+.finding-num {
+  font-family: var(--serif); font-size: 36px; font-weight: 400;
+  color: var(--stone); line-height: 1; margin-bottom: 14px;
+}
+.finding-title {
+  font-family: var(--serif); font-size: 17px; font-weight: 500;
+  color: var(--teal); margin-bottom: 10px; line-height: 1.3;
+}
+.finding-body { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+.src-chip {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--teal2); background: rgba(26,57,72,0.07);
+  border: 1px solid rgba(26,57,72,0.13); padding: 3px 10px; border-radius: 100px;
+  display: inline-block;
+}
+
+/* ── RELEVANCE TABLE ── */
+.rel-table-wrap {
+  overflow-x: auto; border-radius: 16px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--glass-b);
+  box-shadow: var(--gs), var(--gi);
+  animation: rise 420ms var(--eo) both;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--soft); padding: 14px 18px; border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.3); text-align: left; white-space: nowrap;
+}
+td {
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.5; color: var(--teal);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.25); }
+td:first-child { font-family: var(--serif); font-size: 14px; font-weight: 500; }
+td .note { font-size: 11.5px; color: var(--soft); margin-top: 3px; }
+
+/* ── STRATEGIC TAKEAWAY ── */
+.takeaway {
+  border-radius: 18px; padding: 30px;
+  background: rgba(26,57,72,0.76);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 12px 40px rgba(26,57,72,0.28), 0 2px 8px rgba(26,57,72,0.18);
+  margin-top: 24px;
+  animation: rise 420ms var(--eo) both;
+}
+.takeaway .eyebrow { color: var(--honey); margin-bottom: 14px; }
+.takeaway .take-title {
+  font-family: var(--serif); font-size: 20px; font-weight: 500;
+  color: var(--ivory); margin-bottom: 12px;
+}
+.takeaway .take-body { font-size: 14px; color: rgba(248,247,246,0.82); line-height: 1.7; }
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--teal); color: var(--ivory);
+  padding: 40px 24px; text-align: center; margin-top: 80px;
+}
+.footer-main { font-family: var(--serif); font-size: 15px; margin-bottom: 8px; }
+.footer-dis { font-size: 11px; color: rgba(185,204,204,0.60); line-height: 1.6; max-width: 600px; margin: 0 auto; }
+
+/* ── MISC ── */
+em.nc { color: var(--soft); font-style: italic; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hero-title { font-size: 32px; }
+  .hero-stats { min-width: unset; grid-template-columns: 1fr; }
+  .hstat { border-right: none; border-bottom: 1px solid var(--border); }
+  .hstat:last-child { border-bottom: none; }
+  .outlet-grid { grid-template-columns: 1fr; }
+  .findings-grid { grid-template-columns: 1fr; }
+  .nav-pill { padding: 4px; }
+  .ntab { padding: 6px 10px; font-size: 11px; }
+  .wordmark { font-size: 14px; padding: 5px 10px 5px 8px; }
+  table { font-size: 11px; }
+  td, th { padding: 10px 12px; }
+}
+
+/* ── NEXT NUDGE ── */
+.next-nudge {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  margin: 18px auto 10px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--soft); cursor: pointer;
+  transition: color 160ms, transform 160ms;
+  width: fit-content; padding: 6px 14px; border-radius: 100px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.next-nudge:hover { color: var(--teal); transform: translateY(2px); background: rgba(255,255,255,0.75); }
+.next-nudge svg { transition: transform 160ms; }
+.next-nudge:hover svg { transform: translateY(2px); }
+
+/* ── SCATTER WRAP ── */
+.scatter-wrap { margin-top: 0; }
+
+/* ── LIVE DATA MAP (next-level) ── */
+.dm-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.dm-title {
+  font-family: var(--serif); font-size: 19px; font-weight: 500;
+  color: var(--teal); line-height: 1.2; margin-top: 2px;
+}
+.dm-sub { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+/* Filter legend — clickable glass chips that filter categories */
+.dm-legend { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+.dm-lchip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px 6px 11px; border-radius: 100px;
+  font-size: 11.5px; font-weight: 600; color: var(--muted);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.60);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  cursor: pointer; transition: all 180ms var(--eo);
+  user-select: none;
+}
+.dm-lchip:hover { background: rgba(255,255,255,0.92); transform: translateY(-1px); }
+.dm-lchip .ldot {
+  width: 10px; height: 10px; border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+  transition: transform 180ms var(--eo);
+}
+.dm-lchip.off { opacity: 0.4; }
+.dm-lchip.off .ldot { transform: scale(0.7); }
+.dm-lchip.solo {
+  background: var(--teal); color: var(--ivory); border-color: var(--teal);
+  box-shadow: 0 4px 14px rgba(26,57,72,0.20);
+}
+.dm-lchip.solo .ldot { box-shadow: 0 0 0 2px rgba(255,255,255,0.3); }
+
+/* Canvas stage */
+.dm-stage { position: relative; }
+#scatterCanvas { width: 100%; display: block; cursor: default; border-radius: 14px; }
+
+/* Quadrant corner labels (HTML overlay, not canvas — crisp text) */
+.dm-quad {
+  position: absolute; pointer-events: none; z-index: 2;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; line-height: 1.3;
+  color: rgba(26,57,72,0.30);
+  transition: opacity 220ms var(--eo);
+}
+.dm-quad .qsub {
+  display: block; font-size: 8.5px; font-weight: 600;
+  letter-spacing: 0.03em; text-transform: none; color: rgba(26,57,72,0.24);
+  margin-top: 1px;
+}
+
+/* Tooltip — liquid glass dark pill */
+#scatter-tooltip {
+  position: absolute; pointer-events: none; opacity: 0;
+  transition: opacity 180ms var(--eo), transform 180ms var(--eo);
+  transform: translateY(4px);
+  background: rgba(26,57,72,0.90);
+  backdrop-filter: blur(20px) saturate(2); -webkit-backdrop-filter: blur(20px) saturate(2);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px; padding: 13px 16px;
+  min-width: 195px; max-width: 255px; z-index: 10;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.16);
+}
+#scatter-tooltip.show { opacity: 1; transform: translateY(0); }
+
+/* Axis caption row */
+.dm-xaxis {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 8px; margin-top: 8px;
+}
+.dm-xaxis span {
+  font-size: 10px; color: var(--soft);
+  letter-spacing: 0.07em; text-transform: uppercase; font-weight: 600;
+}
+.dm-xaxis .xmid { color: rgba(26,57,72,0.28); font-weight: 700; letter-spacing: 0.04em; }
+
+/* Selected-detail panel (mobile + tap) */
+.dm-detail {
+  margin-top: 14px; border-radius: 16px; overflow: hidden;
+  max-height: 0; opacity: 0;
+  transition: max-height 320ms var(--eo), opacity 240ms var(--eo), margin-top 240ms var(--eo);
+}
+.dm-detail.open { max-height: 240px; opacity: 1; }
+.dm-detail-inner {
+  background: rgba(255,255,255,0.50);
+  backdrop-filter: blur(18px) saturate(1.6); -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  border: 1px solid var(--glass-b);
+  box-shadow: var(--gi);
+  border-radius: 16px; padding: 16px 18px;
+  display: grid; grid-template-columns: 4px 1fr auto; gap: 16px; align-items: center;
+}
+.dm-detail .dstripe { border-radius: 100px; align-self: stretch; min-height: 48px; width: 4px; }
+.dm-detail .dname { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--teal); margin-bottom: 6px; }
+.dm-detail .dtools { display: flex; flex-wrap: wrap; gap: 5px; }
+.dm-detail .dtool {
+  font-size: 10px; font-weight: 500; color: var(--teal2);
+  background: rgba(26,57,72,0.07); border: 1px solid rgba(26,57,72,0.11);
+  padding: 3px 9px; border-radius: 100px;
+}
+.dm-detail .dmetrics { display: flex; flex-direction: column; gap: 8px; text-align: right; }
+.dm-detail .dmetric { font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+.dm-detail .dmetric b { font-family: var(--serif); font-size: 17px; font-weight: 600; color: var(--teal); display: block; line-height: 1; }
+.dm-hint { font-size: 10.5px; color: var(--soft); text-align: center; margin-top: 10px; }
+.dm-hint .kbd {
+  font-family: var(--sans); font-size: 9.5px; font-weight: 600;
+  background: rgba(26,57,72,0.06); border: 1px solid var(--border);
+  border-radius: 5px; padding: 1px 6px; color: var(--muted);
+}
+#scatterCanvas:focus-visible { outline: 2px solid var(--flame); outline-offset: 3px; }
+
+@media (max-width: 768px) {
+  .dm-quad { font-size: 8px; }
+  .dm-quad .qsub { display: none; }
+  .dm-detail-inner { grid-template-columns: 4px 1fr; }
+  .dm-detail .dmetrics { display: none; }
+}
+
+/* story card mobile */
+@media (max-width: 768px) {
+  .story-card > div:last-child { grid-template-columns: 1fr !important; }
+}
+
+/* ── REDUCED MOTION ── */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* Stagger delays */
+.acc-item:nth-child(1) { animation-delay: 0ms; }
+.acc-item:nth-child(2) { animation-delay: 55ms; }
+.acc-item:nth-child(3) { animation-delay: 110ms; }
+.acc-item:nth-child(4) { animation-delay: 165ms; }
+.acc-item:nth-child(5) { animation-delay: 220ms; }
+.acc-item:nth-child(6) { animation-delay: 275ms; }
+.acc-item:nth-child(7) { animation-delay: 330ms; }
+.acc-item:nth-child(8) { animation-delay: 385ms; }
+.outlet-card:nth-child(1) { animation-delay: 0ms; }
+.outlet-card:nth-child(2) { animation-delay: 55ms; }
+.outlet-card:nth-child(3) { animation-delay: 110ms; }
+.outlet-card:nth-child(4) { animation-delay: 165ms; }
+.outlet-card:nth-child(5) { animation-delay: 220ms; }
+.outlet-card:nth-child(6) { animation-delay: 275ms; }
+.outlet-card:nth-child(7) { animation-delay: 330ms; }
+.outlet-card:nth-child(8) { animation-delay: 385ms; }
+.outlet-card:nth-child(9) { animation-delay: 440ms; }
+.outlet-card:nth-child(10) { animation-delay: 495ms; }
+.outlet-card:nth-child(11) { animation-delay: 550ms; }
+.outlet-card:nth-child(12) { animation-delay: 605ms; }
+.finding-card:nth-child(1) { animation-delay: 0ms; }
+.finding-card:nth-child(2) { animation-delay: 55ms; }
+.finding-card:nth-child(3) { animation-delay: 110ms; }
+.finding-card:nth-child(4) { animation-delay: 165ms; }
+.finding-card:nth-child(5) { animation-delay: 220ms; }
+.finding-card:nth-child(6) { animation-delay: 275ms; }
 </style>
 </head>
 <body>
 
-<!-- MASTHEAD -->
-<header class="masthead">
-  <div class="masthead-inner">
-    <div class="masthead-kicker">Comprehensive Research Report · 2025</div>
-    <h1>How News Organisations<br>Worldwide Are Using <em>AI</em></h1>
-    <div class="masthead-meta">
-      <div class="meta-item">Coverage<strong>Global</strong></div>
-      <div class="meta-item">Functions<strong>Editorial &amp; Business</strong></div>
-      <div class="meta-item">Evidence Base<strong>Primary &amp; Secondary Sources</strong></div>
-      <div class="meta-item">Status<strong>Verified Analysis</strong></div>
-    </div>
-  </div>
-</header>
+<!-- SCENE -->
+<div class="scene">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
 
-<!-- SUMMARY STRIP -->
-<div class="summary-strip">
-  <div class="summary-strip-inner">
-    <div class="summary-label">Executive Summary</div>
-    <div class="summary-text">Generative and non-generative AI are now embedded across editorial and business functions in many newsrooms worldwide. While widespread uptake is observed for transcription, translation, summarisation and automated drafting, public acceptance remains guarded — and higher where humans stay involved in the process.</div>
+<!-- NAV -->
+<div class="nav-wrap">
+  <div class="nav-pill">
+    <div class="wordmark">DTD<em>·</em></div>
+    <div class="ntab on" data-target="overview">Overview</div>
+    <div class="ntab" data-target="key-findings">Key Findings</div>
+    <div class="ntab" data-target="by-feature">By Feature</div>
+    <div class="ntab" data-target="by-outlet">By Outlet</div>
+    <div class="ntab" data-target="rferl">For RFE/RL</div>
   </div>
 </div>
 
-<!-- NAVIGATION -->
-<nav class="toc-nav">
-  <div class="toc-nav-inner">
-    <a class="toc-link" href="#uses">Uses</a>
-    <a class="toc-link" href="#actors">Actors</a>
-    <a class="toc-link" href="#market">Market</a>
-    <a class="toc-link" href="#differentiators">Differentiators</a>
-    <a class="toc-link" href="#impacts">Impacts</a>
-    <a class="toc-link" href="#risks">Risks</a>
-    <a class="toc-link" href="#cases">Case Studies</a>
-    <a class="toc-link" href="#tensions">Tensions</a>
-    <a class="toc-link" href="#implications">Implications</a>
+<!-- MAIN WRAP -->
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" id="overview">
+    <span class="hero-eyebrow">Global Benchmark Report · Digital Transformation Department</span>
+    <h1 class="hero-title">AI in the Newsroom</h1>
+    <p class="hero-sub">Global Benchmark Report · 2025</p>
+    <div class="hero-stats">
+      <div class="hstat">
+        <div class="hstat-n">12+</div>
+        <div class="hstat-l">Major news organizations profiled</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-n">8</div>
+        <div class="hstat-l">AI tool categories identified</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-n">100%</div>
+        <div class="hstat-l">Of profiled major orgs actively using AI</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- STORY IN 3 MINUTES -->
+  <div class="story-card card" style="margin-bottom:0;animation-delay:110ms;">
+    <div class="eyebrow" style="margin-bottom:14px;">
+      <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--flame);margin-right:2px;"></span>
+      The story in three minutes
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 32px;">
+      <div>
+        <div style="font-family:var(--serif);font-size:15px;font-weight:500;color:var(--teal);margin-bottom:6px;line-height:1.3;">AI adoption is no longer optional at scale</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.65;">Every major news organisation profiled — wire services, broadcasters, print, public media — is running AI in production across the same eight workflow categories. The question is no longer <em>whether</em> to adopt, but how fast to govern and scale.</p>
+      </div>
+      <div>
+        <div style="font-family:var(--serif);font-size:15px;font-weight:500;color:var(--teal);margin-bottom:6px;line-height:1.3;">Efficiency is proven. Revenue uplift is not.</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.65;">AP saves ~20% of journalist time on templated reporting. Washington Post's headline tests doubled response rates. Yet only 9% of publishers can point to direct revenue gains. The business case today is cost and speed — not growth.</p>
+      </div>
+      <div>
+        <div style="font-family:var(--serif);font-size:15px;font-weight:500;color:var(--teal);margin-bottom:6px;line-height:1.3;">Human oversight is the only universal rule.</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.65;">Without exception, every profiled organisation publishes a policy requiring human review before AI output reaches audiences. Governance maturity — not tool sophistication — is the real differentiator between leaders and laggards.</p>
+      </div>
+      <div>
+        <div style="font-family:var(--serif);font-size:15px;font-weight:500;color:var(--teal);margin-bottom:6px;line-height:1.3;">RFE/RL's multilingual mission is a unique asset.</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.65;">Where commercial outlets chase engagement, RFE/RL's value is reach into closed-media environments. AI-powered translation pipelines, archive intelligence, and coverage monitoring offer compounding returns specific to this mission — not generic newsroom efficiency.</p>
+      </div>
+    </div>
   </div>
-</nav>
 
-<div class="page-wrapper">
+  <!-- NEXT NUDGE: overview → key-findings -->
+  <div class="next-nudge" data-target="key-findings">
+    <span>Key Findings</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
 
-  <!-- SECTION 1: USES -->
-  <section class="report-section" id="uses">
-    <div class="section-header">
-      <div class="section-number">01</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Editorial &amp; Business Functions</div>
-        <h2 class="section-title">Uses of AI Across the Newsroom</h2>
-      </div>
+  <!-- KEY FINDINGS -->
+  <section id="key-findings">
+    <div class="sec-head">
+      <h2>Key Findings</h2>
+      <div class="rule"></div>
+      <div class="uchip">6 insights</div>
     </div>
 
-    <div class="use-case-grid">
-      <div class="use-card">
-        <div class="use-card-icon">🔍</div>
-        <div class="use-card-tag">Newsgathering</div>
-        <div class="use-card-title">Research &amp; Source Discovery</div>
-        <div class="use-card-text">AI accelerates newsgathering through OCR, speech-to-text, and automated scraping. Internal RAG tools query in-house archives to surface leads and briefing material for reporters.</div>
+    <div class="findings-grid">
+
+      <div class="finding-card">
+        <div class="finding-num">01</div>
+        <div class="finding-title">Every major org is deploying AI across the same eight workflow categories</div>
+        <p class="finding-body">AP, Reuters, NYT, BBC, Washington Post, FT, and major public broadcasters all show AI adoption in archive search, automated reporting, transcription, recommendations, editorial assistants, analytics, monitoring, and experimental pilots. The categories are consistent across geographies and business models — only the tools and governance maturity differ.</p>
+        <span class="src-chip">WAN-IFRA · Reuters Institute 2025</span>
       </div>
 
-      <div class="use-card">
-        <div class="use-card-icon">✍️</div>
-        <div class="use-card-tag">Writing</div>
-        <div class="use-card-title">Automated Writing &amp; Summarisation</div>
-        <div class="use-card-text">Automated generation of earnings reports, sports recaps and incident summaries is long established. Generative tools now draft first versions and bullet summaries, with human editors as final gatekeepers.</div>
+      <div class="finding-card">
+        <div class="finding-num">02</div>
+        <div class="finding-title">Human-in-the-loop is the universal governance principle</div>
+        <p class="finding-body">Without exception, every profiled organisation publishes policies requiring human editorial review before AI output reaches audiences. BBC's Responsible AI Policy (Dec 2023), AP's Stylebook AI guidance, FT's labeling distinctions, CBC's verification mandates, and Reuters' model documentation all point to the same conclusion: AI augments; humans publish. No organisation in the evidence set publishes unreviewed AI content for core journalism.</p>
+        <span class="src-chip">BBC · AP · FT · CBC · Reuters</span>
       </div>
 
-      <div class="use-card">
-        <div class="use-card-icon">🌍</div>
-        <div class="use-card-tag">Language</div>
-        <div class="use-card-title">Transcription, Translation &amp; Multilingual</div>
-        <div class="use-card-text">Speech-to-text for transcription and captions is among the most common AI uses. Broadcasters now trial real-time translation for live newscasts and multiplatform content delivery.</div>
+      <div class="finding-card">
+        <div class="finding-num">03</div>
+        <div class="finding-title">Efficiency gains are real and documented; revenue uplift remains rare</div>
+        <p class="finding-body">AP reports ~20% journalist time savings on earnings briefs. Bandito at the Washington Post doubled story response rates in headline tests. Haystacker surfaced 20% of campaign ads using misleading footage. Yet WAN-IFRA's Q2 2025 survey finds only 9% of publishers can attribute direct revenue gains to AI. Efficiency is proven; monetisation is nascent.</p>
+        <span class="src-chip">AP · Washington Post · WAN-IFRA 2025</span>
       </div>
 
-      <div class="use-card">
-        <div class="use-card-icon">📡</div>
-        <div class="use-card-tag">Distribution</div>
-        <div class="use-card-title">Personalisation &amp; Recommendation</div>
-        <div class="use-card-text">AI powers personalised search, notification and recommendation systems. A/B testing of headlines and formats at scale, while editorial oversight is retained over the final experience.</div>
+      <div class="finding-card">
+        <div class="finding-num">04</div>
+        <div class="finding-title">Hybrid build/buy is the dominant strategic model</div>
+        <p class="finding-body">Large outlets combine custom in-house tools with selective vendor integrations. Reuters and FT lead with in-house suites; NYT and the Washington Post build bespoke investigative tools while buying specific capabilities (ElevenLabs audio, GitHub Copilot). AP open-sources local news tools while integrating Trint, Dataminr, and Google Gemini APIs. Pure-buy or pure-build strategies are uncommon at scale.</p>
+        <span class="src-chip">Reuters · NYT · AP · Washington Post</span>
       </div>
 
-      <div class="use-card">
-        <div class="use-card-icon">🛡️</div>
-        <div class="use-card-tag">Verification</div>
-        <div class="use-card-title">Content Moderation &amp; Fact-Checking</div>
-        <div class="use-card-text">AI assists verification through image and video element recognition and archive cross-referencing. Acts as an assistive layer for human review rather than a fully automated decision maker.</div>
+      <div class="finding-card">
+        <div class="finding-num">05</div>
+        <div class="finding-title">Public broadcasters prioritise data privacy via internal hosting</div>
+        <p class="finding-body">CBC mandates corporate Gemini and NotebookLM accounts to prevent data leaks from personal tools. PBS hosts Llama and HuggingFace models on AWS Bedrock for audience-data protection. ABC requires senior editorial sign-off for all AI content use. This pattern — controlled model access over convenience — reflects public accountability pressures that commercial outlets face less acutely.</p>
+        <span class="src-chip">CBC · PBS · ABC Australia</span>
       </div>
 
-      <div class="use-card">
-        <div class="use-card-icon">🎬</div>
-        <div class="use-card-tag">Production</div>
-        <div class="use-card-title">Multimedia Generation &amp; Automation</div>
-        <div class="use-card-text">AI is embedded in video and image pipelines — automated editing, rapid image generation, and agentic assistants that propose graphics — shortening production cycles for social platforms.</div>
+      <div class="finding-card">
+        <div class="finding-num">06</div>
+        <div class="finding-title">Comparable benchmark metrics barely exist yet</div>
+        <p class="finding-body">Despite heavy adoption, cross-newsroom benchmarking is hampered by absent standardised metrics. No organisation publicly reports WER (word error rate) for transcription, organisation-wide AI adoption percentages, or cost/ROI figures tied to specific tools. WAN-IFRA reports 75% of publishers cite efficiency gains — but only qualitatively. The benchmark gap is itself a key finding: the industry needs a shared metrics framework.</p>
+        <span class="src-chip">WAN-IFRA · Reuters Institute · Research synthesis</span>
       </div>
 
-      <div class="use-card">
-        <div class="use-card-icon">📊</div>
-        <div class="use-card-tag">Investigations</div>
-        <div class="use-card-title">Data Journalism &amp; Analytics</div>
-        <div class="use-card-text">AI accelerates analysis of large textual and numeric datasets, surfacing patterns in document collections. Enables deeper investigative analysis with fewer staff hours.</div>
-      </div>
-
-      <div class="use-card">
-        <div class="use-card-icon">💼</div>
-        <div class="use-card-tag">Business</div>
-        <div class="use-card-title">Advertising, Subscriptions &amp; Operations</div>
-        <div class="use-card-text">AI optimises advertising and subscription offers, generates multiplatform formats for conversion, and automates routine operational tasks in both editorial and commercial teams.</div>
-      </div>
     </div>
   </section>
 
-  <!-- SECTION 2: ACTORS -->
-  <section class="report-section" id="actors">
-    <div class="section-header">
-      <div class="section-number">02</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Ecosystem Overview</div>
-        <h2 class="section-title">Main Actors &amp; Tools Deployed</h2>
-      </div>
+  <!-- NEXT NUDGE: key-findings → scatter/by-feature -->
+  <div class="next-nudge" data-target="by-feature">
+    <span>Explore by Feature Category</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+
+  <section id="by-feature">
+    <div class="sec-head">
+      <h2>By Feature Category</h2>
+      <div class="rule"></div>
+      <div class="uchip">8 categories</div>
     </div>
 
-    <div class="actors-grid">
-      <div class="actor-card">
-        <div class="actor-type">In-House Labs</div>
-        <div class="actor-name">Newsroom R&amp;D Teams</div>
-        <div class="actor-detail">Large legacy organisations run internal experimentation platforms to prototype and deploy customised tools tailored to proprietary archives and workflows.</div>
-      </div>
+    <div class="acc-list">
 
-      <div class="actor-card">
-        <div class="actor-type">Wire Services &amp; Public Media</div>
-        <div class="actor-name">Broadcasters &amp; Agencies</div>
-        <div class="actor-detail">Deploy AI for verification, personalised search and workflow automation. Wire services also license content to AI model developers under commercial agreements.</div>
-      </div>
-
-      <div class="actor-card">
-        <div class="actor-type">Digital-Native</div>
-        <div class="actor-name">Digital &amp; Specialist Publishers</div>
-        <div class="actor-detail">Experiment with AI for recommendation, conversational formats and social re-versioning. Some have entered licensing deals with major LLM providers.</div>
-      </div>
-
-      <div class="actor-card">
-        <div class="actor-type">Vendors</div>
-        <div class="actor-name">Specialist Startups</div>
-        <div class="actor-detail">Newsrooms source from specialists: Whisper and Otter.ai for transcription; real-time translation vendors for broadcasters; and newsroom automation startups.</div>
-      </div>
-
-      <div class="actor-card">
-        <div class="actor-type">Platforms</div>
-        <div class="actor-name">Major AI &amp; LLM Providers</div>
-        <div class="actor-detail">OpenAI, Anthropic, Google and Microsoft supply foundational models, enterprise products and commercial arrangements that publishers connect to or negotiate with.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 3: MARKET -->
-  <section class="report-section" id="market">
-    <div class="section-header">
-      <div class="section-number">03</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Business Models &amp; Partnerships</div>
-        <h2 class="section-title">Market Positioning</h2>
-      </div>
-    </div>
-
-    <div class="col-2">
-      <div class="prose">
-        <div class="subsection-title">Pricing Models</div>
-        <p>Vendor pricing is a mix of subscription, usage-based (token) billing and hybrid approaches. Usage-scaled pricing lowers entry barriers for generative AI but creates variable cost exposure for publishers and vendors alike.</p>
-        <p>Publishers need to balance model quality versus inference cost when deciding which workloads to run on external APIs versus internal tooling.</p>
-      </div>
-
-      <div class="prose">
-        <div class="subsection-title">Platform Deals &amp; Partnerships</div>
-        <p>Major platforms pursue both licensing deals with publishers — for content access for model training or product features — and partnership programmes that bundle editorial or distribution services.</p>
-        <p>Google and OpenAI have made high-visibility licensing and partnership deals with news organisations in recent years, often bundling revenue support with technical access.</p>
-      </div>
-    </div>
-
-    <div class="pull-quote">
-      <p>"Collective licensing is often preferred over one-by-one negotiations — publishers anticipate licensing income from AI companies to be significant."</p>
-    </div>
-
-    <div class="subsection">
-      <div class="subsection-title">Legal Protections in Commercial Arrangements</div>
-      <div class="prose">
-        <p>Some AI vendors position enterprise offerings with legal and contractual protections — including indemnities for customers against copyright claims — reflecting publishers' concern about training data provenance and liability. Market scale indicators point to very large platform audiences and rapid model adoption in enterprise settings, which affects bargaining power and distribution dynamics for publishers.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 4: DIFFERENTIATORS -->
-  <section class="report-section" id="differentiators">
-    <div class="section-header">
-      <div class="section-number">04</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Adoption Factors</div>
-        <h2 class="section-title">Key Differentiators</h2>
-      </div>
-    </div>
-
-    <div class="col-2">
-      <div>
-        <div class="subsection-title">Technical Differentiators</div>
-        <div class="risk-list">
-          <div class="risk-item med">
-            <div class="risk-dot"></div>
-            <div class="risk-content">
-              <div class="risk-title">Model Performance &amp; Accuracy</div>
-              <div class="risk-desc">Benchmark comparisons and model updates drive perceived reliability. Published performance metrics influence vendor selection across newsrooms.</div>
+      <!-- 1 -->
+      <div class="acc-item" data-index="0">
+        <div class="acc-head">
+          <span class="acc-num">01</span>
+          <div class="acc-title-wrap">
+            <div class="acc-title">Inline Assistants &amp; Editorial Help</div>
+            <div style="display:flex;gap:6px;margin-top:4px;"><span class="tag t-h">Growing</span></div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <p class="acc-summary">Major newsrooms are deploying AI tools that sit alongside journalists during research, drafting, and editing workflows. These tools help reporters process large datasets, summarise long recordings, draft interview questions, and catch missing attributions — but always with human review before publication.</p>
+            <div class="eyebrow">Adopters</div>
+            <div class="chip-row">
+              <span class="chip">New York Times</span>
+              <span class="chip">BBC</span>
+              <span class="chip">ABC (Australia)</span>
+              <span class="chip">Washington Post</span>
+              <span class="chip">Associated Press</span>
             </div>
-            <div class="risk-badge">High Priority</div>
-          </div>
-          <div class="risk-item med">
-            <div class="risk-dot"></div>
-            <div class="risk-content">
-              <div class="risk-title">Latency &amp; Throughput</div>
-              <div class="risk-desc">Real-time needs — live transcription, translation, video editing — require low-latency inference or specialised architectures.</div>
+            <div class="notable-box">
+              <div class="notable-label">Notable Tools</div>
+              <div class="notable-text"><strong>NYT Cheat Sheet</strong> — a spreadsheet-based internal app letting reporters choose their LLM, transcribe up to 5 million words, and process 500 hours of audio for investigations. <strong>BBC Style Assist</strong> — flags legal issues, rewrites in BBC voice, catches missing attributions (pilot stage). <strong>ABC Assist</strong> — internal generative assistant for archive search, summarisation, and draft interview questions.</div>
             </div>
-            <div class="risk-badge">Live Use</div>
-          </div>
-          <div class="risk-item low">
-            <div class="risk-dot"></div>
-            <div class="risk-content">
-              <div class="risk-title">Data Provenance &amp; RAG</div>
-              <div class="risk-desc">Retrieval-augmented generation tools restricted to in-house archives are favoured where provenance and traceability are required.</div>
-            </div>
-            <div class="risk-badge">Preferred</div>
-          </div>
-          <div class="risk-item low">
-            <div class="risk-dot"></div>
-            <div class="risk-content">
-              <div class="risk-title">Explainability &amp; Double-Check</div>
-              <div class="risk-desc">Some products add search-augmented layers to reduce hallucinations and improve source traceability for editorial use.</div>
-            </div>
-            <div class="risk-badge">Emerging</div>
           </div>
         </div>
       </div>
 
-      <div>
-        <div class="subsection-title">Non-Technical Differentiators</div>
-        <div class="risk-list">
-          <div class="risk-item high">
-            <div class="risk-dot"></div>
-            <div class="risk-content">
-              <div class="risk-title">Editorial Control &amp; Brand Trust</div>
-              <div class="risk-desc">Publishers emphasise human oversight as primary control. Public comfort with AI-only production remains limited, especially for serious coverage.</div>
-            </div>
-            <div class="risk-badge">Critical</div>
+      <!-- 2 -->
+      <div class="acc-item" data-index="1">
+        <div class="acc-head">
+          <span class="acc-num">02</span>
+          <div class="acc-title-wrap">
+            <div class="acc-title">Archive Search &amp; Entity Extraction</div>
+            <div style="display:flex;gap:6px;margin-top:4px;"><span class="tag t-g">Mature</span></div>
           </div>
-          <div class="risk-item high">
-            <div class="risk-dot"></div>
-            <div class="risk-content">
-              <div class="risk-title">Governance &amp; Legal Terms</div>
-              <div class="risk-desc">Indemnity clauses and licensing arrangements affect whether publishers supply content to platform providers or accept vendor integrations.</div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <p class="acc-summary">Archive-powered AI search is now a standard feature among leading outlets, enabling journalists and audiences to query years of published content using natural language. Vector and semantic search are replacing keyword-only approaches, with retrieval-augmented generation (RAG) underpinning many implementations.</p>
+            <div class="eyebrow">Adopters</div>
+            <div class="chip-row">
+              <span class="chip">AP (Merlin)</span>
+              <span class="chip">Reuters AI Suite</span>
+              <span class="chip">Washington Post</span>
+              <span class="chip">Financial Times</span>
+              <span class="chip">PBS</span>
+              <span class="chip">ABC (Australia)</span>
             </div>
-            <div class="risk-badge">Critical</div>
-          </div>
-          <div class="risk-item med">
-            <div class="risk-dot"></div>
-            <div class="risk-content">
-              <div class="risk-title">Cost &amp; Integration Effort</div>
-              <div class="risk-desc">Hybrid pricing and per-token billing influence total cost of ownership; internal training and change management are non-trivial investments.</div>
+            <div class="notable-box">
+              <div class="notable-label">Notable Tools</div>
+              <div class="notable-text"><strong>AP Merlin</strong> — AI-enhanced natural-language and vector search over AP's archive. <strong>Ask FT</strong> (Financial Times) — subscriber chatbot constrained to FT archive. <strong>Ask The Post AI / Climate Answers</strong> (Washington Post) — RAG-based Q&amp;A using Post content; explicitly says "I don't know" when the archive lacks information. <strong>PBS on AWS Bedrock</strong> — hosts Llama and HuggingFace models internally for metadata and archive search.</div>
             </div>
-            <div class="risk-badge">Significant</div>
-          </div>
-          <div class="risk-item med">
-            <div class="risk-dot"></div>
-            <div class="risk-content">
-              <div class="risk-title">Union &amp; Employee Relations</div>
-              <div class="risk-desc">Newsroom pushback has arisen where AI repackages reporters' work without clear attribution or compensation, shaping adoption policies.</div>
-            </div>
-            <div class="risk-badge">Ongoing</div>
           </div>
         </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="acc-item" data-index="2">
+        <div class="acc-head">
+          <span class="acc-num">03</span>
+          <div class="acc-title-wrap">
+            <div class="acc-title">Recommendations &amp; Personalisation</div>
+            <div style="display:flex;gap:6px;margin-top:4px;"><span class="tag t-g">Mature</span></div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <p class="acc-summary">Content recommendation and personalisation engines are among the earliest and most widely deployed AI systems in news, powering product surfaces like streaming platforms, newsletter feeds, and homepage prioritisation. Public broadcasters have been particularly active here.</p>
+            <div class="eyebrow">Adopters</div>
+            <div class="chip-row">
+              <span class="chip">BBC iPlayer</span>
+              <span class="chip">BBC Sounds</span>
+              <span class="chip">Financial Times</span>
+              <span class="chip">PBS</span>
+              <span class="chip">Washington Post (Bandito)</span>
+            </div>
+            <div class="notable-box">
+              <div class="notable-label">Notable Tools</div>
+              <div class="notable-text"><strong>BBC iPlayer &amp; Sounds</strong> — AI personalisation and recommendation engines embedded in both platforms. <strong>Washington Post Bandito</strong> — automated A/B testing for headlines, blurbs, and photos, with some stories achieving more than double response rates. <strong>FT related-article recommendations</strong> — ML-powered content surfacing within subscriber product stack.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="acc-item" data-index="3">
+        <div class="acc-head">
+          <span class="acc-num">04</span>
+          <div class="acc-title-wrap">
+            <div class="acc-title">Performance Dashboards &amp; Analytics</div>
+            <div style="display:flex;gap:6px;margin-top:4px;"><span class="tag t-h">Growing</span></div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <p class="acc-summary">News organisations are combining AI with analytics to give editors real-time signals on content performance, audience behaviour, and coverage gaps. Automated A/B testing and AI-assisted headline optimisation are the most common entry points, with deeper analytics integrations emerging.</p>
+            <div class="eyebrow">Adopters</div>
+            <div class="chip-row">
+              <span class="chip">Washington Post</span>
+              <span class="chip">Associated Press</span>
+              <span class="chip">Reuters</span>
+              <span class="chip">Financial Times</span>
+            </div>
+            <div class="notable-box">
+              <div class="notable-label">Notable Tools</div>
+              <div class="notable-text"><strong>Washington Post Bandito</strong> — automated headline and photo A/B testing tracking clicks and prioritising better variants. <strong>Reuters AI Suite</strong> — packaging, discovery, and monetisation analytics for video workflows. AP reports ~200 leads per week generated by Local Lede from 430+ federal agencies, providing a measurable coverage-intelligence signal.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="acc-item" data-index="4">
+        <div class="acc-head">
+          <span class="acc-num">05</span>
+          <div class="acc-title-wrap">
+            <div class="acc-title">Subtitles, Translation &amp; Generation</div>
+            <div style="display:flex;gap:6px;margin-top:4px;"><span class="tag t-g">Mature</span></div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <p class="acc-summary">Automated transcription, subtitle generation, and multi-language translation are among the most production-ready AI capabilities in newsrooms. These pipelines often combine ASR (automatic speech recognition) with human editing to reach broadcast-quality accuracy, and are increasingly extending to AI-generated audio for written content.</p>
+            <div class="eyebrow">Adopters</div>
+            <div class="chip-row">
+              <span class="chip">Associated Press (Trint)</span>
+              <span class="chip">Reuters (57+ languages)</span>
+              <span class="chip">NPR (Take 1)</span>
+              <span class="chip">BBC (Frank)</span>
+              <span class="chip">Washington Post (ElevenLabs)</span>
+              <span class="chip">NYT (Cheat Sheet)</span>
+            </div>
+            <div class="notable-box">
+              <div class="notable-label">Notable Tools</div>
+              <div class="notable-text"><strong>Reuters AI Suite</strong> — auto-detects 57+ spoken languages for transcription; multi-language video translation built in. <strong>NPR + Take 1</strong> — multi-year contract for ASR plus human-edited XML transcriptions for programmes (signed 2022). <strong>BBC Frank</strong> — internal draft-translation tool. <strong>Washington Post + ElevenLabs</strong> — AI-generated audio added to three newsletters. <strong>AP + Trint</strong> — ENPS-integrated transcription and summarisation for member newsrooms.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="acc-item" data-index="5">
+        <div class="acc-head">
+          <span class="acc-num">06</span>
+          <div class="acc-title-wrap">
+            <div class="acc-title">Automated Reporting</div>
+            <div style="display:flex;gap:6px;margin-top:4px;"><span class="tag t-g">Mature</span></div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <p class="acc-summary">Templated NLG (natural language generation) for structured, data-rich story formats — earnings briefs, sports results, weather alerts, public-records summaries — is the most established AI use case in news, with AP having operated these systems for years. Human oversight is retained for quality control and editorial decisions, but throughput benefits are well-documented.</p>
+            <div class="eyebrow">Adopters</div>
+            <div class="chip-row">
+              <span class="chip">Associated Press</span>
+              <span class="chip">Reuters</span>
+              <span class="chip">Washington Post</span>
+            </div>
+            <div class="notable-box">
+              <div class="notable-label">Notable Tools &amp; Outcomes</div>
+              <div class="notable-text"><strong>AP NLG / Automated Briefs</strong> — produces thousands of templated updates in minutes; AP reports journalists save ~20% of time on earnings brief tasks. <strong>AP Local Lede</strong> — ingests 430+ federal agencies, generates ~200 leads weekly for member newsrooms via AP Newsroom platform. <strong>AP Spanish weather alerts</strong> — automated translation and publication pipeline. <strong>AP meeting-minutes automation</strong> — automated public-safety incident ingestion into CMS.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="acc-item" data-index="6">
+        <div class="acc-head">
+          <span class="acc-num">07</span>
+          <div class="acc-title-wrap">
+            <div class="acc-title">Monitoring, Alerts &amp; Coverage Intelligence</div>
+            <div style="display:flex;gap:6px;margin-top:4px;"><span class="tag t-h">Growing</span></div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <p class="acc-summary">Real-time monitoring and AI-powered signal detection tools help newsrooms identify breaking stories, coverage gaps, and emerging topics before they become news. These tools integrate into existing production systems and are increasingly part of editorial planning workflows.</p>
+            <div class="eyebrow">Adopters</div>
+            <div class="chip-row">
+              <span class="chip">AP (Dataminr)</span>
+              <span class="chip">AP (Local Lede)</span>
+              <span class="chip">Reuters</span>
+              <span class="chip">NYT</span>
+            </div>
+            <div class="notable-box">
+              <div class="notable-label">Notable Tools</div>
+              <div class="notable-text"><strong>AP + Dataminr</strong> — embedded in AP Storytelling for real-time signal detection. <strong>AP Local Lede</strong> — monitors 430+ federal agencies for coverage-gap leads distributed to member newsrooms. <strong>NYT satellite imagery scanning</strong> — AI scans satellite imagery for candidate signals (manually reviewed by journalists). <strong>Reuters AI Suite scene detection</strong> — automated video scene detection for content discovery and packaging.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="acc-item" data-index="7">
+        <div class="acc-head">
+          <span class="acc-num">08</span>
+          <div class="acc-title-wrap">
+            <div class="acc-title">Experimental &amp; Innovative Tools</div>
+            <div style="display:flex;gap:6px;margin-top:4px;"><span class="tag t-f">Emerging</span></div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <p class="acc-summary">Beyond established workflows, leading newsrooms are running controlled pilots and R&amp;D initiatives exploring generative summaries for audiences, investigative-scale video analysis, comment moderation, and multi-modal AI. These experiments are carefully governed with mandatory editorial oversight and public disclosure.</p>
+            <div class="eyebrow">Adopters</div>
+            <div class="chip-row">
+              <span class="chip">BBC (At-a-Glance)</span>
+              <span class="chip">Washington Post (Haystacker)</span>
+              <span class="chip">NYT (ChatExplorer)</span>
+              <span class="chip">Financial Times (comment moderation)</span>
+              <span class="chip">AP Verify</span>
+            </div>
+            <div class="notable-box">
+              <div class="notable-label">Notable Tools</div>
+              <div class="notable-text"><strong>BBC At-a-Glance</strong> — 6-week pilot generating 3–5 bullet-point article summaries, journalist-edited before publication, with public disclosure. <strong>Washington Post Haystacker</strong> — large-scale multimedia analysis for investigations; identified ~20% of campaign ads using outdated footage. <strong>AP Verify</strong> — verification dashboard consolidating detection tools with human workflows. <strong>NYT Echo</strong> — internal summarisation of editorial briefs. <strong>FT comment moderation ML</strong> — machine-learning for subscriber comment moderation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end acc-list -->
+  </section>
+
+  <!-- NEXT NUDGE: by-feature → by-outlet -->
+  <div class="next-nudge" data-target="by-outlet">
+    <span>Browse all Outlets</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+
+  <!-- BY OUTLET -->
+  <section id="by-outlet">
+    <div class="sec-head">
+      <h2>By Outlet</h2>
+      <div class="rule"></div>
+      <div class="uchip">12 outlets</div>
+    </div>
+
+    <div class="filter-row">
+      <div class="fc on" data-filter="all">All</div>
+      <div class="fc" data-filter="wire">Global Wire Services</div>
+      <div class="fc" data-filter="broadcaster">Broadcasters</div>
+      <div class="fc" data-filter="print">Print / Digital</div>
+      <div class="fc" data-filter="public">Public Media</div>
+    </div>
+
+    <div class="outlet-grid" id="outlet-grid">
+
+      <!-- AP -->
+      <div class="outlet-card" data-cat="wire">
+        <div class="outlet-name">Associated Press</div>
+        <div class="outlet-region">🇺🇸 United States · Wire Service</div>
+        <div class="chip-row">
+          <span class="chip">Local Lede</span>
+          <span class="chip">AP Merlin</span>
+          <span class="chip">Trint (ENPS)</span>
+          <span class="chip">Dataminr</span>
+          <span class="chip">AP Verify</span>
+          <span class="chip">NLG Automation</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>90%</span></div>
+          <div class="pbg"><div class="pfill" data-w="90"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-g">Mature</span></div>
+        <div class="outlet-src"><a href="https://workflow.ap.org/news/ap-ai-newsroom-innovations" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- Reuters -->
+      <div class="outlet-card" data-cat="wire">
+        <div class="outlet-name">Reuters</div>
+        <div class="outlet-region">🇬🇧 UK / Global · Wire Service</div>
+        <div class="chip-row">
+          <span class="chip">Reuters AI Suite</span>
+          <span class="chip">Transcription API</span>
+          <span class="chip">Scene Detection</span>
+          <span class="chip">NL Search</span>
+          <span class="chip">Video Translation</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>92%</span></div>
+          <div class="pbg"><div class="pfill" data-w="92"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-g">Mature</span></div>
+        <div class="outlet-src"><a href="https://reutersagency.com/technology-ai" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- NYT -->
+      <div class="outlet-card" data-cat="print">
+        <div class="outlet-name">New York Times</div>
+        <div class="outlet-region">🇺🇸 United States · Print / Digital</div>
+        <div class="chip-row">
+          <span class="chip">Cheat Sheet</span>
+          <span class="chip">Echo</span>
+          <span class="chip">ChatExplorer</span>
+          <span class="chip">GitHub Copilot</span>
+          <span class="chip">Satellite AI</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>85%</span></div>
+          <div class="pbg"><div class="pfill" data-w="85"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-g">Mature</span></div>
+        <div class="outlet-src"><a href="https://nytimes.com/2024/10/07/reader-center/how-new-york-times-uses-ai-journalism.html" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- BBC -->
+      <div class="outlet-card" data-cat="broadcaster public">
+        <div class="outlet-name">BBC</div>
+        <div class="outlet-region">🇬🇧 United Kingdom · Public Broadcaster</div>
+        <div class="chip-row">
+          <span class="chip">Frank (translation)</span>
+          <span class="chip">At-a-Glance</span>
+          <span class="chip">Style Assist</span>
+          <span class="chip">iPlayer Recs</span>
+          <span class="chip">Sounds Recs</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>78%</span></div>
+          <div class="pbg"><div class="pfill" data-w="78"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-h">Growing</span></div>
+        <div class="outlet-src"><a href="https://bbc.co.uk/editorialguidelines/guidance/use-of-artificial-intelligence" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- Washington Post -->
+      <div class="outlet-card" data-cat="print">
+        <div class="outlet-name">Washington Post</div>
+        <div class="outlet-region">🇺🇸 United States · Print / Digital</div>
+        <div class="chip-row">
+          <span class="chip">Haystacker</span>
+          <span class="chip">Bandito</span>
+          <span class="chip">Ask The Post AI</span>
+          <span class="chip">Climate Answers</span>
+          <span class="chip">ElevenLabs Audio</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>88%</span></div>
+          <div class="pbg"><div class="pfill" data-w="88"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-g">Mature</span></div>
+        <div class="outlet-src"><a href="https://niemanlab.org/2024/03/the-washington-posts-first-ai-strategy-editor-talks-llms-in-the-newsroom" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- FT -->
+      <div class="outlet-card" data-cat="print">
+        <div class="outlet-name">Financial Times</div>
+        <div class="outlet-region">🇬🇧 United Kingdom · Print / Digital</div>
+        <div class="chip-row">
+          <span class="chip">Ask FT</span>
+          <span class="chip">Comment Moderation ML</span>
+          <span class="chip">Related Articles ML</span>
+          <span class="chip">Research Assistant</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>82%</span></div>
+          <div class="pbg"><div class="pfill" data-w="82"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-g">Mature</span></div>
+        <div class="outlet-src"><a href="https://niemanlab.org/2024/03/the-financial-times-is-ready-for-its-ai-to-answer-your-questions-well-some-of-them" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- CBC -->
+      <div class="outlet-card" data-cat="broadcaster public">
+        <div class="outlet-name">CBC / Radio-Canada</div>
+        <div class="outlet-region">🇨🇦 Canada · Public Broadcaster</div>
+        <div class="chip-row">
+          <span class="chip">Corporate Gemini</span>
+          <span class="chip">NotebookLM</span>
+          <span class="chip">C2PA / Project Origin</span>
+          <span class="chip">Internal Apps</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>72%</span></div>
+          <div class="pbg"><div class="pfill" data-w="72"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-h">Growing</span></div>
+        <div class="outlet-src"><a href="https://cbc.ca/news/ai-principles-practices-cbc-news-9.7205947" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- NPR -->
+      <div class="outlet-card" data-cat="broadcaster public">
+        <div class="outlet-name">NPR</div>
+        <div class="outlet-region">🇺🇸 United States · Public Radio</div>
+        <div class="chip-row">
+          <span class="chip">Take 1 (ASR + Human)</span>
+          <span class="chip">XML Transcription</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>60%</span></div>
+          <div class="pbg"><div class="pfill" data-w="60"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-t">Selective</span></div>
+        <div class="outlet-src"><a href="https://egassociation.org/industry-news/npr-selects-take-1-as-official-vendor-of-transcription-services" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- ABC Australia -->
+      <div class="outlet-card" data-cat="broadcaster public">
+        <div class="outlet-name">ABC Australia</div>
+        <div class="outlet-region">🇦🇺 Australia · Public Broadcaster</div>
+        <div class="chip-row">
+          <span class="chip">ABC Assist</span>
+          <span class="chip">Archive Search</span>
+          <span class="chip">Draft Interview Qs</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>68%</span></div>
+          <div class="pbg"><div class="pfill" data-w="68"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-h">Growing</span></div>
+        <div class="outlet-src"><a href="https://abc.net.au/edpols/using-ai-tools-in-abc-content/104367478" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- PBS -->
+      <div class="outlet-card" data-cat="broadcaster public">
+        <div class="outlet-name">PBS / Public Stations</div>
+        <div class="outlet-region">🇺🇸 United States · Public Media</div>
+        <div class="chip-row">
+          <span class="chip">AWS Bedrock (Llama)</span>
+          <span class="chip">HuggingFace</span>
+          <span class="chip">Metadata Generation</span>
+          <span class="chip">Recommendation Lists</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>65%</span></div>
+          <div class="pbg"><div class="pfill" data-w="65"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-h">Growing</span></div>
+        <div class="outlet-src"><a href="https://current.org/2024/10/how-pbs-is-using-ai-to-improve-processes-and-systems-for-stations-staff-and-viewers" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- Le Monde -->
+      <div class="outlet-card" data-cat="print">
+        <div class="outlet-name">Le Monde</div>
+        <div class="outlet-region">🇫🇷 France · Print / Digital</div>
+        <div class="chip-row">
+          <span class="chip">OpenAI Partnership</span>
+          <span class="chip">ChatGPT Content API</span>
+          <span class="chip">Perplexity Deal</span>
+          <span class="chip">Meta AI Licensing</span>
+          <span class="chip">AI Ethics Charter</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>75%</span></div>
+          <div class="pbg"><div class="pfill" data-w="75"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-h">Growing</span></div>
+        <div class="outlet-src"><a href="https://openai.com/index/global-news-partnerships-le-monde-and-prisa-media/" target="_blank">Source ↗</a></div>
+      </div>
+
+      <!-- Axel Springer / Politico -->
+      <div class="outlet-card" data-cat="print">
+        <div class="outlet-name">Axel Springer / Politico</div>
+        <div class="outlet-region">🇩🇪 Germany / 🇺🇸 US · Print / Digital</div>
+        <div class="chip-row">
+          <span class="chip">OpenAI Deal (Dec 2023)</span>
+          <span class="chip">Live Summaries</span>
+          <span class="chip">Capitol AI Report-Builder</span>
+          <span class="chip">Company-wide AI Mandate</span>
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-label"><span>AI Maturity</span><span>80%</span></div>
+          <div class="pbg"><div class="pfill" data-w="80"></div></div>
+        </div>
+        <div style="margin-top:8px;"><span class="tag t-h">Growing</span></div>
+        <div class="outlet-src"><a href="https://pressgazette.co.uk/news/news-not-slop-politico-ai/" target="_blank">Source ↗</a></div>
+      </div>
+
+    </div><!-- end outlet-grid -->
+
+    <div id="maturity-legend" style="margin-top:16px;border-radius:14px;overflow:hidden;background:var(--glass);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border:1px solid var(--glass-b);box-shadow:var(--gs),var(--gi);">
+      <button onclick="(function(btn){var body=document.getElementById('maturity-body');var chevron=document.getElementById('maturity-chevron');var open=body.style.maxHeight&&body.style.maxHeight!=='0px';body.style.maxHeight=open?'0px':body.scrollHeight+'px';chevron.style.transform=open?'rotate(0deg)':'rotate(180deg)';})(this)" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;background:none;border:none;cursor:pointer;text-align:left;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--flame)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span style="font-size:11.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--soft);">How AI Maturity % is assessed</span>
+        </div>
+        <svg id="maturity-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--soft)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;transition:transform 280ms cubic-bezier(0.25,0.46,0.45,0.94);"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div id="maturity-body" style="max-height:0;overflow:hidden;transition:max-height 380ms cubic-bezier(0.25,0.46,0.45,0.94);">
+        <div style="padding:0 20px 20px;border-top:1px solid var(--border);">
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin:14px 0 14px;">Each outlet's score is an editorial estimate based on four factors drawn from public evidence: <strong style="color:var(--teal);">breadth</strong> (how many workflow categories are covered), <strong style="color:var(--teal);">depth</strong> (pilot vs. production-scale deployment), <strong style="color:var(--teal);">governance</strong> (whether a published AI policy or oversight framework exists), and <strong style="color:var(--teal);">measurable outcomes</strong> (documented results such as time savings, accuracy, or audience impact). Scores are not derived from any vendor or third-party index — they reflect the weight of confirmed public evidence available at time of research. Outlets with limited public disclosure score lower regardless of internal capability.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);"><div style="width:32px;height:4px;border-radius:100px;background:linear-gradient(90deg,var(--flame),#ff7a40);flex-shrink:0;"></div><span><strong style="color:var(--teal);">75–100%</strong> — Production-scale, published policy, measurable outcomes</span></div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);"><div style="width:32px;height:4px;border-radius:100px;background:linear-gradient(90deg,#ffb347,var(--honey));flex-shrink:0;"></div><span><strong style="color:var(--teal);">50–74%</strong> — Active deployment, partial governance, limited public metrics</span></div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);"><div style="width:32px;height:4px;border-radius:100px;background:var(--stone);flex-shrink:0;"></div><span><strong style="color:var(--teal);">Below 50%</strong> — Pilot or selective use, minimal published evidence</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE DATA MAP (next-level) — moved below outlet cards + maturity legend -->
+    <div class="card scatter-wrap" style="margin-top:18px;margin-bottom:0;padding:28px 28px 22px;">
+      <div class="dm-head">
+        <div>
+          <div class="eyebrow" style="margin-bottom:8px;"><span class="pdot"></span>Live data map · explore 12 newsrooms</div>
+          <div class="dm-title">AI Breadth vs. Governance Maturity</div>
+          <div class="dm-sub">Tap or hover a dot for tools · click a category to filter</div>
+        </div>
+        <div class="dm-legend" id="dmLegend">
+          <div class="dm-lchip" data-cat="wire"><span class="ldot" style="background:#FF5400;"></span>Wire Services</div>
+          <div class="dm-lchip" data-cat="print"><span class="ldot" style="background:#1A3948;"></span>Print / Digital</div>
+          <div class="dm-lchip" data-cat="broadcaster"><span class="ldot" style="background:#d4960a;"></span>Broadcasters</div>
+          <div class="dm-lchip" data-cat="public"><span class="ldot" style="background:#2e7d4f;"></span>Public Media</div>
+        </div>
+      </div>
+
+      <div class="dm-stage">
+        <!-- Quadrant labels — crisp HTML overlay -->
+        <div class="dm-quad" id="qTL">Cautious<br>specialists<span class="qsub">Few tools · strong governance</span></div>
+        <div class="dm-quad" id="qTR">Governed<br>pioneers<span class="qsub">Broad use · strong governance</span></div>
+        <div class="dm-quad" id="qBL">Early<br>stage<span class="qsub">Few tools · light governance</span></div>
+        <div class="dm-quad" id="qBR">Broad &amp;<br>experimental<span class="qsub">Broad use · light governance</span></div>
+
+        <canvas id="scatterCanvas" tabindex="0" role="img"
+          aria-label="Scatter plot of 12 newsrooms comparing AI feature breadth against governance maturity. Use arrow keys to move between newsrooms."></canvas>
+        <div id="scatter-tooltip"></div>
+      </div>
+
+      <div class="dm-xaxis">
+        <span>← Fewer AI categories</span>
+        <span class="xmid">median</span>
+        <span>More AI categories →</span>
+      </div>
+
+      <!-- Selected detail panel -->
+      <div class="dm-detail" id="dmDetail">
+        <div class="dm-detail-inner">
+          <div class="dstripe" id="dDetailStripe"></div>
+          <div>
+            <div class="dname" id="dDetailName">—</div>
+            <div class="dtools" id="dDetailTools"></div>
+          </div>
+          <div class="dmetrics">
+            <div class="dmetric"><b id="dDetailBreadth">—</b>Breadth / 8</div>
+            <div class="dmetric"><b id="dDetailGov">—</b>Governance</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dm-hint">
+        Click a dot to pin its detail · <span class="kbd">←</span> <span class="kbd">→</span> to step through · <span class="kbd">Esc</span> to clear
       </div>
     </div>
   </section>
 
-  <!-- SECTION 5: IMPACTS -->
-  <section class="report-section" id="impacts">
-    <div class="section-header">
-      <div class="section-number">05</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Measured &amp; Reported Evidence</div>
-        <h2 class="section-title">Observed Impacts</h2>
-      </div>
+  <!-- NEXT NUDGE: by-outlet → rferl -->
+  <div class="next-nudge" data-target="rferl">
+    <span>Relevance for RFE/RL</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+
+  <!-- RELEVANCE FOR RFE/RL -->
+  <section id="rferl">
+    <div class="sec-head">
+      <h2>Relevance for RFE/RL</h2>
+      <div class="rule"></div>
+      <div class="uchip">Strategic mapping</div>
     </div>
 
-    <div class="stat-row">
-      <div class="stat-box">
-        <div class="stat-value">~50%</div>
-        <div class="stat-label">Reduction in drafting hours reported in one in-house case study using AI drafting tools</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value">↑ Eng.</div>
-        <div class="stat-label">AI summarisation for younger audiences increased engagement in reported publisher experiments</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value">Mixed</div>
-        <div class="stat-label">Effects on click-through and subscriptions from AI-driven search reducing referral traffic</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value">New</div>
-        <div class="stat-label">Specialist AI fluency roles and editorial "last gate" reviewer positions emerging in newsrooms</div>
-      </div>
+    <div class="rel-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature Category</th>
+            <th>Global Adoption</th>
+            <th>RFE/RL Fit</th>
+            <th>Priority</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Inline Assistants &amp; Editorial Help</td>
+            <td>High — NYT, BBC, AP, ABC all deployed</td>
+            <td>Strong — multiple language services need research, summarisation, and drafting support at scale</td>
+            <td><span class="tag t-f">High</span></td>
+            <td><span class="note">Microsoft Copilot via M365 is the natural entry point. DNA Bias tool and PilotDesk already address this for RFE/RL journalists.</span></td>
+          </tr>
+          <tr>
+            <td>Archive Search &amp; Entity Extraction</td>
+            <td>High — AP Merlin, Ask FT, Ask The Post AI, PBS all active</td>
+            <td>Strong — decades of multilingual archive across all language services; high value for journalism research and source verification</td>
+            <td><span class="tag t-f">High</span></td>
+            <td><span class="note">RAG over RFE/RL's multilingual archive is a distinctive opportunity. Requires M365 / SharePoint indexing or dedicated vector store.</span></td>
+          </tr>
+          <tr>
+            <td>Subtitles, Translation &amp; Generation</td>
+            <td>Very High — Reuters (57 langs), NPR, BBC Frank, AP Trint</td>
+            <td>Critical — RFE/RL publishes across multiple languages; subtitle and translation pipelines directly reduce production cost and time</td>
+            <td><span class="tag t-f">High</span></td>
+            <td><span class="note">Persian (Farsi), Russian, Ukrainian, and other RFE/RL target languages are supported by major ASR vendors. Human-review step essential for broadcast quality.</span></td>
+          </tr>
+          <tr>
+            <td>Monitoring, Alerts &amp; Coverage Intelligence</td>
+            <td>Growing — AP Local Lede, Dataminr, NYT satellite AI</td>
+            <td>Very strong — RFE/RL covers authoritarian contexts where coverage-gap detection and OSINT monitoring are core editorial needs</td>
+            <td><span class="tag t-f">High</span></td>
+            <td><span class="note">Ahoy monitoring dashboard aligns directly with this category. AP Local Lede model (monitoring 430+ agencies) is a blueprint for RFE/RL country-desk coverage tracking.</span></td>
+          </tr>
+          <tr>
+            <td>Performance Dashboards &amp; Analytics</td>
+            <td>Growing — Washington Post Bandito, Reuters, AP</td>
+            <td>Medium — audience analytics and headline optimisation relevant for digital growth; less critical than editorial tools</td>
+            <td><span class="tag t-h">Medium</span></td>
+            <td><span class="note">Bandito-style A/B testing for headlines/thumbnails is achievable within existing analytics stack. Audience-trust considerations apply given RFE/RL's mission-driven context.</span></td>
+          </tr>
+          <tr>
+            <td>Recommendations &amp; Personalisation</td>
+            <td>Mature — BBC iPlayer/Sounds, FT, PBS</td>
+            <td>Medium — relevant for app and web products; audience retention in diaspora markets is a real use case</td>
+            <td><span class="tag t-h">Medium</span></td>
+            <td><span class="note">Most valuable for Radio Farda and major-language services with large digital audiences. Requires audience data infrastructure to be in place first.</span></td>
+          </tr>
+          <tr>
+            <td>Automated Reporting</td>
+            <td>Mature — AP NLG, Reuters</td>
+            <td>Limited — RFE/RL's editorial model is journalism-driven; structured NLG templates are less applicable than in wire services</td>
+            <td><span class="tag t-t">Low</span></td>
+            <td><span class="note">Potential for structured summaries of official statements or government data across language services. Wire-style automation is not core to RFE/RL's mission.</span></td>
+          </tr>
+          <tr>
+            <td>Experimental &amp; Innovative Tools</td>
+            <td>Emerging — BBC At-a-Glance, WaPo Haystacker, NYT Echo</td>
+            <td>Selective — investigative-scale document analysis (Haystacker model) is highly relevant for RFE/RL's investigative teams</td>
+            <td><span class="tag t-h">Medium</span></td>
+            <td><span class="note">AI-assisted verification and document analysis tools (AP Verify model) are directly applicable to RFE/RL's fact-checking and OSINT workflows. Governance framework must come first.</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="col-2">
-      <div>
-        <div class="subsection-title">Editorial Workflows</div>
-        <div class="prose">
-          <p>Efficiency gains are documented in specific contexts — internal drafting tools have reduced hours spent in drafting by approximately half in at least one reported case. AI is redistributing labour by automating routine and repetitive tasks such as database entries, transcription and simple event write-ups.</p>
-          <p>Journalists are being prompted toward higher-value reporting and editorial curation as a result of these shifts.</p>
-        </div>
-      </div>
-
-      <div>
-        <div class="subsection-title">Staffing &amp; Revenue</div>
-        <div class="prose">
-          <p>AI adoption is changing role definitions: editors increasingly act as "last gate" reviewers for AI-assisted outputs, and specialist AI fluency roles and trainers are emerging inside newsrooms.</p>
-          <p>High-profile misuse incidents — including AI-generated content containing fabricated material — have prompted contract terminations and reputational fallout, underscoring that efficiency gains come with operational risks.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 6: RISKS -->
-  <section class="report-section" id="risks">
-    <div class="section-header">
-      <div class="section-number">06</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Legal, Ethical &amp; Operational</div>
-        <h2 class="section-title">Risks &amp; Mitigation Practices</h2>
-      </div>
-    </div>
-
-    <div class="risk-list">
-      <div class="risk-item high">
-        <div class="risk-dot"></div>
-        <div class="risk-content">
-          <div class="risk-title">Copyright &amp; Training Data Liability</div>
-          <div class="risk-desc">Publishers pursue licensing deals and contractual protections with platform providers. Some vendors offer indemnities for enterprise customers against copyright claims as part of their commercial offering.</div>
-        </div>
-        <div class="risk-badge">High Risk</div>
-      </div>
-
-      <div class="risk-item high">
-        <div class="risk-dot"></div>
-        <div class="risk-content">
-          <div class="risk-title">Fabrication, Plagiarism &amp; Hallucinations</div>
-          <div class="risk-desc">Human-in-the-loop editorial rules, verification checklists and RAG constrained to trusted corpora are standard mitigations. High-profile incidents have led to shutdowns and contract terminations.</div>
-        </div>
-        <div class="risk-badge">High Risk</div>
-      </div>
-
-      <div class="risk-item med">
-        <div class="risk-dot"></div>
-        <div class="risk-content">
-          <div class="risk-title">Audience Trust &amp; Acceptance</div>
-          <div class="risk-desc">Transparency about AI use — disclosure policies, editorial control mechanisms, and human oversight — are emphasised to maintain reader trust. Public comfort remains limited for AI-only production.</div>
-        </div>
-        <div class="risk-badge">Medium Risk</div>
-      </div>
-
-      <div class="risk-item med">
-        <div class="risk-dot"></div>
-        <div class="risk-content">
-          <div class="risk-title">Big Tech Infrastructure Dependence</div>
-          <div class="risk-desc">Public media note both the utility and strategic exposure from relying on large platform companies for AI infrastructure and tooling, including geopolitical considerations.</div>
-        </div>
-        <div class="risk-badge">Medium Risk</div>
-      </div>
-
-      <div class="risk-item low">
-        <div class="risk-dot"></div>
-        <div class="risk-content">
-          <div class="risk-title">Agent Security &amp; Governance Frameworks</div>
-          <div class="risk-desc">Some organisations adopt layered governance covering data governance, agent observability, security, and development lifecycle controls specifically designed for agentic systems.</div>
-        </div>
-        <div class="risk-badge">Managed</div>
-      </div>
+    <div class="takeaway">
+      <div class="eyebrow">Strategic Takeaway · Digital Transformation Department</div>
+      <div class="take-title">RFE/RL should accelerate on the four High-priority categories — in order</div>
+      <p class="take-body">The benchmark data points to a clear sequencing for RFE/RL: (1) <strong>Inline editorial assistants</strong> via Microsoft Copilot and PilotDesk are already in motion and should be scaled across language services now. (2) <strong>Subtitles and translation pipelines</strong> offer the highest efficiency ROI given RFE/RL's multilingual output — a Reuters-model approach with human-review layers is proven and deployable. (3) <strong>Coverage intelligence and monitoring</strong> (the Ahoy model) is a distinctive RFE/RL strength aligned with AP Local Lede's architecture, and should be deepened for country-desk workflows. (4) <strong>Multilingual archive RAG</strong> — queryable institutional memory across decades of journalism — is the highest-differentiation long-term investment, building on the DNA Library concept already in development under the Digital Transformation Department.</p>
     </div>
   </section>
 
-  <!-- SECTION 7: CASE STUDIES -->
-  <section class="report-section" id="cases">
-    <div class="section-header">
-      <div class="section-number">07</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Diverse Outlet Types &amp; Regions</div>
-        <h2 class="section-title">Representative Case Studies</h2>
-      </div>
-    </div>
-
-    <div class="case-studies-grid">
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-org">Associated Press</div>
-          <div class="case-type">Newswire · US</div>
-        </div>
-        <div class="case-body">
-          <p>Long-running automation for earnings and sports results; since 2023, AP has negotiated licensing and technology collaborations with major model providers, piloting AI to automate repetitive newsroom tasks and deliver local news tips. AI search tools improve discovery while human oversight is maintained for generative use.</p>
-          <div class="case-outcome">
-            <div class="case-outcome-icon">✅</div>
-            <div class="case-outcome-text">Pioneer in automation + active in commercial licensing deals</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-org">Reuters</div>
-          <div class="case-type">Wire Service · Global</div>
-        </div>
-        <div class="case-body">
-          <p>Staff-wide experimentation platform and customer-facing AI features including Fact Genie. Rolled out AI video-editing features under a branded product to speed production, combining internal R&D with productised tools for newsroom efficiency.</p>
-          <div class="case-outcome">
-            <div class="case-outcome-icon">✅</div>
-            <div class="case-outcome-text">Strong R&D culture; balances internal tools with commercial products</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-org">BBC</div>
-          <div class="case-type">Public Broadcaster · UK</div>
-        </div>
-        <div class="case-body">
-          <p>Launched multiple generative AI pilots; moved some tools into public trials (summariser, style-assist) while keeping most internal. Exemplifies a cautious, iterative public-service approach to testing audience-facing features.</p>
-          <div class="case-outcome">
-            <div class="case-outcome-icon">🔄</div>
-            <div class="case-outcome-text">Careful, staged rollout with emphasis on public trust</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-org">Financial Times &amp; dpa</div>
-          <div class="case-type">Newspaper &amp; Agency · Global</div>
-        </div>
-        <div class="case-body">
-          <p>FT introduced organisation-wide AI training and "AI fluency" roles to embed responsible tool use. dpa developed a RAG-based research assistant restricted to its own content — examples of structural investment in upskilling and provenance-constrained tooling.</p>
-          <div class="case-outcome">
-            <div class="case-outcome-icon">✅</div>
-            <div class="case-outcome-text">Structural investment in skills and provenance-first architecture</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-org">Aftonbladet &amp; Helsingin Sanomat</div>
-          <div class="case-type">News Publishers · Europe</div>
-        </div>
-        <div class="case-body">
-          <p>AI-produced article summary bullets for social and younger audiences were reported to increase engagement among those reader segments, illustrating targeted editorial use cases that feed distribution strategies.</p>
-          <div class="case-outcome">
-            <div class="case-outcome-icon">📈</div>
-            <div class="case-outcome-text">Demonstrated engagement uplift for targeted younger audiences</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-org">Sinclair Broadcast Group</div>
-          <div class="case-type">Local Broadcaster · US</div>
-        </div>
-        <div class="case-body">
-          <p>Deployed a vendor system for real-time translated local TV newscasts in multiple languages, demonstrating how broadcasters use specialised vendors to expand language reach for live broadcasts without building internal capability.</p>
-          <div class="case-outcome">
-            <div class="case-outcome-icon">✅</div>
-            <div class="case-outcome-text">Live multilingual broadcast delivery via specialist vendor</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-org">Nota</div>
-          <div class="case-type">Startup · Local News</div>
-        </div>
-        <div class="case-body">
-          <p>A high-visibility failure: the startup launched AI-generated local news sites and later shut down after discovery of widespread plagiarism and unattributed copying. Partner contract cancellations followed, highlighting legal and ethical risks in rapid automated content scale-ups.</p>
-          <div class="case-outcome">
-            <div class="case-outcome-icon">⚠️</div>
-            <div class="case-outcome-text">Cautionary example — shutdown after plagiarism and partner fallout</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 8: TENSIONS -->
-  <section class="report-section" id="tensions">
-    <div class="section-header">
-      <div class="section-number">08</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Strategic Choices</div>
-        <h2 class="section-title">Key Tensions &amp; Trade-offs</h2>
-      </div>
-    </div>
-
-    <div class="tension-row">
-      <div class="tension-side"><strong>Cost Reduction (Substitution)</strong><br>Pursue AI to reduce headcount and automate output at volume — favoured by actors seeking to scale with limited resources.</div>
-      <div class="tension-vs">vs</div>
-      <div class="tension-side"><strong>Journalist Augmentation (Complementarity)</strong><br>Use AI to enhance capabilities and free journalists for higher-value work — favoured by resource-rich organisations prioritising brand.</div>
-    </div>
-
-    <div class="tension-row">
-      <div class="tension-side"><strong>Centralised Custom Models</strong><br>Wire services and large publishers deploy internal or fine-tuned systems constrained to proprietary archives, gaining control and provenance.</div>
-      <div class="tension-vs">vs</div>
-      <div class="tension-side"><strong>Decentralised SaaS &amp; APIs</strong><br>Smaller outlets rely on third-party APIs and SaaS, affecting control, cost and provenance but lowering barriers to adoption.</div>
-    </div>
-
-    <div class="tension-row">
-      <div class="tension-side"><strong>Commercial Leverage &amp; Revenue</strong><br>Licensing deals and platform partnerships provide income and technical access — valuable for sustainability.</div>
-      <div class="tension-vs">vs</div>
-      <div class="tension-side"><strong>Editorial Independence</strong><br>Same deals create distribution dependencies and risk editorial autonomy. Publishers must weigh terms carefully when negotiating.</div>
-    </div>
-  </section>
-
-  <!-- SECTION 9: IMPLICATIONS -->
-  <section class="report-section" id="implications">
-    <div class="section-header">
-      <div class="section-number">09</div>
-      <div class="section-title-group">
-        <div class="section-kicker">Inferred from Evidence Patterns</div>
-        <h2 class="section-title">Practical Implications</h2>
-      </div>
-    </div>
-
-    <div class="col-2">
-      <div class="impl-list">
-        <div class="impl-item">
-          <div class="impl-num">1</div>
-          <div class="impl-text">Prioritise <strong>human-in-the-loop controls</strong> for all editorial outputs and maintain clear disclosure policies — audience trust depends on visible human accountability.</div>
-        </div>
-        <div class="impl-item">
-          <div class="impl-num">2</div>
-          <div class="impl-text">Invest in <strong>staff training and AI-fluency roles</strong> to integrate AI safely and productively — structural upskilling is as important as the technology itself.</div>
-        </div>
-        <div class="impl-item">
-          <div class="impl-num">3</div>
-          <div class="impl-text"><strong>Negotiate licensing and contractual protections</strong> — including data use terms and indemnities — before supplying proprietary archives or large volumes of content for commercial model training.</div>
-        </div>
-      </div>
-      <div class="impl-list">
-        <div class="impl-item">
-          <div class="impl-num">4</div>
-          <div class="impl-text">Choose <strong>technical architectures that preserve provenance</strong> — RAG constrained to trusted corpora minimises hallucination risks for verification-sensitive tasks.</div>
-        </div>
-        <div class="impl-item">
-          <div class="impl-num">5</div>
-          <div class="impl-text"><strong>Monitor vendor pricing models</strong> — usage-versus-subscription dynamics and model selection choices significantly affect variable inference cost exposure over time.</div>
-        </div>
-        <div class="impl-item">
-          <div class="impl-num">6</div>
-          <div class="impl-text">Acknowledge <strong>evidence gaps</strong>: quantitative cross-market adoption rates, longitudinal staffing studies, and comparable revenue impact metrics remain limited across the industry.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</div>
+</div><!-- end wrap -->
 
 <!-- FOOTER -->
-<footer class="report-footer">
-  <div class="footer-inner">
-    <div class="footer-note">
-      This report synthesises verified evidence from primary and reputable secondary sources including newsroom statements, vendor announcements, trade press, and academic and industry reports. Recommendations are inferred from patterns in evidence and do not constitute operational checklists.
-    </div>
-    <div class="footer-logo">AI &amp; the Press</div>
-  </div>
-</footer>
+<div class="footer">
+  <div class="footer-main">Compiled by Digital Transformation Department · RFE/RL · 2025</div>
+  <p class="footer-dis">This report was produced using AI-assisted research synthesis (Tavily web search) and structured editorial analysis. All claims are grounded in primary source documentation from the listed organisations and cross-referenced against WAN-IFRA and Reuters Institute industry research. Human editorial review applied throughout. This report does not constitute official RFE/RL editorial policy.</p>
+</div>
 
+<script>
+// ── NAV SCROLL & ACTIVE ──
+const navTabs = document.querySelectorAll('.ntab');
+navTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.target;
+    const el = document.getElementById(target);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    navTabs.forEach(t => t.classList.remove('on'));
+    tab.classList.add('on');
+  });
+});
+
+// Update active tab on scroll
+const sections = ['overview','key-findings','by-feature','by-outlet','rferl'];
+const sectionEls = sections.map(id => document.getElementById(id));
+const navMap = {};
+navTabs.forEach(t => navMap[t.dataset.target] = t);
+
+const scrollObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      if (navMap[id]) {
+        navTabs.forEach(t => t.classList.remove('on'));
+        navMap[id].classList.add('on');
+      }
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+sectionEls.forEach(el => { if(el) scrollObserver.observe(el); });
+
+// ── ACCORDION ──
+const accItems = document.querySelectorAll('.acc-item');
+accItems.forEach(item => {
+  const head = item.querySelector('.acc-head');
+  const body = item.querySelector('.acc-body');
+  const inner = item.querySelector('.acc-inner');
+  
+  head.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    // Close all
+    accItems.forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.acc-body').style.maxHeight = '0';
+    });
+    // Open if was closed
+    if (!isOpen) {
+      item.classList.add('open');
+      body.style.maxHeight = inner.scrollHeight + 40 + 'px';
+    }
+  });
+});
+
+// ── FILTER CHIPS ──
+const filterChips = document.querySelectorAll('.fc');
+const outletCards = document.querySelectorAll('.outlet-card');
+
+filterChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    filterChips.forEach(c => c.classList.remove('on'));
+    chip.classList.add('on');
+    const filter = chip.dataset.filter;
+    outletCards.forEach(card => {
+      const cats = card.dataset.cat || '';
+      if (filter === 'all' || cats.includes(filter)) {
+        card.classList.remove('hidden');
+        card.style.opacity = '1';
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+});
+
+// ── PROGRESS BARS (IntersectionObserver) ──
+const pfills = document.querySelectorAll('.pfill');
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const w = el.dataset.w;
+      el.style.width = w + '%';
+      barObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.2 });
+
+pfills.forEach(bar => barObserver.observe(bar));
+// ── NEXT NUDGES ──
+document.querySelectorAll('.next-nudge').forEach(nudge => {
+  nudge.addEventListener('click', () => {
+    const target = nudge.dataset.target;
+    const el = document.getElementById(target);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ── LIVE DATA MAP (next-level) ──
+(function() {
+  const canvas = document.getElementById('scatterCanvas');
+  if (!canvas) return;
+  const tooltip = document.getElementById('scatter-tooltip');
+  const legend  = document.getElementById('dmLegend');
+  const detail  = document.getElementById('dmDetail');
+
+  const outlets = [
+    { name:'Associated Press',   breadth:8, governance:90, maturity:90, cat:'wire',        tools:['Local Lede','Merlin','Trint','Dataminr','NLG','AP Verify'] },
+    { name:'Reuters',            breadth:7, governance:92, maturity:92, cat:'wire',        tools:['AI Suite','Scene Detection','57+ lang transcription','NL Search'] },
+    { name:'New York Times',     breadth:6, governance:85, maturity:85, cat:'print',       tools:['Cheat Sheet','Echo','ChatExplorer','GitHub Copilot'] },
+    { name:'Washington Post',    breadth:7, governance:82, maturity:88, cat:'print',       tools:['Haystacker','Bandito','Ask The Post AI','ElevenLabs'] },
+    { name:'Financial Times',    breadth:5, governance:88, maturity:82, cat:'print',       tools:['Ask FT','Comment Moderation ML','Research Assistant'] },
+    { name:'Le Monde',           breadth:3, governance:78, maturity:75, cat:'print',       tools:['OpenAI Partnership','Perplexity Deal','Meta AI Licensing'] },
+    { name:'Axel Springer',      breadth:4, governance:72, maturity:80, cat:'print',       tools:['OpenAI Deal','Live Summaries','Capitol AI Builder'] },
+    { name:'BBC',                breadth:6, governance:90, maturity:78, cat:'broadcaster', tools:['Frank','At-a-Glance','Style Assist','iPlayer Recs'] },
+    { name:'CBC',                breadth:3, governance:85, maturity:72, cat:'public',      tools:['Corporate Gemini','NotebookLM','C2PA'] },
+    { name:'NPR',                breadth:2, governance:75, maturity:60, cat:'public',      tools:['Take 1 ASR','XML Transcription'] },
+    { name:'ABC Australia',      breadth:3, governance:80, maturity:68, cat:'public',      tools:['ABC Assist','Archive Search'] },
+    { name:'PBS',                breadth:3, governance:78, maturity:65, cat:'public',      tools:['AWS Bedrock (Llama)','HuggingFace','Metadata Gen'] },
+  ];
+
+  const catColors = {
+    wire:        { fill:'rgba(255,84,0,0.82)',    stroke:'rgba(255,84,0,1)',   hex:'#FF5400' },
+    print:       { fill:'rgba(26,57,72,0.78)',    stroke:'rgba(26,57,72,1)',   hex:'#1A3948' },
+    broadcaster: { fill:'rgba(212,150,10,0.88)',  stroke:'rgba(212,150,10,1)', hex:'#d4960a' },
+    public:      { fill:'rgba(46,125,79,0.82)',   stroke:'rgba(46,125,79,1)',  hex:'#2e7d4f' },
+  };
+  const SHORT = {
+    'Associated Press':'AP','Washington Post':'Wash. Post','Financial Times':'FT',
+    'New York Times':'NYT','ABC Australia':'ABC (AU)'
+  };
+  const shortName = n => SHORT[n] || n;
+
+  // Median split lines (quadrant thresholds)
+  const MED_BREADTH = 5;   // breadth median across the set
+  const MED_GOV = 82;      // governance median
+
+  let dpr = window.devicePixelRatio || 1;
+  let W, H, padding;
+  const DOT_R = 9;
+  let hovered = -1;       // hover index
+  let selected = -1;      // pinned (tap/click/keyboard) index
+  let activeCat = null;   // null = all; otherwise solo a category
+  let animT = 0;          // 0→1 entry animation
+  const labelBoxes = [];  // for collision detection
+
+  function activeOutlets() {
+    return outlets.map((o,i)=>({o,i})).filter(({o}) => !activeCat || o.cat === activeCat);
+  }
+  function isDimmed(i) { return activeCat && outlets[i].cat !== activeCat; }
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    W = rect.width;
+    H = Math.max(300, Math.min(420, W * 0.46));
+    canvas.style.height = H + 'px';
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    padding = { top: 28, right: 30, bottom: 38, left: 52 };
+    positionQuads();
+    draw();
+  }
+
+  function toX(breadth) {
+    return padding.left + ((breadth - 1) / 7) * (W - padding.left - padding.right);
+  }
+  function toY(gov) {
+    return padding.top + ((100 - gov) / 100) * (H - padding.top - padding.bottom);
+  }
+
+  // Position the four HTML quadrant labels relative to median split
+  function positionQuads() {
+    const mx = toX(MED_BREADTH), my = toY(MED_GOV);
+    const pad = 10;
+    const place = (el, corner) => {
+      if (!el) return;
+      el.style.opacity = '1';
+      if (corner === 'TL') { el.style.left = (padding.left + pad)+'px'; el.style.top = (padding.top + pad)+'px'; el.style.textAlign='left'; el.style.right=''; el.style.bottom=''; }
+      if (corner === 'TR') { el.style.right = (padding.right + pad)+'px'; el.style.top = (padding.top + pad)+'px'; el.style.textAlign='right'; el.style.left=''; el.style.bottom=''; }
+      if (corner === 'BL') { el.style.left = (padding.left + pad)+'px'; el.style.bottom = (padding.bottom + pad)+'px'; el.style.textAlign='left'; el.style.right=''; el.style.top=''; }
+      if (corner === 'BR') { el.style.right = (padding.right + pad)+'px'; el.style.bottom = (padding.bottom + pad)+'px'; el.style.textAlign='right'; el.style.left=''; el.style.top=''; }
+    };
+    place(document.getElementById('qTL'),'TL');
+    place(document.getElementById('qTR'),'TR');
+    place(document.getElementById('qBL'),'BL');
+    place(document.getElementById('qBR'),'BR');
+  }
+
+  // ── OVERLAP FIX ──
+  // Compute rendered positions; nudge dots that collide so none overlap visually.
+  function computePositions() {
+    const pts = outlets.map(o => ({ x: toX(o.breadth), y: toY(o.governance) }));
+    const minDist = DOT_R * 2 + 5;           // required centre-to-centre gap
+    // Iterative relaxation: push apart any pair closer than minDist
+    for (let iter = 0; iter < 60; iter++) {
+      let moved = false;
+      for (let a = 0; a < pts.length; a++) {
+        for (let b = a + 1; b < pts.length; b++) {
+          let dx = pts[b].x - pts[a].x;
+          let dy = pts[b].y - pts[a].y;
+          let d = Math.hypot(dx, dy);
+          if (d < minDist && d > 0.0001) {
+            const push = (minDist - d) / 2;
+            const ux = dx / d, uy = dy / d;
+            pts[a].x -= ux * push; pts[a].y -= uy * push;
+            pts[b].x += ux * push; pts[b].y += uy * push;
+            moved = true;
+          } else if (d <= 0.0001) {
+            // exactly coincident — split deterministically
+            pts[a].x -= minDist/2; pts[b].x += minDist/2; moved = true;
+          }
+        }
+      }
+      // keep inside plot bounds
+      for (const p of pts) {
+        p.x = Math.max(padding.left + DOT_R, Math.min(W - padding.right - DOT_R, p.x));
+        p.y = Math.max(padding.top + DOT_R, Math.min(H - padding.bottom - DOT_R, p.y));
+      }
+      if (!moved) break;
+    }
+    return pts;
+  }
+  let positions = [];
+
+  function draw() {
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    positions = computePositions();
+    labelBoxes.length = 0;
+
+    const plotL = padding.left, plotR = W - padding.right;
+    const plotT = padding.top, plotB = H - padding.bottom;
+    const mx = toX(MED_BREADTH), my = toY(MED_GOV);
+
+    // Quadrant tint — soft fills, "governed pioneers" (top-right) gets the warmest
+    ctx.fillStyle = 'rgba(46,125,79,0.045)';   ctx.fillRect(mx, plotT, plotR-mx, my-plotT);     // TR
+    ctx.fillStyle = 'rgba(26,57,72,0.030)';    ctx.fillRect(plotL, plotT, mx-plotL, my-plotT);  // TL
+    ctx.fillStyle = 'rgba(255,84,0,0.035)';    ctx.fillRect(mx, my, plotR-mx, plotB-my);        // BR
+    ctx.fillStyle = 'rgba(26,57,72,0.018)';    ctx.fillRect(plotL, my, mx-plotL, plotB-my);     // BL
+
+    // Horizontal grid + Y labels
+    ctx.strokeStyle = 'rgba(26,57,72,0.06)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = plotT + (i / 4) * (plotB - plotT);
+      ctx.beginPath(); ctx.moveTo(plotL, y); ctx.lineTo(plotR, y); ctx.stroke();
+      ctx.fillStyle = 'rgba(26,57,72,0.34)';
+      ctx.font = `500 10px 'Noto Sans', sans-serif`;
+      ctx.textAlign = 'right';
+      ctx.fillText((100 - i * 25) + '%', plotL - 9, y + 3.5);
+    }
+
+    // Median split lines (dashed, the quadrant dividers)
+    ctx.save();
+    ctx.setLineDash([4, 5]);
+    ctx.strokeStyle = 'rgba(26,57,72,0.18)';
+    ctx.lineWidth = 1.25;
+    ctx.beginPath(); ctx.moveTo(mx, plotT); ctx.lineTo(mx, plotB); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(plotL, my); ctx.lineTo(plotR, my); ctx.stroke();
+    ctx.restore();
+
+    // Y axis label
+    ctx.save();
+    ctx.translate(14, (plotT + plotB) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = 'rgba(26,57,72,0.40)';
+    ctx.font = `700 9px 'Noto Sans', sans-serif`;
+    ctx.textAlign = 'center';
+    if (ctx.letterSpacing !== undefined) ctx.letterSpacing = '0.10em';
+    ctx.fillText('GOVERNANCE MATURITY', 0, 0);
+    ctx.restore();
+
+    // Connector lines: where a dot was nudged off its true position, draw a faint
+    // leader back to the true data coordinate so the value stays honest.
+    outlets.forEach((o, idx) => {
+      if (isDimmed(idx)) return;
+      const tx = toX(o.breadth), ty = toY(o.governance);
+      const p = positions[idx];
+      if (Math.hypot(p.x - tx, p.y - ty) > 3) {
+        ctx.strokeStyle = 'rgba(26,57,72,0.16)';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(p.x, p.y); ctx.stroke();
+        // faint true-position tick
+        ctx.fillStyle = 'rgba(26,57,72,0.22)';
+        ctx.beginPath(); ctx.arc(tx, ty, 1.6, 0, Math.PI*2); ctx.fill();
+      }
+    });
+
+    // First pass: dots
+    const order = outlets.map((_,i)=>i).sort((a,b)=>{
+      // draw selected/hovered last (on top)
+      const wa = (a===selected?2:0)+(a===hovered?1:0);
+      const wb = (b===selected?2:0)+(b===hovered?1:0);
+      return wa - wb;
+    });
+
+    order.forEach(idx => {
+      const o = outlets[idx];
+      const p = positions[idx];
+      const col = catColors[o.cat];
+      const dim = isDimmed(idx);
+      const isHov = idx === hovered || idx === selected;
+      const grow = isHov ? 3 : 0;
+      const r = (DOT_R + grow) * (0.4 + 0.6 * animT);
+
+      ctx.globalAlpha = dim ? 0.18 : 1;
+
+      if (isHov && !dim) { ctx.shadowColor = col.stroke; ctx.shadowBlur = 18; }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = col.fill;
+      ctx.fill();
+      ctx.strokeStyle = isHov ? col.stroke : 'rgba(255,255,255,0.7)';
+      ctx.lineWidth = isHov ? 2.5 : 1.5;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+    });
+
+    // Second pass: labels with collision avoidance.
+    // Always label hovered/selected; otherwise label only if box doesn't collide.
+    function tryLabel(idx, force) {
+      const o = outlets[idx];
+      const p = positions[idx];
+      if (isDimmed(idx)) return;
+      const isHov = idx === hovered || idx === selected;
+      const label = shortName(o.name);
+      ctx.font = isHov ? `600 11px 'Noto Sans', sans-serif` : `500 10px 'Noto Sans', sans-serif`;
+      const w = ctx.measureText(label).width;
+      const lx = p.x, ly = p.y + DOT_R + (isHov?3:0) + 13;
+      const box = { x1: lx - w/2 - 3, y1: ly - 9, x2: lx + w/2 + 3, y2: ly + 3 };
+      if (!force) {
+        for (const b of labelBoxes) {
+          if (box.x1 < b.x2 && box.x2 > b.x1 && box.y1 < b.y2 && box.y2 > b.y1) return;
+        }
+      }
+      labelBoxes.push(box);
+      ctx.fillStyle = isHov ? 'rgba(26,57,72,0.96)' : 'rgba(26,57,72,0.60)';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, lx, ly);
+    }
+    // forced first (reserve their space), then the rest
+    outlets.forEach((_,i)=>{ if (i===hovered || i===selected) tryLabel(i, true); });
+    outlets.forEach((_,i)=>{ if (i!==hovered && i!==selected) tryLabel(i, false); });
+  }
+
+  function hitTest(mx, my) {
+    // iterate in reverse draw priority so topmost wins
+    let best = -1, bestD = Infinity;
+    for (let i = 0; i < outlets.length; i++) {
+      if (isDimmed(i)) continue;
+      const p = positions[i];
+      const d = Math.hypot(mx - p.x, my - p.y);
+      if (d <= DOT_R + 7 && d < bestD) { best = i; bestD = d; }
+    }
+    return best;
+  }
+
+  function showTooltip(idx) {
+    const o = outlets[idx];
+    const col = catColors[o.cat];
+    const p = positions[idx];
+    tooltip.innerHTML = `
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
+        <span style="width:9px;height:9px;border-radius:50%;background:${col.hex};box-shadow:0 0 0 2px rgba(255,255,255,0.25);"></span>
+        <span style="font-family:'Lora',serif;font-size:14px;font-weight:600;color:#fff;">${o.name}</span>
+      </div>
+      <div style="display:flex;gap:14px;margin-bottom:9px;">
+        <div style="font-size:11px;color:rgba(185,204,204,0.85);">Breadth <strong style="color:#fff;font-size:12px;">${o.breadth}/8</strong></div>
+        <div style="font-size:11px;color:rgba(185,204,204,0.85);">Governance <strong style="color:#fff;font-size:12px;">${o.governance}%</strong></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">${o.tools.slice(0,4).map(t=>`<span style="font-size:9.5px;background:rgba(255,255,255,0.13);color:rgba(220,232,232,0.95);border:1px solid rgba(255,255,255,0.14);padding:2px 8px;border-radius:100px;">${t}</span>`).join('')}${o.tools.length>4?`<span style="font-size:9.5px;color:rgba(185,204,204,0.7);padding:2px 4px;">+${o.tools.length-4}</span>`:''}</div>
+    `;
+    let left = p.x + 18, top = p.y - 24;
+    if (left + 255 > W) left = p.x - 261;
+    if (top < 4) top = 4;
+    if (top + 130 > H) top = H - 134;
+    tooltip.style.left = left + 'px';
+    tooltip.style.top  = top + 'px';
+    tooltip.classList.add('show');
+  }
+  function hideTooltip() { tooltip.classList.remove('show'); }
+
+  function openDetail(idx) {
+    const o = outlets[idx];
+    const col = catColors[o.cat];
+    document.getElementById('dDetailStripe').style.background = col.hex;
+    document.getElementById('dDetailName').textContent = o.name;
+    document.getElementById('dDetailBreadth').textContent = o.breadth;
+    document.getElementById('dDetailGov').textContent = o.governance + '%';
+    document.getElementById('dDetailTools').innerHTML =
+      o.tools.map(t=>`<span class="dtool">${t}</span>`).join('');
+    detail.classList.add('open');
+  }
+  function closeDetail() { detail.classList.remove('open'); }
+
+  function select(idx) {
+    selected = idx;
+    if (idx >= 0) { showTooltip(idx); openDetail(idx); }
+    else { hideTooltip(); closeDetail(); }
+    draw();
+  }
+
+  // ── Pointer events (mouse + touch via pointer) ──
+  canvas.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return; // touch handled on tap
+    const rect = canvas.getBoundingClientRect();
+    const idx = hitTest(e.clientX - rect.left, e.clientY - rect.top);
+    if (idx !== hovered) {
+      hovered = idx;
+      if (idx >= 0) { showTooltip(idx); canvas.style.cursor = 'pointer'; }
+      else if (selected < 0) { hideTooltip(); canvas.style.cursor = 'default'; }
+      else { showTooltip(selected); canvas.style.cursor = 'default'; }
+      draw();
+    }
+  });
+  canvas.addEventListener('pointerleave', () => {
+    hovered = -1;
+    if (selected >= 0) showTooltip(selected); else hideTooltip();
+    canvas.style.cursor = 'default';
+    draw();
+  });
+  // Tap / click to pin
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const idx = hitTest(e.clientX - rect.left, e.clientY - rect.top);
+    canvas.focus();
+    if (idx >= 0) select(idx === selected ? -1 : idx);
+    else select(-1);
+  });
+
+  // ── Keyboard navigation ──
+  canvas.addEventListener('keydown', (e) => {
+    const act = activeOutlets();
+    if (!act.length) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      // order by x position for intuitive stepping
+      const sorted = act.slice().sort((a,b)=>positions[a.i].x - positions[b.i].x);
+      let pos = sorted.findIndex(s => s.i === selected);
+      if (pos < 0) pos = (e.key==='ArrowRight') ? -1 : sorted.length;
+      pos = (e.key==='ArrowRight') ? (pos+1) % sorted.length : (pos-1+sorted.length) % sorted.length;
+      select(sorted[pos].i);
+    } else if (e.key === 'Escape') { select(-1); }
+    else if (e.key === 'Enter' || e.key === ' ') {
+      if (selected >= 0) { e.preventDefault(); }
+    }
+  });
+
+  // ── Filter legend ──
+  legend.querySelectorAll('.dm-lchip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const cat = chip.dataset.cat;
+      if (activeCat === cat) { activeCat = null; }
+      else { activeCat = cat; }
+      // update chip states
+      legend.querySelectorAll('.dm-lchip').forEach(c => {
+        c.classList.toggle('solo', activeCat === c.dataset.cat);
+        c.classList.toggle('off', activeCat && activeCat !== c.dataset.cat);
+      });
+      // clear selection if it's now hidden
+      if (selected >= 0 && isDimmed(selected)) select(-1);
+      draw();
+    });
+  });
+
+  // ── Entry animation ──
+  let started = false;
+  function runAnim() {
+    if (started) return; started = true;
+    const dur = 720, t0 = performance.now();
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { animT = 1; draw(); return; }
+    (function step(now){
+      const k = Math.min(1, (now - t0) / dur);
+      animT = 1 - Math.pow(1 - k, 3); // easeOutCubic
+      draw();
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  const obs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) { runAnim(); }
+  }, { threshold: 0.25 });
+  obs.observe(canvas);
+
+  resize();
+  window.addEventListener('resize', resize);
+})();
+</script>
 </body>
 </html>
